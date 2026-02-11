@@ -1485,9 +1485,9 @@ function checkMissedDeadlines() {
             ) {
                 li.dataset.hardcorePunished = "true";
 
-                completedMissions = 0;
-                localStorage.setItem("completedMissions", 0);
-                document.getElementById("missionCounter").textContent = "0";
+                completedMissions -= 5; 
+localStorage.setItem("completedMissions", completedMissions);
+document.getElementById("missionCounter").textContent = completedMissions;
 
                 renderMarketplace();
                 renderMyCards();
@@ -2308,6 +2308,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
