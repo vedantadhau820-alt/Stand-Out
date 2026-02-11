@@ -1603,7 +1603,7 @@ document.getElementById("missionCounter").textContent = "0";
 
 
 
-        function increaseSkillXP(skillName, amount) {
+    /*    function increaseSkillXP(skillName, amount) {
             const skills = document.querySelectorAll("#skill-list .skill");
 
             skills.forEach(skill => {
@@ -1623,7 +1623,22 @@ document.getElementById("missionCounter").textContent = "0";
                     saveData(); // 🔥 force persist
                 }
             });
+        }*/
+
+function increaseSkillXP(skillName, amount) {
+    const skills = document.querySelectorAll("#skill-list .skill");
+
+    skills.forEach(skillDiv => {
+        if (skillDiv.querySelector("strong").textContent === skillName) {
+
+            let xp = parseInt(skillDiv.dataset.xp) + amount;
+            skillDiv.dataset.xp = xp;
+
+            checkSkillLevelUp(skillDiv);
+            saveData();
         }
+    });
+}
 
 
 
@@ -1667,26 +1682,30 @@ document.getElementById("missionCounter").textContent = "0";
            6. SKILLS MODULE
         ========================================================= */
         function addSkill() {
-            const skill = document.getElementById("skillInput").value;
-            if (!skill) return closeModal();
+    const skill = document.getElementById("skillInput").value;
+    if (!skill) return closeModal();
 
-            const div = document.createElement("div");
-            div.className = "skill show";
-            div.dataset.xp = "0"; // 🔥 XP starts at 0
+    const div = document.createElement("div");
+    div.className = "skill show";
+    div.dataset.xp = "0";
+    div.dataset.level = "0";
 
-            div.innerHTML = `
+    div.innerHTML = `
         <strong>${skill}</strong>
         <span class="skill-level">Level 0</span>
+
         <div class="progress">
             <div class="progress-bar" style="width:0%"></div>
         </div>
-        <small>XP: <span class="xp-count">0</span></small>
-        <button class="remove-btn" onclick="deleteSkillDirect(this)">Remove</button>
-        `;
 
-            document.getElementById("skill-list").appendChild(div);
-            saveData();
-            closeModal();
+        <small>XP: <span class="xp-count">0</span></small>
+        <button onclick="addSkillXP('${skill}', 50)" style="margin-top:5px;">+50 XP (test)</button>
+        <button class="remove-btn" onclick="deleteSkillDirect(this)">Remove</button>
+    `;
+
+    document.getElementById("skill-list").appendChild(div);
+    saveData();
+    closeModal();
         }
 
         function deleteSkillDirect(btn) {
@@ -1710,28 +1729,7 @@ document.getElementById("missionCounter").textContent = "0";
             );
         }
 
-        function checkSkillLevelUp(skillDiv) {
-    let xp = parseInt(skillDiv.dataset.xp);
-    let levelSpan = skillDiv.querySelector(".skill-level");
-
-    while (xp >= 100) {
-        xp -= 100; // reset XP after level-up
-
-        // Increase level
-        let currentLevel = parseInt(levelSpan.textContent.replace("Level ", ""));
-        levelSpan.textContent = "Level " + (currentLevel + 1);
-
-        // Show mini popup (optional)
-        smartNotify("Skill Level Up!", `${skillDiv.querySelector("strong").textContent} reached Level ${currentLevel + 1}`);
-    }
-
-    // Update stored XP
-    skillDiv.dataset.xp = xp;
-    skillDiv.querySelector(".xp-count").textContent = xp;
-
-    // Update progress bar
-    skillDiv.querySelector(".progress-bar").style.width = xp + "%";
-        }
+        
 
         // function updateSkillProgress(skillName) {
         //     let newProgress = document.getElementById("editProgressInput").value;
@@ -1749,23 +1747,27 @@ document.getElementById("missionCounter").textContent = "0";
         // }
 
 
-        function checkSkillLevelUp(skillDiv) {
+function checkSkillLevelUp(skillDiv) {
     let xp = parseInt(skillDiv.dataset.xp);
+    let level = parseInt(skillDiv.dataset.level);
     let levelEl = skillDiv.querySelector(".skill-level");
 
     if (!levelEl) {
-        alert("❌ No .skill-level found in skill div");
+        console.error("❌ ERROR: .skill-level not found in this skill div");
+        console.log(skillDiv);
         return;
     }
 
-    while (xp >= 100) {
-        xp -= 100;
+    if (xp >= 100) {
+        level++;
+        xp = 0;
 
-        let currentLevel = parseInt(levelEl.textContent.replace("Level ", ""));
-        levelEl.textContent = "Level " + (currentLevel + 1);
+        skillDiv.dataset.xp = xp;
+        skillDiv.dataset.level = level;
+
+        levelEl.textContent = "Level " + level;
     }
 
-    skillDiv.dataset.xp = xp;
     skillDiv.querySelector(".xp-count").textContent = xp;
     skillDiv.querySelector(".progress-bar").style.width = xp + "%";
 }
@@ -2457,6 +2459,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
