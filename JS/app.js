@@ -1485,7 +1485,7 @@ function checkMissedDeadlines() {
             ) {
                 li.dataset.hardcorePunished = "true";
 
-                completedMissions -= 5; 
+                completedMissions -= 4; 
 localStorage.setItem("completedMissions", completedMissions);
 document.getElementById("missionCounter").textContent = completedMissions;
 
@@ -2308,6 +2308,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
