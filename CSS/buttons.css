@@ -201,3 +201,70 @@
    border: none;
    focus: none;
 }
+
+.achieve-btn {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.achieve-btn:disabled {
+    background: gray;
+    cursor: default;
+}
+
+/* Achieved Goal Premium Look */
+.goal-achieved {
+    border: 2px solid gold;
+    background: linear-gradient(145deg, #1f1f1f, #000);
+    border-radius: 12px;
+    padding: 10px;
+    position: relative;
+    animation: celebrateScale 0.4s ease-out;
+    box-shadow: 0 0 12px gold;
+}
+
+/* Achievement Badge */
+.achieved-badge {
+    margin-top: 10px;
+    padding: 6px 10px;
+    background: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 13px;
+    border-radius: 6px;
+    display: inline-block;
+    animation: badgeDrop 0.3s ease-out;
+}
+
+/* Button fix */
+.achieve-btn:disabled {
+    background: #10b981;
+    color: white;
+}
+
+/* Animations */
+@keyframes celebrateScale {
+    0% { transform: scale(0.85); }
+    100% { transform: scale(1); }
+}
+
+@keyframes badgeDrop {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.confetti {
+    position: fixed;
+    top: -10px;
+    border-radius: 2px;
+    animation: confettiFall linear;
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0); opacity:1; }
+    100% { transform: translateY(120vh) rotate(360deg); opacity:0; }
+}
