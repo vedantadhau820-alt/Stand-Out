@@ -1776,6 +1776,7 @@ document.getElementById("missionCounter").textContent = "0";
         <div class="goal-subrow">
             <span class="goal-deadline">${formattedDeadline}</span>
             <span class="goal-overdue"></span>
+            <button class="achieve-btn" onclick="markGoalAchieved(this)">Achieved</button>
             <button class="remove-btn" onclick="removeGoal(this)">Remove</button>
         </div>
 
@@ -1789,6 +1790,98 @@ document.getElementById("missionCounter").textContent = "0";
             closeModal();
 
         }
+function loadAchievements() {
+    const container = document.getElementById("achievementsViewer");
+    container.innerHTML = "";
+
+    const logs = JSON.parse(localStorage.getItem("achievements")) || [];
+
+    logs.forEach(a => {
+        const div = document.createElement("div");
+        div.className = "achievement-card";
+        div.style.cssText = `
+            background:#111; 
+            color:white; 
+            padding:8px 12px;
+            border-radius:8px;
+            margin:4px;
+        `;
+        div.innerHTML = `
+            <strong>${a.title}</strong><br>
+            <span style="font-size:12px; opacity:0.8;">Achieved on ${a.date}</span>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function markGoalAchieved(btn) {
+    const goalDiv = btn.closest(".goal");
+    if (!goalDiv || goalDiv.dataset.achieved === "true") return;
+
+    const title = goalDiv.querySelector(".goal-title").textContent;
+    const achievedDate = new Date().toLocaleDateString([], {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+
+    goalDiv.dataset.achieved = "true";
+
+    // Remove ugly strikethrough + blur
+    goalDiv.style.textDecoration = "none";
+    goalDiv.style.opacity = "1";
+
+    // Add proud UI effect
+    goalDiv.classList.add("goal-achieved");
+
+    // Add achievement badge
+    const badge = document.createElement("div");
+    badge.className = "achieved-badge";
+    badge.innerHTML = `🏆 Achieved • ${achievedDate}`;
+    goalDiv.appendChild(badge);
+
+    // Disable button
+    btn.disabled = true;
+    btn.textContent = "Completed";
+
+    // Store Achievement
+    const achievement = {
+        title: title,
+        date: achievedDate,
+        type: "goal"
+    };
+
+    let logs = JSON.parse(localStorage.getItem("achievements")) || [];
+    logs.push(achievement);
+    localStorage.setItem("achievements", JSON.stringify(logs));
+
+    // Fire celebration
+    launchConfetti();
+
+    pushNotification("Goal Achieved 🎯", `"${title}" completed on ${achievedDate}`);
+    showSmartNotify("Goal Achieved!", `${title} - ${achievedDate}`);
+
+    saveData();
+}
+
+function launchConfetti() {
+    for (let i = 0; i < 25; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        document.body.appendChild(c);
+
+        const size = Math.random() * 8 + 4;
+        c.style.width = size + "px";
+        c.style.height = size + "px";
+        c.style.left = Math.random() * window.innerWidth + "px";
+        c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+
+        c.style.animationDuration = (Math.random() * 1 + 0.7) + "s";
+
+        setTimeout(() => c.remove(), 1200);
+    }
+}
+
         function updateGoalTimers() {
             const goals = document.querySelectorAll("#goal-list .goal");
 
@@ -2318,6 +2411,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
