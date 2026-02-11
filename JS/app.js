@@ -1603,15 +1603,15 @@ document.getElementById("missionCounter").textContent = "0";
 
 
 
-    /*    function increaseSkillXP(skillName, amount) {
+     function increaseSkillXP(skillName, amount) {
             const skills = document.querySelectorAll("#skill-list .skill");
 
             skills.forEach(skill => {
                 const name = skill.querySelector("strong").textContent.trim();
 
                 if (name === skillName.trim()) {
-                    let xp = parseInt(skill.dataset.xp || "0");
-                    xp = Math.min(100, xp + amount);
+                    let xp = parseInt(skill.dataset.xp);
+                    xp = xp + amount;
 
                     skill.dataset.xp = xp;
                     skill.setAttribute("data-xp", xp);
@@ -1619,13 +1619,13 @@ document.getElementById("missionCounter").textContent = "0";
                     skill.querySelector(".xp-count").textContent = xp;
                     skill.querySelector(".progress-bar").style.width = xp + "%";
 
-                    checkSkillLevelUp(skillDiv);
+                    checkSkillLevelUp(skill);
                     saveData(); // 🔥 force persist
                 }
             });
-        }*/
+        }
 
-function increaseSkillXP(skillName, amount) {
+/*function increaseSkillXP(skillName, amount) {
     const skills = document.querySelectorAll("#skill-list .skill");
 
     skills.forEach(skillDiv => {
@@ -1639,7 +1639,7 @@ function increaseSkillXP(skillName, amount) {
         }
     });
 }
-
+*/
 
 
         function checkMissionAchievements() {
@@ -2459,6 +2459,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
