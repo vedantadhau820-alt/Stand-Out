@@ -1748,6 +1748,28 @@ document.getElementById("missionCounter").textContent = "0";
         //     closeModal();
         // }
 
+
+        function checkSkillLevelUp(skillDiv) {
+    let xp = parseInt(skillDiv.dataset.xp);
+    let levelEl = skillDiv.querySelector(".skill-level");
+
+    if (!levelEl) {
+        alert("❌ No .skill-level found in skill div");
+        return;
+    }
+
+    while (xp >= 100) {
+        xp -= 100;
+
+        let currentLevel = parseInt(levelEl.textContent.replace("Level ", ""));
+        levelEl.textContent = "Level " + (currentLevel + 1);
+    }
+
+    skillDiv.dataset.xp = xp;
+    skillDiv.querySelector(".xp-count").textContent = xp;
+    skillDiv.querySelector(".progress-bar").style.width = xp + "%";
+}
+
         function deleteSkill(skillName) {
             const skills = document.querySelectorAll("#skill-list .skill");
             skills.forEach(skill => {
@@ -2435,6 +2457,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
