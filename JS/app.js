@@ -1503,7 +1503,7 @@ function checkMissedDeadlines() {
 
             // ❌ NORMAL MODE — DEDUCT 1 POINT (ONCE)
             if (!li.dataset.deducted) {
-                completedMissions = Math.max(0, completedMissions - 1);
+                completedMissions = completedMissions - 1;
                 li.dataset.deducted = "true";
 
                 document.getElementById("missionCounter").textContent = completedMissions;
@@ -2308,6 +2308,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
