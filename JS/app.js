@@ -1619,6 +1619,7 @@ document.getElementById("missionCounter").textContent = "0";
                     skill.querySelector(".xp-count").textContent = xp;
                     skill.querySelector(".progress-bar").style.width = xp + "%";
 
+                    checkSkillLevelUp(skillDiv);
                     saveData(); // 🔥 force persist
                 }
             });
@@ -1675,6 +1676,7 @@ document.getElementById("missionCounter").textContent = "0";
 
             div.innerHTML = `
         <strong>${skill}</strong>
+        <span class="skill-level">Level 0</span>
         <div class="progress">
             <div class="progress-bar" style="width:0%"></div>
         </div>
@@ -1708,6 +1710,28 @@ document.getElementById("missionCounter").textContent = "0";
             );
         }
 
+        function checkSkillLevelUp(skillDiv) {
+    let xp = parseInt(skillDiv.dataset.xp);
+    let levelSpan = skillDiv.querySelector(".skill-level");
+
+    while (xp >= 100) {
+        xp -= 100; // reset XP after level-up
+
+        // Increase level
+        let currentLevel = parseInt(levelSpan.textContent.replace("Level ", ""));
+        levelSpan.textContent = "Level " + (currentLevel + 1);
+
+        // Show mini popup (optional)
+        smartNotify("Skill Level Up!", `${skillDiv.querySelector("strong").textContent} reached Level ${currentLevel + 1}`);
+    }
+
+    // Update stored XP
+    skillDiv.dataset.xp = xp;
+    skillDiv.querySelector(".xp-count").textContent = xp;
+
+    // Update progress bar
+    skillDiv.querySelector(".progress-bar").style.width = xp + "%";
+        }
 
         // function updateSkillProgress(skillName) {
         //     let newProgress = document.getElementById("editProgressInput").value;
@@ -2411,6 +2435,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
