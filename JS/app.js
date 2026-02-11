@@ -1746,31 +1746,32 @@ document.getElementById("missionCounter").textContent = "0";
         //     closeModal();
         // }
 
-
-function checkSkillLevelUp(skillDiv) {
+       function checkSkillLevelUp(skillDiv) {
     let xp = parseInt(skillDiv.dataset.xp);
-    let level = parseInt(skillDiv.dataset.level);
-    let levelEl = skillDiv.querySelector(".skill-level");
+    let levelTag = skillDiv.querySelector(".skill-level");
 
-    if (!levelEl) {
-        console.error("❌ ERROR: .skill-level not found in this skill div");
-        console.log(skillDiv);
-        return;
+    if (!levelTag) {
+        console.log("❌ No level tag found. Adding automatically...");
+        levelTag = document.createElement("span");
+        levelTag.className = "skill-level";
+        levelTag.textContent = "Level 0";
+        skillDiv.insertBefore(levelTag, skillDiv.querySelector(".progress"));
     }
 
-    if (xp >= 100) {
+    let level = parseInt(levelTag.textContent.replace("Level ", ""));
+
+    while (xp >= 100) {
+        xp -= 100;
         level++;
-        xp = 0;
-
-        skillDiv.dataset.xp = xp;
-        skillDiv.dataset.level = level;
-
-        levelEl.textContent = "Level " + level;
     }
+
+    skillDiv.dataset.xp = xp;
+    levelTag.textContent = "Level " + level;
 
     skillDiv.querySelector(".xp-count").textContent = xp;
     skillDiv.querySelector(".progress-bar").style.width = xp + "%";
-}
+       }
+
 
         function deleteSkill(skillName) {
             const skills = document.querySelectorAll("#skill-list .skill");
@@ -2459,6 +2460,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
