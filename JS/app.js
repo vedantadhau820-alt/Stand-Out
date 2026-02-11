@@ -1699,7 +1699,6 @@ document.getElementById("missionCounter").textContent = "0";
         </div>
 
         <small>XP: <span class="xp-count">0</span></small>
-        <button onclick="addSkillXP('${skill}', 50)" style="margin-top:5px;">+50 XP (test)</button>
         <button class="remove-btn" onclick="deleteSkillDirect(this)">Remove</button>
     `;
 
@@ -2460,6 +2459,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
