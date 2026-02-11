@@ -224,7 +224,7 @@
     padding: 10px;
     position: relative;
     animation: celebrateScale 0.4s ease-out;
-    box-shadow: 0 0 12px gold;
+    box-shadow: 0 0 5px gold;
 }
 
 /* Achievement Badge */
