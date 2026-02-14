@@ -153,7 +153,17 @@ function getAppSnapshot() {
 
     localStorage.setItem("missions", data.missions || "");
     localStorage.setItem("skills", data.skills || "");
-    localStorage.setItem("goals", JSON.stringify(JSON.parse(backup.goals)));
+    if (data.goals) {
+    let parsedGoals = data.goals;
+
+    if (typeof parsedGoals === "string") {
+        parsedGoals = JSON.parse(parsedGoals);
+    }
+
+    localStorage.setItem("goals", JSON.stringify(parsedGoals));
+} else {
+    localStorage.setItem("goals", JSON.stringify([]));
+    }
     countdowns = Array.isArray(data.countdowns) ? data.countdowns : [];
     saveCountdowns();
 
@@ -2012,8 +2022,8 @@ function renderGoals() {
 
             <div class="goal-subrow">
                 <span class="goal-deadline">${formattedDeadline}</span>
-                <button onclick="markGoalAchievedById(${goal.id})">Achieved</button>
-                <button onclick="removeGoalById(${goal.id})">Remove</button>
+                <button onclick="markGoalAchieved(${goal.id})">Achieved</button>
+                <button onclick="removeGoal(${goal.id})">Remove</button>
             </div>
         `;
 
@@ -2493,6 +2503,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
