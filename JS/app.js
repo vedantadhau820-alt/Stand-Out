@@ -1625,6 +1625,13 @@ function resetDailyMissionsIfNeeded() {
             li.style.display = "block";
         }
 
+            if (repeat === "daily" && last !== today) {
+    li.dataset.completed = "false";
+    li.dataset.lastCompleted = "";
+    const btn = li.querySelector(".complete-btn");
+    if (btn) btn.disabled = false;
+            }
+
         if (repeat === "specific") {
             const days = JSON.parse(li.dataset.days || "[]");
             const todayIndex = new Date().getDay().toString();
@@ -1645,11 +1652,17 @@ function completeMission(btn) {
     renderMarketplace(currentMarketplaceFilter);
 
     const li = btn.closest("li");
-    const linkedSkill = li.dataset.skill;
-    const deadline = li.dataset.deadline;
     const repeatType = li.dataset.repeat || "once";
+    const today = new Date().toDateString();
 
-    // ❌ OVERDUE → NO GAIN
+    // 🚫 Prevent multiple completion same day
+    if (li.dataset.lastCompleted === today) {
+        showPopup("Already completed today.");
+        return;
+    }
+
+    const deadline = li.dataset.deadline;
+
     if (deadline && new Date(deadline).getTime() < Date.now()) {
         showPopup("Mission was overdue. No improvement points gained.");
         li.remove();
@@ -1657,13 +1670,11 @@ function completeMission(btn) {
         return;
     }
 
-    // ❌ DAILY LIMIT
     if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
         showPopup("You're too tired today.");
         return;
     }
 
-    // ✅ SUCCESS
     dailyImprovementCount++;
     completedMissions++;
 
@@ -1671,23 +1682,22 @@ function completeMission(btn) {
     localStorage.setItem("completedMissions", completedMissions);
     document.getElementById("missionCounter").textContent = completedMissions;
 
-    if (linkedSkill) {
-        increaseSkillXP(linkedSkill, 1);
+    if (li.dataset.skill) {
+        increaseSkillXP(li.dataset.skill, 1);
     }
 
     checkMissionAchievements();
-    showPopup("Mission completed! Improvement point gained.");
+    showPopup("Mission completed!");
 
-    // 🔁 REPEAT LOGIC
     if (repeatType === "once") {
         li.remove();
     } else {
-        // Mark last completed date
-        li.dataset.lastCompleted = new Date().toDateString();
+        li.dataset.lastCompleted = today;
+        btn.disabled = true;   // disable button visually
     }
 
     saveData();
-                    }
+                }
 
 
      function increaseSkillXP(skillName, amount) {
@@ -2436,6 +2446,7 @@ document.getElementById("countdownCounter").textContent = "0";
             renderMarketplace();
             checkMissedDeadlines();
             filterMissionsByDay();
+            resetDailyMissionsIfNeeded();
             renderAchievements();
             renderCountdowns();
             loadData();
@@ -2547,6 +2558,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
