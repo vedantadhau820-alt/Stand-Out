@@ -1134,22 +1134,55 @@ function gradeRank(grade) {
             modal.classList.add("active");
 
             // ---- Add Mission ----
-         <label>Repeat</label>
-<select id="repeatType" onchange="toggleSpecificDays()">
-  <option value="once">Once</option>
-  <option value="daily">Daily</option>
-  <option value="specific">Specific Days</option>
-</select>
+         if (type === "mission") {
 
-<div id="specificDaysBox" style="display:none; margin-top:5px;">
-  <label><input type="checkbox" value="0"> Sun</label>
-  <label><input type="checkbox" value="1"> Mon</label>
-  <label><input type="checkbox" value="2"> Tue</label>
-  <label><input type="checkbox" value="3"> Wed</label>
-  <label><input type="checkbox" value="4"> Thu</label>
-  <label><input type="checkbox" value="5"> Fri</label>
-  <label><input type="checkbox" value="6"> Sat</label>
-</div>
+    const skills = [...document.querySelectorAll("#skill-list strong")]
+        .map(s => `<option value="${s.textContent}">${s.textContent}</option>`)
+        .join("");
+
+    content.innerHTML = `
+        <h3>Add Mission</h3>
+
+        <input id="missionInput" placeholder="Enter mission">
+
+        <label>Link Skill</label>
+        <select id="linkedSkill">
+            <option value="">None</option>
+            ${skills}
+        </select>
+
+        <label>Deadline</label>
+        <input id="missionDeadline" type="datetime-local">
+
+        <label>Repeat</label>
+        <select id="repeatType" onchange="toggleSpecificDays()">
+            <option value="once">Once</option>
+            <option value="daily">Daily</option>
+            <option value="specific">Specific Days</option>
+        </select>
+
+        <div id="specificDaysBox" style="display:none; margin-top:5px;">
+            <label><input type="checkbox" value="0"> Sun</label>
+            <label><input type="checkbox" value="1"> Mon</label>
+            <label><input type="checkbox" value="2"> Tue</label>
+            <label><input type="checkbox" value="3"> Wed</label>
+            <label><input type="checkbox" value="4"> Thu</label>
+            <label><input type="checkbox" value="5"> Fri</label>
+            <label><input type="checkbox" value="6"> Sat</label>
+        </div>
+
+        <div class="toggle-row">
+            <label class="toggle">
+                <input type="checkbox" id="hardcoreToggle">
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label">Hardcore Mode</span>
+        </div>
+
+        <button onclick="addMission()">Add</button>
+        <button onclick="closeModal()">Cancel</button>
+    `;
+         }
 
             // ---- Edit Mission ----
             if (type === "edit-mission" && skillDiv) {
@@ -2514,6 +2547,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
