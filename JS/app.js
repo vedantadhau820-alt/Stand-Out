@@ -1134,37 +1134,22 @@ function gradeRank(grade) {
             modal.classList.add("active");
 
             // ---- Add Mission ----
-            if (type === 'mission') {
-                const skills = [...document.querySelectorAll("#skill-list strong")]
-                    .map(s => `<option value="${s.textContent}">${s.textContent}</option>`)
-                    .join("");
+         <label>Repeat</label>
+<select id="repeatType" onchange="toggleSpecificDays()">
+  <option value="once">Once</option>
+  <option value="daily">Daily</option>
+  <option value="specific">Specific Days</option>
+</select>
 
-                content.innerHTML = `
-  <h3>Add Mission</h3>
-  <input id="missionInput" placeholder="Enter mission">
-
-  <label>Link Skill</label>
-  <select id="linkedSkill">
-    <option value="">None</option>
-    ${skills}
-  </select>
-
-  <label>Deadline</label>
-  <input id="missionDeadline" type="datetime-local">
-
-  <div class="toggle-row">
-  <label class="toggle">
-    <input type="checkbox" id="hardcoreToggle">
-    <span class="slider"></span>
-  </label>
-  <span class="toggle-label">Hardcore Mode</span>
+<div id="specificDaysBox" style="display:none; margin-top:5px;">
+  <label><input type="checkbox" value="0"> Sun</label>
+  <label><input type="checkbox" value="1"> Mon</label>
+  <label><input type="checkbox" value="2"> Tue</label>
+  <label><input type="checkbox" value="3"> Wed</label>
+  <label><input type="checkbox" value="4"> Thu</label>
+  <label><input type="checkbox" value="5"> Fri</label>
+  <label><input type="checkbox" value="6"> Sat</label>
 </div>
-
-  <button onclick="addMission()">Add</button>
-  <button onclick="closeModal()">Cancel</button>
-`;
-
-            }
 
             // ---- Edit Mission ----
             if (type === "edit-mission" && skillDiv) {
@@ -1380,11 +1365,39 @@ for (let i = 5; i <= 250; i += 5) {
         openModal("edit-mission", li);
     });
 
+                const repeatType = document.getElementById("repeatType").value;
+
+li.dataset.repeat = repeatType;
+
+if (repeatType === "specific") {
+    const checked = [...document.querySelectorAll("#specificDaysBox input:checked")]
+        .map(cb => cb.value);
+
+    li.dataset.days = JSON.stringify(checked);
+}
+
     document.getElementById("mission-list").appendChild(li);
     saveData();
     closeModal();
         }
 
+function filterMissionsByDay() {
+    const today = new Date().getDay(); // 0-6
+
+    document.querySelectorAll("#mission-list li").forEach(li => {
+        const repeat = li.dataset.repeat;
+
+        if (repeat === "specific") {
+            const days = JSON.parse(li.dataset.days || "[]");
+
+            if (!days.includes(today.toString())) {
+                li.style.display = "none";
+            } else {
+                li.style.display = "block";
+            }
+        }
+    });
+}
 
 
 
@@ -1560,40 +1573,69 @@ document.getElementById("missionCounter").textContent = "0";
     closeModal();
         }
 
+function toggleSpecificDays() {
+    const type = document.getElementById("repeatType").value;
+    const box = document.getElementById("specificDaysBox");
 
-        function completeMission(btn) {
+    box.style.display = type === "specific" ? "block" : "none";
+}
+
+function resetDailyMissionsIfNeeded() {
+    const today = new Date().toDateString();
+
+    document.querySelectorAll("#mission-list li").forEach(li => {
+        const repeat = li.dataset.repeat;
+        const last = li.dataset.lastCompleted;
+
+        if (repeat === "daily" && last !== today) {
+            li.dataset.completed = "false";
+            li.style.display = "block";
+        }
+
+        if (repeat === "specific") {
+            const days = JSON.parse(li.dataset.days || "[]");
+            const todayIndex = new Date().getDay().toString();
+
+            if (days.includes(todayIndex)) {
+                li.style.display = "block";
+            } else {
+                li.style.display = "none";
+            }
+        }
+    });
+
+    saveData();
+}
+
+function completeMission(btn) {
     enforceDailyReset();
     renderMarketplace(currentMarketplaceFilter);
 
     const li = btn.closest("li");
     const linkedSkill = li.dataset.skill;
     const deadline = li.dataset.deadline;
-
-    li.classList.add("remove");
-    li.dataset.completed = "true";
-    setTimeout(() => li.remove(), 400);
+    const repeatType = li.dataset.repeat || "once";
 
     // ❌ OVERDUE → NO GAIN
     if (deadline && new Date(deadline).getTime() < Date.now()) {
         showPopup("Mission was overdue. No improvement points gained.");
+        li.remove();
         saveData();
         return;
     }
 
-    // ❌ DAILY LIMIT REACHED
+    // ❌ DAILY LIMIT
     if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
-        showPopup("You're too tired today. No improvement points gained.");
-        saveData();
+        showPopup("You're too tired today.");
         return;
     }
 
-    // ✅ SUCCESSFUL COMPLETION
+    // ✅ SUCCESS
     dailyImprovementCount++;
     completedMissions++;
 
     localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
     localStorage.setItem("completedMissions", completedMissions);
-
     document.getElementById("missionCounter").textContent = completedMissions;
 
     if (linkedSkill) {
@@ -1602,9 +1644,17 @@ document.getElementById("missionCounter").textContent = "0";
 
     checkMissionAchievements();
     showPopup("Mission completed! Improvement point gained.");
-    saveData();
-}
 
+    // 🔁 REPEAT LOGIC
+    if (repeatType === "once") {
+        li.remove();
+    } else {
+        // Mark last completed date
+        li.dataset.lastCompleted = new Date().toDateString();
+    }
+
+    saveData();
+                    }
 
 
      function increaseSkillXP(skillName, amount) {
@@ -2352,6 +2402,7 @@ document.getElementById("countdownCounter").textContent = "0";
             enforceDailyReset();
             renderMarketplace();
             checkMissedDeadlines();
+            filterMissionsByDay();
             renderAchievements();
             renderCountdowns();
             loadData();
@@ -2463,6 +2514,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
