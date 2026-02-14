@@ -1790,9 +1790,24 @@ document.getElementById("missionCounter").textContent = "0";
         /* =========================================================
            7. GOALS MODULE
         ========================================================= */
-function addGoal() {
-    alert("addGoal triggered");
 
+function getStoredGoals() {
+    const raw = localStorage.getItem("goals");
+
+    // If goals were stored incorrectly before
+    if (!raw || raw === "" || raw === "null") {
+        return [];
+    }
+
+    try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function addGoal() {
     const goalText = document.getElementById("goalInput").value.trim();
     const priority = document.getElementById("priorityInput").value;
     const deadline = document.getElementById("goalDeadline").value;
@@ -1802,15 +1817,7 @@ function addGoal() {
         return;
     }
 
-    if (deadline) {
-        const selected = new Date(deadline).getTime();
-        if (selected < Date.now()) {
-            customAlert("Deadline cannot be in the past.");
-            return;
-        }
-    }
-
-    let goals = JSON.parse(localStorage.getItem("goals")) || [];
+    let goals = getStoredGoals();
 
     goals.push({
         id: Date.now(),
@@ -1822,6 +1829,8 @@ function addGoal() {
     });
 
     localStorage.setItem("goals", JSON.stringify(goals));
+
+    console.log("Stored goals:", goals); // Debug
 
     closeModal();
     renderGoals();
@@ -1960,7 +1969,7 @@ function renderGoals() {
 
     container.innerHTML = "";
 
-    let goals = JSON.parse(localStorage.getItem("goals")) || [];
+    const goals = getStoredGoals();
 
     if (goals.length === 0) {
         container.innerHTML = `<p style="opacity:.6;">No goals yet.</p>`;
@@ -1968,19 +1977,8 @@ function renderGoals() {
     }
 
     goals.forEach(goal => {
-
         const div = document.createElement("div");
         div.className = "goal";
-        div.dataset.id = goal.id;
-
-        let formattedDeadline = "";
-        if (goal.deadline) {
-            const d = new Date(goal.deadline);
-            formattedDeadline = d.toLocaleDateString([], {
-                day: "numeric",
-                month: "short"
-            });
-        }
 
         div.innerHTML = `
             <div class="goal-header">
@@ -1989,21 +1987,7 @@ function renderGoals() {
                     <strong>${goal.priority}</strong>
                 </span>
             </div>
-
-            <div class="goal-subrow">
-                <span class="goal-deadline">${formattedDeadline}</span>
-                ${
-                    goal.achieved
-                        ? `<span class="goal-achieved-badge">🏆 Achieved on ${goal.achievedAt}</span>`
-                        : `<button class="achieve-btn" onclick="markGoalAchievedById(${goal.id})">Achieved</button>`
-                }
-                <button class="remove-btn" onclick="removeGoalById(${goal.id})">Remove</button>
-            </div>
         `;
-
-        if (goal.achieved) {
-            div.classList.add("goal-achieved");
-        }
 
         container.appendChild(div);
     });
@@ -2481,6 +2465,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
