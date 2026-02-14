@@ -1791,15 +1791,23 @@ document.getElementById("missionCounter").textContent = "0";
            7. GOALS MODULE
         ========================================================= */
 function addGoal() {
+    alert("addGoal triggered");
+
     const goalText = document.getElementById("goalInput").value.trim();
     const priority = document.getElementById("priorityInput").value;
     const deadline = document.getElementById("goalDeadline").value;
 
-    if (!goalText) return;
-
-    if (deadline && isPastDateTime(deadline)) {
-        customAlert("Deadline cannot be in the past.");
+    if (!goalText) {
+        customAlert("Goal cannot be empty.");
         return;
+    }
+
+    if (deadline) {
+        const selected = new Date(deadline).getTime();
+        if (selected < Date.now()) {
+            customAlert("Deadline cannot be in the past.");
+            return;
+        }
     }
 
     let goals = JSON.parse(localStorage.getItem("goals")) || [];
@@ -2473,6 +2481,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
