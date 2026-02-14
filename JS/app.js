@@ -121,6 +121,7 @@ function getISTDate() {
 });
 
         setInterval(enforceDailyReset, 60 * 1000);
+        setInterval(resetDailyMissionsIfNeeded, 10000);
 
 function getAppSnapshot() {
     return {
@@ -2564,6 +2565,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
