@@ -1790,58 +1790,35 @@ document.getElementById("missionCounter").textContent = "0";
         /* =========================================================
            7. GOALS MODULE
         ========================================================= */
-        function addGoal() {
-            const goalText = document.getElementById("goalInput").value;
-            const priority = document.getElementById("priorityInput").value;
-            const deadline = document.getElementById("goalDeadline").value;
+function addGoal() {
+    const goalText = document.getElementById("goalInput").value.trim();
+    const priority = document.getElementById("priorityInput").value;
+    const deadline = document.getElementById("goalDeadline").value;
 
-            if (isPastDateTime(deadline)) {
-                customAlert("Deadline cannot be in the past.");
-                return;
-            }
+    if (!goalText) return;
 
+    if (deadline && isPastDateTime(deadline)) {
+        customAlert("Deadline cannot be in the past.");
+        return;
+    }
 
-            if (!goalText) {
-                closeModal();
-                return;
-            }
+    let goals = JSON.parse(localStorage.getItem("goals")) || [];
 
-            // Create goal div
-            const div = document.createElement("div");
-            div.className = "goal show";
-            div.dataset.deadline = deadline;
+    goals.push({
+        id: Date.now(),
+        title: goalText,
+        priority: priority,
+        deadline: deadline,
+        achieved: false,
+        achievedAt: null
+    });
 
-            // Format deadline
-            let formattedDeadline = "";
-            if (deadline) {
-                const d = new Date(deadline);
-                formattedDeadline = d.toLocaleDateString([], { day: "numeric", month: "short" });
-            }
+    localStorage.setItem("goals", JSON.stringify(goals));
 
-            // Fill goal card UI
-            div.innerHTML = `
-        <div class="goal-header">
-            <span class="goal-title">${goalText} -</span>
-            <span class="goal-priority ${priority}"><strong>${priority}</strong></span>
-        </div>
+    closeModal();
+    renderGoals();
+}
 
-        <div class="goal-subrow">
-            <span class="goal-deadline">${formattedDeadline}</span>
-            <span class="goal-overdue"></span>
-            <button class="achieve-btn" onclick="markGoalAchieved(this)">Achieved</button>
-            <button class="remove-btn" onclick="removeGoal(this)">Remove</button>
-        </div>
-
-        <div class="goal-timer" style="margin-top:6px; font-size:14px; opacity:.9;"></div>
-    `;
-
-            // Add to list
-            document.getElementById("goal-list").appendChild(div);
-
-            saveData();
-            closeModal();
-
-        }
 function loadAchievements() {
     const container = document.getElementById("achievementsViewer");
     container.innerHTML = "";
@@ -1866,55 +1843,33 @@ function loadAchievements() {
     });
 }
 
-function markGoalAchieved(btn) {
-    const goalDiv = btn.closest(".goal");
-    if (!goalDiv || goalDiv.dataset.achieved === "true") return;
+function markGoalAchieved(id) {
+    let goals = JSON.parse(localStorage.getItem("goals")) || [];
 
-    const title = goalDiv.querySelector(".goal-title").textContent;
-    const achievedDate = new Date().toLocaleDateString([], {
+    const goal = goals.find(g => g.id === id);
+    if (!goal || goal.achieved) return;
+
+    goal.achieved = true;
+    goal.achievedAt = new Date().toLocaleDateString([], {
         day: "numeric",
         month: "short",
         year: "numeric"
     });
 
-    goalDiv.dataset.achieved = "true";
+    localStorage.setItem("goals", JSON.stringify(goals));
 
-    // Remove ugly strikethrough + blur
-    goalDiv.style.textDecoration = "none";
-    goalDiv.style.opacity = "1";
+    // Also store in achievedGoals for achievements page
+    let achievedGoals = JSON.parse(localStorage.getItem("achievedGoals")) || [];
+    achievedGoals.push({
+        title: goal.title,
+        achievedAt: goal.achievedAt
+    });
+    localStorage.setItem("achievedGoals", JSON.stringify(achievedGoals));
 
-    // Add proud UI effect
-    goalDiv.classList.add("goal-achieved");
-
-    // Add achievement badge
-    const badge = document.createElement("div");
-    badge.className = "achieved-badge";
-    badge.innerHTML = `🏆 Achieved • ${achievedDate}`;
-    goalDiv.appendChild(badge);
-
-    // Disable button
-    btn.disabled = true;
-    btn.textContent = "Completed";
-
-    // Store Achievement
-    const achievement = {
-        title: title,
-        date: achievedDate,
-        type: "goal"
-    };
-
-    let logs = JSON.parse(localStorage.getItem("achievements")) || [];
-    logs.push(achievement);
-    localStorage.setItem("achievements", JSON.stringify(logs));
-
-    // Fire celebration
-    launchConfetti();
-
-    pushNotification("Goal Achieved 🎯", `"${title}" completed on ${achievedDate}`);
-    showSmartNotify("Goal Achieved!", `${title} - ${achievedDate}`);
-
-    saveData();
+    renderGoals();
+    renderAchievements();
 }
+
 
 function launchConfetti() {
     for (let i = 0; i < 25; i++) {
@@ -1982,15 +1937,69 @@ function launchConfetti() {
 
 
 
-        function removeGoal(btn) {
-            const goalDiv = btn.closest(".goal");
-            if (goalDiv) {
-                goalDiv.remove();
-                saveData();
-            }
+        function removeGoal(id) {
+    let goals = JSON.parse(localStorage.getItem("goals")) || [];
+    goals = goals.filter(g => g.id !== id);
+
+    localStorage.setItem("goals", JSON.stringify(goals));
+    renderGoals();
+}
+
+
+function renderGoals() {
+    const container = document.getElementById("goal-list");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    let goals = JSON.parse(localStorage.getItem("goals")) || [];
+
+    if (goals.length === 0) {
+        container.innerHTML = `<p style="opacity:.6;">No goals yet.</p>`;
+        return;
+    }
+
+    goals.forEach(goal => {
+
+        const div = document.createElement("div");
+        div.className = "goal";
+        div.dataset.id = goal.id;
+
+        let formattedDeadline = "";
+        if (goal.deadline) {
+            const d = new Date(goal.deadline);
+            formattedDeadline = d.toLocaleDateString([], {
+                day: "numeric",
+                month: "short"
+            });
         }
 
+        div.innerHTML = `
+            <div class="goal-header">
+                <span class="goal-title">${goal.title}</span>
+                <span class="goal-priority ${goal.priority}">
+                    <strong>${goal.priority}</strong>
+                </span>
+            </div>
 
+            <div class="goal-subrow">
+                <span class="goal-deadline">${formattedDeadline}</span>
+                ${
+                    goal.achieved
+                        ? `<span class="goal-achieved-badge">🏆 Achieved on ${goal.achievedAt}</span>`
+                        : `<button class="achieve-btn" onclick="markGoalAchievedById(${goal.id})">Achieved</button>`
+                }
+                <button class="remove-btn" onclick="removeGoalById(${goal.id})">Remove</button>
+            </div>
+        `;
+
+        if (goal.achieved) {
+            div.classList.add("goal-achieved");
+        }
+
+        container.appendChild(div);
+    });
+}
 
         /* =========================================================
            8. COUNTDOWNS MODULE
@@ -2354,6 +2363,7 @@ document.getElementById("countdownCounter").textContent = "0";
             checkMissedDeadlines();
             renderAchievements();
             renderCountdowns();
+                renderGoals();
             loadData();
             
 
@@ -2463,6 +2473,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
