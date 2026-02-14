@@ -2189,7 +2189,6 @@ function renderGoals() {
 
             localStorage.setItem("missions", document.getElementById("mission-list").innerHTML);
             localStorage.setItem("skills", document.getElementById("skill-list").innerHTML);
-            localStorage.setItem("goals", document.getElementById("goal-list").innerHTML);
 
             document.querySelectorAll("#mission-list li").forEach(li => {
                 if (li.dataset.overdueNotified) {
@@ -2264,13 +2263,7 @@ function renderGoals() {
     });
 
     // ---- GOALS ----
-    document.querySelectorAll("#goal-list .goal").forEach(div => {
-        div.classList.add("show");
-        const removeBtn = div.querySelector(".remove-btn");
-        if (removeBtn) {
-            removeBtn.onclick = () => removeGoal(removeBtn);
-        }
-    });
+    renderGoals();
 
     // ---- SKILL XP ----
     document.querySelectorAll("#skill-list .skill").forEach(skill => {
@@ -2503,6 +2496,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
