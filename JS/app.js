@@ -1317,7 +1317,11 @@ document.getElementById("countdownDateTime").min = now;
         /* =========================================================
            5. MISSIONS MODULE
         ========================================================= */
-        const missionMilestones = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+        const missionMilestones = [1];
+
+for (let i = 5; i <= 250; i += 5) {
+    missionMilestones.push(i);
+}
 
         function addMission() {
     const text = document.getElementById("missionInput").value.trim();
@@ -2459,6 +2463,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
