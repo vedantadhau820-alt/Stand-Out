@@ -2385,8 +2385,8 @@ document.getElementById("countdownCounter").textContent = "0";
             checkMissedDeadlines();
             renderAchievements();
             renderCountdowns();
-                renderGoals();
             loadData();
+            renderGoals();
             
 
             const activePage = document.querySelector("section.active")
@@ -2495,6 +2495,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
