@@ -1134,37 +1134,22 @@ function gradeRank(grade) {
             modal.classList.add("active");
 
             // ---- Add Mission ----
-            if (type === 'mission') {
-                const skills = [...document.querySelectorAll("#skill-list strong")]
-                    .map(s => `<option value="${s.textContent}">${s.textContent}</option>`)
-                    .join("");
+         <label>Repeat</label>
+<select id="repeatType" onchange="toggleSpecificDays()">
+  <option value="once">Once</option>
+  <option value="daily">Daily</option>
+  <option value="specific">Specific Days</option>
+</select>
 
-                content.innerHTML = `
-  <h3>Add Mission</h3>
-  <input id="missionInput" placeholder="Enter mission">
-
-  <label>Link Skill</label>
-  <select id="linkedSkill">
-    <option value="">None</option>
-    ${skills}
-  </select>
-
-  <label>Deadline</label>
-  <input id="missionDeadline" type="datetime-local">
-
-  <div class="toggle-row">
-  <label class="toggle">
-    <input type="checkbox" id="hardcoreToggle">
-    <span class="slider"></span>
-  </label>
-  <span class="toggle-label">Hardcore Mode</span>
+<div id="specificDaysBox" style="display:none; margin-top:5px;">
+  <label><input type="checkbox" value="0"> Sun</label>
+  <label><input type="checkbox" value="1"> Mon</label>
+  <label><input type="checkbox" value="2"> Tue</label>
+  <label><input type="checkbox" value="3"> Wed</label>
+  <label><input type="checkbox" value="4"> Thu</label>
+  <label><input type="checkbox" value="5"> Fri</label>
+  <label><input type="checkbox" value="6"> Sat</label>
 </div>
-
-  <button onclick="addMission()">Add</button>
-  <button onclick="closeModal()">Cancel</button>
-`;
-
-            }
 
             // ---- Edit Mission ----
             if (type === "edit-mission" && skillDiv) {
@@ -1380,11 +1365,39 @@ for (let i = 5; i <= 250; i += 5) {
         openModal("edit-mission", li);
     });
 
+                const repeatType = document.getElementById("repeatType").value;
+
+li.dataset.repeat = repeatType;
+
+if (repeatType === "specific") {
+    const checked = [...document.querySelectorAll("#specificDaysBox input:checked")]
+        .map(cb => cb.value);
+
+    li.dataset.days = JSON.stringify(checked);
+}
+
     document.getElementById("mission-list").appendChild(li);
     saveData();
     closeModal();
         }
 
+function filterMissionsByDay() {
+    const today = new Date().getDay(); // 0-6
+
+    document.querySelectorAll("#mission-list li").forEach(li => {
+        const repeat = li.dataset.repeat;
+
+        if (repeat === "specific") {
+            const days = JSON.parse(li.dataset.days || "[]");
+
+            if (!days.includes(today.toString())) {
+                li.style.display = "none";
+            } else {
+                li.style.display = "block";
+            }
+        }
+    });
+}
 
 
 
@@ -1559,6 +1572,22 @@ document.getElementById("missionCounter").textContent = "0";
     saveData();
     closeModal();
         }
+
+function toggleSpecificDays() {
+    const type = document.getElementById("repeatType").value;
+    const box = document.getElementById("specificDaysBox");
+
+    box.style.display = type === "specific" ? "block" : "none";
+}
+
+function recreateMission(oldMission) {
+    const newLi = oldMission.cloneNode(true);
+    newLi.dataset.completed = "false";
+    newLi.classList.remove("remove");
+
+    document.getElementById("mission-list").appendChild(newLi);
+    saveData();
+}
 
 
         function completeMission(btn) {
@@ -2352,6 +2381,7 @@ document.getElementById("countdownCounter").textContent = "0";
             enforceDailyReset();
             renderMarketplace();
             checkMissedDeadlines();
+            filterMissionsByDay();
             renderAchievements();
             renderCountdowns();
             loadData();
@@ -2463,6 +2493,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
