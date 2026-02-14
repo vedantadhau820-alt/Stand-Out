@@ -1580,49 +1580,62 @@ function toggleSpecificDays() {
     box.style.display = type === "specific" ? "block" : "none";
 }
 
-function recreateMission(oldMission) {
-    const newLi = oldMission.cloneNode(true);
-    newLi.dataset.completed = "false";
-    newLi.classList.remove("remove");
+function resetDailyMissionsIfNeeded() {
+    const today = new Date().toDateString();
 
-    document.getElementById("mission-list").appendChild(newLi);
+    document.querySelectorAll("#mission-list li").forEach(li => {
+        const repeat = li.dataset.repeat;
+        const last = li.dataset.lastCompleted;
+
+        if (repeat === "daily" && last !== today) {
+            li.dataset.completed = "false";
+            li.style.display = "block";
+        }
+
+        if (repeat === "specific") {
+            const days = JSON.parse(li.dataset.days || "[]");
+            const todayIndex = new Date().getDay().toString();
+
+            if (days.includes(todayIndex)) {
+                li.style.display = "block";
+            } else {
+                li.style.display = "none";
+            }
+        }
+    });
+
     saveData();
 }
 
-
-        function completeMission(btn) {
+function completeMission(btn) {
     enforceDailyReset();
     renderMarketplace(currentMarketplaceFilter);
 
     const li = btn.closest("li");
     const linkedSkill = li.dataset.skill;
     const deadline = li.dataset.deadline;
-
-    li.classList.add("remove");
-    li.dataset.completed = "true";
-    setTimeout(() => li.remove(), 400);
+    const repeatType = li.dataset.repeat || "once";
 
     // ❌ OVERDUE → NO GAIN
     if (deadline && new Date(deadline).getTime() < Date.now()) {
         showPopup("Mission was overdue. No improvement points gained.");
+        li.remove();
         saveData();
         return;
     }
 
-    // ❌ DAILY LIMIT REACHED
+    // ❌ DAILY LIMIT
     if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
-        showPopup("You're too tired today. No improvement points gained.");
-        saveData();
+        showPopup("You're too tired today.");
         return;
     }
 
-    // ✅ SUCCESSFUL COMPLETION
+    // ✅ SUCCESS
     dailyImprovementCount++;
     completedMissions++;
 
     localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
     localStorage.setItem("completedMissions", completedMissions);
-
     document.getElementById("missionCounter").textContent = completedMissions;
 
     if (linkedSkill) {
@@ -1631,9 +1644,17 @@ function recreateMission(oldMission) {
 
     checkMissionAchievements();
     showPopup("Mission completed! Improvement point gained.");
-    saveData();
-}
 
+    // 🔁 REPEAT LOGIC
+    if (repeatType === "once") {
+        li.remove();
+    } else {
+        // Mark last completed date
+        li.dataset.lastCompleted = new Date().toDateString();
+    }
+
+    saveData();
+                    }
 
 
      function increaseSkillXP(skillName, amount) {
@@ -2493,6 +2514,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
