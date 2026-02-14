@@ -1615,29 +1615,31 @@ function toggleSpecificDays() {
 
 function resetDailyMissionsIfNeeded() {
     const today = new Date().toDateString();
+    const todayIndex = new Date().getDay().toString();
 
     document.querySelectorAll("#mission-list li").forEach(li => {
-        const repeat = li.dataset.repeat;
+        const repeat = li.dataset.repeat || "once";
         const last = li.dataset.lastCompleted;
 
-        if (repeat === "daily" && last !== today) {
-            li.dataset.completed = "false";
-            li.style.display = "block";
+        // DAILY
+        if (repeat === "daily") {
+            if (last !== today) {
+                li.style.display = "block";
+            } else {
+                li.style.display = "none";
+            }
         }
 
-            if (repeat === "daily" && last !== today) {
-    li.dataset.completed = "false";
-    li.dataset.lastCompleted = "";
-    const btn = li.querySelector(".complete-btn");
-    if (btn) btn.disabled = false;
-            }
-
+        // SPECIFIC DAYS
         if (repeat === "specific") {
             const days = JSON.parse(li.dataset.days || "[]");
-            const todayIndex = new Date().getDay().toString();
 
             if (days.includes(todayIndex)) {
-                li.style.display = "block";
+                if (last !== today) {
+                    li.style.display = "block";
+                } else {
+                    li.style.display = "none";
+                }
             } else {
                 li.style.display = "none";
             }
@@ -1655,17 +1657,12 @@ function completeMission(btn) {
     const repeatType = li.dataset.repeat || "once";
     const today = new Date().toDateString();
 
-    // 🚫 Already completed today
-    if (li.dataset.lastCompleted === today) {
-        showPopup("Already completed today.");
-        return;
-    }
-
-    // 🚫 Prevent double click spam
-    if (btn.disabled) return;
+    // 🚫 Prevent duplicate same-day completion
+    if (li.dataset.lastCompleted === today) return;
 
     const deadline = li.dataset.deadline;
 
+    // ❌ Overdue
     if (deadline && new Date(deadline).getTime() < Date.now()) {
         showPopup("Mission was overdue. No improvement points gained.");
         if (repeatType === "once") li.remove();
@@ -1678,12 +1675,12 @@ function completeMission(btn) {
         return;
     }
 
+    // ✅ Success
     dailyImprovementCount++;
     completedMissions++;
 
     localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
     localStorage.setItem("completedMissions", completedMissions);
-
     document.getElementById("missionCounter").textContent = completedMissions;
 
     if (li.dataset.skill) {
@@ -1694,15 +1691,19 @@ function completeMission(btn) {
     showPopup("Mission completed!");
 
     if (repeatType === "once") {
+        // Permanent delete
         li.remove();
     } else {
+        // Save completion date
         li.dataset.lastCompleted = today;
-        li.dataset.completed = "true";
-        btn.disabled = true;
+
+        // Hide it for today
+        li.style.display = "none";
     }
 
     saveData();
-                }
+}
+
 
 
      function increaseSkillXP(skillName, amount) {
@@ -2563,6 +2564,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
