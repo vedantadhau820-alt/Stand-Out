@@ -1897,15 +1897,27 @@ function markGoalAchieved(btn) {
     btn.textContent = "Completed";
 
     // Store Achievement
-    const achievement = {
-        title: title,
-        date: achievedDate,
-        type: "goal"
-    };
+    // Store Achievement in "achieved"
+const achievement = {
+    title: title,
+    date: achievedDate,
+    type: "goal",
+    deadline: goalDiv.dataset.deadline || "",
+    priority: goalDiv.querySelector(".goal-priority")?.textContent || ""
+};
 
 let logs = JSON.parse(localStorage.getItem("achieved")) || [];
-logs.push(achievement);
-localStorage.setItem("achieved", JSON.stringify(logs));
+
+// Prevent duplicate entries
+if (!logs.some(a => a.title === title && a.type === "goal")) {
+    logs.push(achievement);
+    localStorage.setItem("achieved", JSON.stringify(logs));
+}
+
+// 🔥 REMOVE goal from active goals list
+goalDiv.remove();
+
+// Save updated goals list
 
     // Fire celebration
     launchConfetti();
@@ -1914,6 +1926,27 @@ localStorage.setItem("achieved", JSON.stringify(logs));
     showSmartNotify("Goal Achieved!", `${title} - ${achievedDate}`);
 
     saveData();
+}
+
+function loadAchievedGoals() {
+    const container = document.getElementById("achievedList");
+    container.innerHTML = "";
+
+    const logs = JSON.parse(localStorage.getItem("achieved")) || [];
+
+    logs.forEach(a => {
+        if (a.type !== "goal") return;
+
+        const div = document.createElement("div");
+        div.className = "goal achieved-history";
+
+        div.innerHTML = `
+            <strong>${a.title}</strong><br>
+            <small>Achieved on ${a.date}</small>
+        `;
+
+        container.appendChild(div);
+    });
 }
 
 function launchConfetti() {
@@ -2353,6 +2386,7 @@ document.getElementById("countdownCounter").textContent = "0";
             renderMarketplace();
             checkMissedDeadlines();
             renderAchievements();
+                loadAchievedGoals();
             renderCountdowns();
             loadData();
             
@@ -2463,6 +2497,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
