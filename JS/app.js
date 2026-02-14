@@ -1903,9 +1903,9 @@ function markGoalAchieved(btn) {
         type: "goal"
     };
 
-    let logs = JSON.parse(localStorage.getItem("achievements")) || [];
-    logs.push(achievement);
-    localStorage.setItem("achievements", JSON.stringify(logs));
+let logs = JSON.parse(localStorage.getItem("achieved")) || [];
+logs.push(achievement);
+localStorage.setItem("achieved", JSON.stringify(logs));
 
     // Fire celebration
     launchConfetti();
@@ -2463,6 +2463,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
