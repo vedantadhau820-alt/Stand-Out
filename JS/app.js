@@ -1837,7 +1837,7 @@ function addGoal() {
     renderGoals();
 }
 
-function loadAchievements() {
+/*function loadAchievements() {
     const container = document.getElementById("achievementsViewer");
     container.innerHTML = "";
 
@@ -1859,7 +1859,7 @@ function loadAchievements() {
         `;
         container.appendChild(div);
     });
-}
+}*/
 
 function markGoalAchieved(id) {
     let goals = JSON.parse(localStorage.getItem("goals")) || [];
@@ -1963,17 +1963,30 @@ function launchConfetti() {
     renderGoals();
 }
 
+
 function renderGoals() {
     const container = document.getElementById("goal-list");
     if (!container) return;
 
     container.innerHTML = "";
 
-    const goals = getStoredGoals();
+    let raw = localStorage.getItem("goals");
+    if (!raw) return;
 
-    if (goals.length === 0) {
-        container.innerHTML = `<p style="opacity:.6;">No goals yet.</p>`;
-        return;
+    let goals;
+
+    try {
+        goals = JSON.parse(raw);
+
+        // Handle double-string case
+        if (typeof goals === "string") {
+            goals = JSON.parse(goals);
+        }
+
+        if (!Array.isArray(goals)) goals = [];
+
+    } catch {
+        goals = [];
     }
 
     goals.forEach(goal => {
@@ -2007,7 +2020,6 @@ function renderGoals() {
         container.appendChild(div);
     });
 }
-
 
         /* =========================================================
            8. COUNTDOWNS MODULE
@@ -2481,6 +2493,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
