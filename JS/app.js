@@ -153,8 +153,7 @@ function getAppSnapshot() {
 
     localStorage.setItem("missions", data.missions || "");
     localStorage.setItem("skills", data.skills || "");
-    localStorage.setItem("goals", data.goals || "");
-
+    localStorage.setItem("goals", JSON.stringify(JSON.parse(backup.goals)));
     countdowns = Array.isArray(data.countdowns) ? data.countdowns : [];
     saveCountdowns();
 
@@ -1792,15 +1791,17 @@ document.getElementById("missionCounter").textContent = "0";
         ========================================================= */
 
 function getStoredGoals() {
-    const raw = localStorage.getItem("goals");
-
-    // If goals were stored incorrectly before
-    if (!raw || raw === "" || raw === "null") {
-        return [];
-    }
+    let raw = localStorage.getItem("goals");
+    if (!raw) return [];
 
     try {
-        const parsed = JSON.parse(raw);
+        let parsed = JSON.parse(raw);
+
+        // If parsed is still a string (double-string case)
+        if (typeof parsed === "string") {
+            parsed = JSON.parse(parsed);
+        }
+
         return Array.isArray(parsed) ? parsed : [];
     } catch {
         return [];
@@ -1962,7 +1963,6 @@ function launchConfetti() {
     renderGoals();
 }
 
-
 function renderGoals() {
     const container = document.getElementById("goal-list");
     if (!container) return;
@@ -1980,6 +1980,15 @@ function renderGoals() {
         const div = document.createElement("div");
         div.className = "goal";
 
+        let formattedDeadline = "";
+        if (goal.deadline) {
+            const d = new Date(goal.deadline);
+            formattedDeadline = d.toLocaleDateString([], {
+                day: "numeric",
+                month: "short"
+            });
+        }
+
         div.innerHTML = `
             <div class="goal-header">
                 <span class="goal-title">${goal.title}</span>
@@ -1987,11 +1996,18 @@ function renderGoals() {
                     <strong>${goal.priority}</strong>
                 </span>
             </div>
+
+            <div class="goal-subrow">
+                <span class="goal-deadline">${formattedDeadline}</span>
+                <button onclick="markGoalAchievedById(${goal.id})">Achieved</button>
+                <button onclick="removeGoalById(${goal.id})">Remove</button>
+            </div>
         `;
 
         container.appendChild(div);
     });
 }
+
 
         /* =========================================================
            8. COUNTDOWNS MODULE
@@ -2465,6 +2481,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
