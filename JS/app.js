@@ -2203,8 +2203,7 @@ function renderGoals() {
         localStorage.getItem("missions") || "";
     document.getElementById("skill-list").innerHTML =
         localStorage.getItem("skills") || "";
-    document.getElementById("goal-list").innerHTML =
-        localStorage.getItem("goals") || "";
+    
 
     // --- FIX MISSIONS AFTER LOADING ---
     document.querySelectorAll("#mission-list li").forEach(li => {
@@ -2496,6 +2495,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
