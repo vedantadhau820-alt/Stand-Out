@@ -1655,17 +1655,20 @@ function completeMission(btn) {
     const repeatType = li.dataset.repeat || "once";
     const today = new Date().toDateString();
 
-    // 🚫 Prevent multiple completion same day
+    // 🚫 Already completed today
     if (li.dataset.lastCompleted === today) {
         showPopup("Already completed today.");
         return;
     }
 
+    // 🚫 Prevent double click spam
+    if (btn.disabled) return;
+
     const deadline = li.dataset.deadline;
 
     if (deadline && new Date(deadline).getTime() < Date.now()) {
         showPopup("Mission was overdue. No improvement points gained.");
-        li.remove();
+        if (repeatType === "once") li.remove();
         saveData();
         return;
     }
@@ -1680,6 +1683,7 @@ function completeMission(btn) {
 
     localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
     localStorage.setItem("completedMissions", completedMissions);
+
     document.getElementById("missionCounter").textContent = completedMissions;
 
     if (li.dataset.skill) {
@@ -1693,7 +1697,8 @@ function completeMission(btn) {
         li.remove();
     } else {
         li.dataset.lastCompleted = today;
-        btn.disabled = true;   // disable button visually
+        li.dataset.completed = "true";
+        btn.disabled = true;
     }
 
     saveData();
@@ -2558,6 +2563,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
