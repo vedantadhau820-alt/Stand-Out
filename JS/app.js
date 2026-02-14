@@ -1,3 +1,5 @@
+let recurringMissions =
+    JSON.parse(localStorage.getItem("recurringMissions")) || [];
 
         if (!window.cardCatalog) {
   console.error("❌ cardCatalog not loaded");
@@ -1401,13 +1403,28 @@ for (let i = 5; i <= 250; i += 5) {
 
                 const repeatType = document.getElementById("repeatType").value;
 
-li.dataset.repeat = repeatType;
+if (repeatType === "daily" || repeatType === "specific") {
 
-if (repeatType === "specific") {
-    const checked = [...document.querySelectorAll("#specificDaysBox input:checked")]
-        .map(cb => cb.value);
+    const missionObj = {
+        id: Date.now().toString(),
+        text,
+        repeat: repeatType,
+        days: repeatType === "specific"
+            ? [...document.querySelectorAll("#specificDaysBox input:checked")]
+                .map(cb => cb.value)
+            : [],
+        skill: linkedSkill || "",
+        hardcore: isHardcore,
+        deadline: deadline || "",
+        lastCompleted: ""
+    };
 
-    li.dataset.days = JSON.stringify(checked);
+    recurringMissions.push(missionObj);
+    localStorage.setItem("recurringMissions", JSON.stringify(recurringMissions));
+
+} else {
+    // Normal one-time mission
+    document.getElementById("mission-list").appendChild(li);
 }
 
     document.getElementById("mission-list").appendChild(li);
@@ -1434,7 +1451,51 @@ function filterMissionsByDay() {
 }
 
 
+function createMissionFromObject(m) {
+    const li = document.createElement("li");
 
+    li.dataset.id = m.id;
+    li.dataset.skill = m.skill;
+    li.dataset.deadline = m.deadline;
+    li.dataset.hardcore = m.hardcore ? "true" : "false";
+    li.dataset.recurring = "true";
+
+    li.innerHTML = `
+        <span class="mission-text">
+          ${m.text} ${m.hardcore ? "🔥" : ""}
+        </span>
+
+        <div class="deadline-row">
+            <span class="deadlineDisplay"></span>
+            <span class="overdueMark"></span>
+            <button class="complete-btn" onclick="completeMission(this)">✔</button>
+        </div>
+    `;
+
+    document.getElementById("mission-list").appendChild(li);
+}
+
+function loadTodayRecurringMissions() {
+    const today = new Date().toDateString();
+    const todayIndex = new Date().getDay().toString();
+    const list = document.getElementById("mission-list");
+
+    recurringMissions.forEach(m => {
+
+        // Skip if already completed today
+        if (m.lastCompleted === today) return;
+
+        // Daily
+        if (m.repeat === "daily") {
+            createMissionFromObject(m);
+        }
+
+        // Specific days
+        if (m.repeat === "specific" && m.days.includes(todayIndex)) {
+            createMissionFromObject(m);
+        }
+    });
+}
 
 
         setInterval(checkMissedDeadlines, 1000); // check every 1 minute
@@ -1701,6 +1762,21 @@ function completeMission(btn) {
         // Hide it for today
         li.style.display = "none";
     }
+
+    // If recurring mission
+if (li.dataset.recurring === "true") {
+
+    const id = li.dataset.id;
+    const today = new Date().toDateString();
+
+    const mission = recurringMissions.find(m => m.id === id);
+    if (mission) {
+        mission.lastCompleted = today;
+        localStorage.setItem("recurringMissions", JSON.stringify(recurringMissions));
+    }
+
+    li.remove();
+}
 
     saveData();
 }
@@ -2454,6 +2530,7 @@ document.getElementById("countdownCounter").textContent = "0";
             checkMissedDeadlines();
             filterMissionsByDay();
             resetDailyMissionsIfNeeded();
+                loadTodayRecurringMissions();
             renderAchievements();
             renderCountdowns();
             loadData();
@@ -2565,6 +2642,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
