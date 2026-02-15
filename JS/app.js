@@ -1601,7 +1601,7 @@ document.getElementById("missionCounter").textContent = "0";
     }
 
     checkMissionAchievements();
-                registerDailyActivity();
+        
     showPopup("Mission completed! Improvement point gained.");
     saveData();
 }
@@ -2018,7 +2018,7 @@ function launchConfetti() {
     renderGoals();
 }
 
-/*=================STREAK==================*/
+/*=================STREAK==================
 let streakCount = parseInt(localStorage.getItem("streakCount")) || 0;
 let lastActiveDate = localStorage.getItem("lastActiveDate") || null;
 
@@ -2131,7 +2131,7 @@ function updateStreakUI() {
 
 window.addEventListener("load", () => {
     updateStreakUI();
-});
+});*/
         /* =========================================================
            8. COUNTDOWNS MODULE
         ========================================================= */
@@ -2497,7 +2497,7 @@ document.getElementById("countdownCounter").textContent = "0";
             loadData();
             renderGoals();
            checkStreakPenalty();
-            updateStreakUI();
+        
 
             const activePage = document.querySelector("section.active")
                 ? document.querySelector("section.active").id
@@ -2605,6 +2605,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
