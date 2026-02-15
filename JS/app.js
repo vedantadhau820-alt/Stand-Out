@@ -2029,17 +2029,18 @@ function getTodayKey() {
 function registerDailyActivity() {
     const today = getTodayKey();
 
-    if (lastActiveDate === today) return; // already counted today
+    if (lastActiveDate === today) {
+        updateStreakUI();
+        return;
+    }
 
     const yesterday = new Date(getISTDate());
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayKey = yesterday.toISOString().slice(0, 10);
 
     if (lastActiveDate === yesterdayKey) {
-        // Continue streak
         streakCount++;
     } else {
-        // New streak
         streakCount = 1;
     }
 
@@ -2049,6 +2050,7 @@ function registerDailyActivity() {
     localStorage.setItem("lastActiveDate", lastActiveDate);
 
     checkStreakReward();
+    updateStreakUI();   // 🔥 ADD THIS
 }
 
 function checkStreakReward() {
@@ -2085,6 +2087,8 @@ function checkStreakPenalty() {
     if (diffDays === 2) penalty = 2;
     if (diffDays === 3) penalty = 5;
 
+    updateStreakUI();
+        
     if (diffDays >= 4) {
         completedMissions = 0;
         streakCount = 0;
@@ -2100,7 +2104,7 @@ function checkStreakPenalty() {
         pushNotification(
             "⚠ Streak Broken",
             `Missed ${diffDays - 1} day(s) • -${penalty} IP`
-        );
+        );   
     }
 
     if (completedMissions < 0) completedMissions = 0;
@@ -2113,6 +2117,12 @@ function checkStreakPenalty() {
 
 document.getElementById("streakCounter").textContent = streakCount;
 
+function updateStreakUI() {
+    const el = document.getElementById("streakCounter");
+    if (el) {
+        el.textContent = streakCount;
+    }
+}
         /* =========================================================
            8. COUNTDOWNS MODULE
         ========================================================= */
@@ -2477,8 +2487,8 @@ document.getElementById("countdownCounter").textContent = "0";
             renderCountdowns();
             loadData();
             renderGoals();
-                checkStreakPenalty();
-    
+           checkStreakPenalty();
+            updateStreakUI();
 
             const activePage = document.querySelector("section.active")
                 ? document.querySelector("section.active").id
@@ -2586,6 +2596,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
