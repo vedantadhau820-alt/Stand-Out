@@ -1601,6 +1601,7 @@ document.getElementById("missionCounter").textContent = "0";
     }
 
     checkMissionAchievements();
+                registerDailyActivity();
     showPopup("Mission completed! Improvement point gained.");
     saveData();
 }
@@ -1923,7 +1924,7 @@ function markGoalAchieved(goalId) {
 
     localStorage.setItem("completedMissions", completedMissions);
     document.getElementById("missionCounter").textContent = completedMissions;
-
+registerDailyActivity();
     // 💾 Save goals
     saveGoals();
     renderGoals();
@@ -2017,7 +2018,100 @@ function launchConfetti() {
     renderGoals();
 }
 
+/*=================STREAK==================*/
+let streakCount = parseInt(localStorage.getItem("streakCount")) || 0;
+let lastActiveDate = localStorage.getItem("lastActiveDate") || null;
 
+function getTodayKey() {
+    return getISTDate().toISOString().slice(0, 10);
+}
+
+function registerDailyActivity() {
+    const today = getTodayKey();
+
+    if (lastActiveDate === today) return; // already counted today
+
+    const yesterday = new Date(getISTDate());
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayKey = yesterday.toISOString().slice(0, 10);
+
+    if (lastActiveDate === yesterdayKey) {
+        // Continue streak
+        streakCount++;
+    } else {
+        // New streak
+        streakCount = 1;
+    }
+
+    lastActiveDate = today;
+
+    localStorage.setItem("streakCount", streakCount);
+    localStorage.setItem("lastActiveDate", lastActiveDate);
+
+    checkStreakReward();
+}
+
+function checkStreakReward() {
+    if (streakCount > 0 && streakCount % 10 === 0) {
+        completedMissions += 5;
+
+        localStorage.setItem("completedMissions", completedMissions);
+        document.getElementById("missionCounter").textContent = completedMissions;
+
+        pushNotification(
+            "🔥 Streak Milestone!",
+            `${streakCount} Day Streak • +5 Improvement Points`
+        );
+
+        showSmartNotification(
+            "Streak Reward!",
+            `+5 Improvement Points`
+        );
+    }
+}
+
+function checkStreakPenalty() {
+    if (!lastActiveDate) return;
+
+    const today = new Date(getISTDate());
+    const last = new Date(lastActiveDate);
+
+    const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 1) return; // no break
+
+    let penalty = 0;
+
+    if (diffDays === 2) penalty = 2;
+    if (diffDays === 3) penalty = 5;
+
+    if (diffDays >= 4) {
+        completedMissions = 0;
+        streakCount = 0;
+        penalty = 0;
+
+        pushNotification(
+            "💀 Streak Destroyed",
+            "3+ days missed. Improvement Points reset."
+        );
+    } else {
+        completedMissions -= penalty;
+
+        pushNotification(
+            "⚠ Streak Broken",
+            `Missed ${diffDays - 1} day(s) • -${penalty} IP`
+        );
+    }
+
+    if (completedMissions < 0) completedMissions = 0;
+
+    localStorage.setItem("completedMissions", completedMissions);
+    localStorage.setItem("streakCount", streakCount);
+
+    document.getElementById("missionCounter").textContent = completedMissions;
+}
+
+document.getElementById("streakCounter").textContent = streakCount;
 
         /* =========================================================
            8. COUNTDOWNS MODULE
@@ -2383,6 +2477,7 @@ document.getElementById("countdownCounter").textContent = "0";
             renderCountdowns();
             loadData();
             renderGoals();
+                checkStreakPenalty();
     
 
             const activePage = document.querySelector("section.active")
@@ -2491,6 +2586,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
