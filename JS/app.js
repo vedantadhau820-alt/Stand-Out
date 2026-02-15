@@ -2080,19 +2080,16 @@ function checkStreakPenalty() {
 
     const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
 
-    if (diffDays <= 1) return; // no break
+    if (diffDays <= 1) return;
 
     let penalty = 0;
 
     if (diffDays === 2) penalty = 2;
     if (diffDays === 3) penalty = 5;
 
-    updateStreakUI();
-        
     if (diffDays >= 4) {
         completedMissions = 0;
         streakCount = 0;
-        penalty = 0;
 
         pushNotification(
             "💀 Streak Destroyed",
@@ -2104,7 +2101,7 @@ function checkStreakPenalty() {
         pushNotification(
             "⚠ Streak Broken",
             `Missed ${diffDays - 1} day(s) • -${penalty} IP`
-        );   
+        );
     }
 
     if (completedMissions < 0) completedMissions = 0;
@@ -2113,6 +2110,8 @@ function checkStreakPenalty() {
     localStorage.setItem("streakCount", streakCount);
 
     document.getElementById("missionCounter").textContent = completedMissions;
+
+    updateStreakUI(); // ✅ MOVE HERE
 }
 
 document.getElementById("streakCounter").textContent = streakCount;
@@ -2596,6 +2595,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
