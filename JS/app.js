@@ -1790,58 +1790,90 @@ document.getElementById("missionCounter").textContent = "0";
         /* =========================================================
            7. GOALS MODULE
         ========================================================= */
-        function addGoal() {
-            const goalText = document.getElementById("goalInput").value;
-            const priority = document.getElementById("priorityInput").value;
-            const deadline = document.getElementById("goalDeadline").value;
+        let goalsData = JSON.parse(localStorage.getItem("goalsData")) || [];
 
-            if (isPastDateTime(deadline)) {
-                customAlert("Deadline cannot be in the past.");
-                return;
-            }
-
-
-            if (!goalText) {
-                closeModal();
-                return;
-            }
-
-            // Create goal div
-            const div = document.createElement("div");
-            div.className = "goal show";
-            div.dataset.deadline = deadline;
-
-            // Format deadline
-            let formattedDeadline = "";
-            if (deadline) {
-                const d = new Date(deadline);
-                formattedDeadline = d.toLocaleDateString([], { day: "numeric", month: "short" });
-            }
-
-            // Fill goal card UI
-            div.innerHTML = `
-        <div class="goal-header">
-            <span class="goal-title">${goalText} -</span>
-            <span class="goal-priority ${priority}"><strong>${priority}</strong></span>
-        </div>
-
-        <div class="goal-subrow">
-            <span class="goal-deadline">${formattedDeadline}</span>
-            <span class="goal-overdue"></span>
-            <button class="achieve-btn" onclick="markGoalAchieved(this)">Achieved</button>
-            <button class="remove-btn" onclick="removeGoal(this)">Remove</button>
-        </div>
-
-        <div class="goal-timer" style="margin-top:6px; font-size:14px; opacity:.9;"></div>
-    `;
-
-            // Add to list
-            document.getElementById("goal-list").appendChild(div);
-
-            saveData();
-            closeModal();
-
+        function saveGoals() {
+    localStorage.setItem("goalsData", JSON.stringify(goalsData));
         }
+
+         function addGoal() {
+    const title = document.getElementById("goalInput").value.trim();
+    const priority = document.getElementById("priorityInput").value;
+    const deadline = document.getElementById("goalDeadline").value;
+
+    if (!title) return closeModal();
+
+    if (deadline && isPastDateTime(deadline)) {
+        customAlert("Deadline cannot be in the past.");
+        return;
+    }
+
+    const newGoal = {
+        id: Date.now().toString(),
+        title,
+        priority,
+        deadline,
+        achieved: false,
+        achievedAt: null
+    };
+
+    goalsData.push(newGoal);
+    saveGoals();
+    renderGoals();
+    closeModal();
+         }
+
+          function renderGoals() {
+    const container = document.getElementById("goal-list");
+    container.innerHTML = "";
+
+    goalsData.forEach(goal => {
+        const div = document.createElement("div");
+        div.className = "goal show";
+
+        if (goal.achieved) {
+            div.classList.add("goal-achieved");
+        }
+
+        let formattedDeadline = "";
+        if (goal.deadline) {
+            const d = new Date(goal.deadline);
+            formattedDeadline = d.toLocaleDateString([], { day: "numeric", month: "short" });
+        }
+
+        div.innerHTML = `
+            <div class="goal-header">
+                <span class="goal-title">${goal.title}</span>
+                <span class="goal-priority ${goal.priority}">
+                    <strong>${goal.priority}</strong>
+                </span>
+            </div>
+
+            <div class="goal-subrow">
+                <span class="goal-deadline">${formattedDeadline}</span>
+
+                ${
+                    goal.achieved
+                        ? `<span class="achieved-badge">
+                             🏆 Achieved • ${goal.achievedAt}
+                           </span>`
+                        : `
+                           <button onclick="markGoalAchieved('${goal.id}')">
+                             Achieved
+                           </button>
+                          `
+                }
+
+                <button onclick="removeGoal('${goal.id}')">
+                    Remove
+                </button>
+            </div>
+        `;
+
+        container.appendChild(div);
+    });
+          }
+        
 function loadAchievements() {
     const container = document.getElementById("achievementsViewer");
     container.innerHTML = "";
@@ -1866,54 +1898,26 @@ function loadAchievements() {
     });
 }
 
-function markGoalAchieved(btn) {
-    const goalDiv = btn.closest(".goal");
-    if (!goalDiv || goalDiv.dataset.achieved === "true") return;
 
-    const title = goalDiv.querySelector(".goal-title").textContent;
-    const achievedDate = new Date().toLocaleDateString([], {
+function markGoalAchieved(goalId) {
+    const goal = goalsData.find(g => g.id === goalId);
+    if (!goal || goal.achieved) return;
+
+    goal.achieved = true;
+    goal.achievedAt = new Date().toLocaleDateString([], {
         day: "numeric",
         month: "short",
         year: "numeric"
     });
 
-    goalDiv.dataset.achieved = "true";
+    saveGoals();
+    renderGoals();
 
-    // Remove ugly strikethrough + blur
-    goalDiv.style.textDecoration = "none";
-    goalDiv.style.opacity = "1";
-
-    // Add proud UI effect
-    goalDiv.classList.add("goal-achieved");
-
-    // Add achievement badge
-    const badge = document.createElement("div");
-    badge.className = "achieved-badge";
-    badge.innerHTML = `🏆 Achieved • ${achievedDate}`;
-    goalDiv.appendChild(badge);
-
-    // Disable button
-    btn.disabled = true;
-    btn.textContent = "Completed";
-
-    // Store Achievement
-    const achievement = {
-        title: title,
-        date: achievedDate,
-        type: "goal"
-    };
-
-    let logs = JSON.parse(localStorage.getItem("achievements")) || [];
-    logs.push(achievement);
-    localStorage.setItem("achievements", JSON.stringify(logs));
-
-    // Fire celebration
     launchConfetti();
-
-    pushNotification("Goal Achieved 🎯", `"${title}" completed on ${achievedDate}`);
-    showSmartNotify("Goal Achieved!", `${title} - ${achievedDate}`);
-
-    saveData();
+    pushNotification(
+        "Goal Achieved 🎯",
+        `"${goal.title}" completed`
+    );
 }
 
 function launchConfetti() {
@@ -1982,13 +1986,11 @@ function launchConfetti() {
 
 
 
-        function removeGoal(btn) {
-            const goalDiv = btn.closest(".goal");
-            if (goalDiv) {
-                goalDiv.remove();
-                saveData();
-            }
-        }
+        function removeGoal(goalId) {
+    goalsData = goalsData.filter(g => g.id !== goalId);
+    saveGoals();
+    renderGoals();
+}
 
 
 
@@ -2355,7 +2357,8 @@ document.getElementById("countdownCounter").textContent = "0";
             renderAchievements();
             renderCountdowns();
             loadData();
-            
+            renderGoals();
+    
 
             const activePage = document.querySelector("section.active")
                 ? document.querySelector("section.active").id
@@ -2463,6 +2466,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
