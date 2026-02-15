@@ -1903,6 +1903,7 @@ function markGoalAchieved(goalId) {
     const goal = goalsData.find(g => g.id === goalId);
     if (!goal || goal.achieved) return;
 
+    // 🎯 Mark achieved
     goal.achieved = true;
     goal.achievedAt = new Date().toLocaleDateString([], {
         day: "numeric",
@@ -1910,14 +1911,38 @@ function markGoalAchieved(goalId) {
         year: "numeric"
     });
 
+    // 🏆 Calculate reward
+    let reward = 0;
+
+    if (goal.priority === "Low") reward = 5;
+    if (goal.priority === "Medium") reward = 10;
+    if (goal.priority === "High") reward = 15;
+
+    // 💎 Add improvement points
+    completedMissions += reward;
+
+    localStorage.setItem("completedMissions", completedMissions);
+    document.getElementById("missionCounter").textContent = completedMissions;
+
+    // 💾 Save goals
     saveGoals();
     renderGoals();
 
+    // 🎉 Celebration
     launchConfetti();
+
     pushNotification(
         "Goal Achieved 🎯",
-        `"${goal.title}" completed`
+        `"${goal.title}" completed • +${reward} Improvement Points`
     );
+
+    showSmartNotification(
+        "Goal Completed!",
+        `+${reward} Improvement Points earned`
+    );
+
+    // 🔥 Re-render marketplace because points changed
+    renderMarketplace(currentMarketplaceFilter);
 }
 
 function launchConfetti() {
@@ -2466,6 +2491,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
