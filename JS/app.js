@@ -2029,19 +2029,27 @@ function getTodayKey() {
 function registerDailyActivity() {
     const today = getTodayKey();
 
-    if (lastActiveDate === today) {
-        updateStreakUI();
-        return;
-    }
+    // If already counted today → do nothing
+    if (lastActiveDate === today) return;
 
-    const yesterday = new Date(getISTDate());
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayKey = yesterday.toISOString().slice(0, 10);
-
-    if (lastActiveDate === yesterdayKey) {
-        streakCount++;
-    } else {
+    if (!lastActiveDate) {
+        // First ever mission
         streakCount = 1;
+    } else {
+        const lastDate = new Date(lastActiveDate);
+        const todayDate = new Date(today);
+
+        const diffDays = Math.floor(
+            (todayDate - lastDate) / (1000 * 60 * 60 * 24)
+        );
+
+        if (diffDays === 1) {
+            // Continued streak
+            streakCount++;
+        } else {
+            // Missed day → reset streak
+            streakCount = 1;
+        }
     }
 
     lastActiveDate = today;
@@ -2049,8 +2057,8 @@ function registerDailyActivity() {
     localStorage.setItem("streakCount", streakCount);
     localStorage.setItem("lastActiveDate", lastActiveDate);
 
+    updateStreakUI();
     checkStreakReward();
-    updateStreakUI();   // 🔥 ADD THIS
 }
 
 function checkStreakReward() {
@@ -2118,10 +2126,12 @@ document.getElementById("streakCounter").textContent = streakCount;
 
 function updateStreakUI() {
     const el = document.getElementById("streakCounter");
-    if (el) {
-        el.textContent = streakCount;
-    }
+    if (el) el.textContent = streakCount;
 }
+
+window.addEventListener("load", () => {
+    updateStreakUI();
+});
         /* =========================================================
            8. COUNTDOWNS MODULE
         ========================================================= */
@@ -2595,6 +2605,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
