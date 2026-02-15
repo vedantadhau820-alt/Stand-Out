@@ -52,6 +52,137 @@
   opacity: 0.9;
 }
 
+/* ===============================
+   GOALS SECTION
+================================ */
+
+#goal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+/* Goal Card */
+.goal {
+  background: #111827;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #1f2937;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.goal:hover {
+  transform: translateY(-2px);
+  border-color: #3B82F6;
+  box-shadow: 0 6px 18px rgba(59,130,246,0.15);
+}
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.goal-priority {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
+
+.goal-priority.High {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.goal-priority.Medium {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.goal-priority.Low {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.goal-subrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.goal-deadline {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.goal-achieved {
+  border: 1px solid #22c55e;
+  background: linear-gradient(145deg, #0f172a, #111827);
+  box-shadow: 0 0 18px rgba(34,197,94,0.25);
+}
+
+.achieved-badge {
+  background: #22c55e;
+  color: #000;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.goal button {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Achieve Button */
+.goal button:first-of-type {
+  background: #3B82F6;
+  color: white;
+}
+
+.goal button:first-of-type:hover {
+  background: #2563eb;
+}
+
+/* Remove Button */
+.goal button:last-of-type {
+  background: #1f2937;
+  color: #9ca3af;
+}
+
+.goal button:last-of-type:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.goal-timer {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.overdue-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
 /* =========================================================
    COUNTDOWNS / TIMERS
 ========================================================= */
