@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 14px;
+      background: #ffffff;
+      font-family: system-ui, sans-serif;
+      color: #111;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      color: #3B82F6;
+      font-size: 18px;
+    }
+
+    #missionTitle {
+      font-size: 16px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    #points {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-bottom: 12px;
+    }
+
+    button {
+      background: #3B82F6;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Today's Mission</h3>
+
+  <div id="missionTitle">Loading...</div>
+  <div id="points">Points: 0</div>
+
+  <button onclick="markMission()">Mark Complete</button>
+
+  <script src="/widget.js"></script>
+</body>
+</html>
