@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <style>
     body {
       margin: 0;
@@ -12,19 +13,20 @@
     }
 
     h3 {
-      margin: 0 0 8px 0;
+      margin: 0 0 10px 0;
       color: #3B82F6;
       font-size: 18px;
+      font-weight: 700;
     }
 
     #missionTitle {
-      font-size: 16px;
-      margin-bottom: 6px;
+      font-size: 15px;
       font-weight: 600;
+      margin-bottom: 6px;
     }
 
     #points {
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0.7;
       margin-bottom: 12px;
     }
@@ -36,7 +38,9 @@
       padding: 8px 14px;
       border-radius: 8px;
       font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
+      width: 100%;
     }
   </style>
 </head>
@@ -44,11 +48,11 @@
 <body>
   <h3>Today's Mission</h3>
 
-  <div id="missionTitle">Loading...</div>
+  <div id="missionTitle">Loading…</div>
   <div id="points">Points: 0</div>
 
   <button onclick="markMission()">Mark Complete</button>
 
-  <script src="/widget.js"></script>
+  <script src="JS/widget.js"></script>
 </body>
 </html>
