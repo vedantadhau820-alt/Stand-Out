@@ -380,10 +380,10 @@ function buyCard(cardId) {
       renderMarketplace(currentMarketplaceFilter);
       renderMyCards();
 
-      showSmartNotification(
-        "Card Minted",
-        `"${card.title}" is now part of your identity.`
-      );
+      // showSmartNotification(
+      //   "Card Minted",
+      //   `"${card.title}" is now part of your identity.`
+      // );
 
             showMintedCard(card);
     }
