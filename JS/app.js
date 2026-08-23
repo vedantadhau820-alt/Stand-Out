@@ -962,11 +962,22 @@ function gradeRank(grade) {
             popup.innerHTML = `<h3>${title}</h3><p>${desc}</p>`;
             document.body.appendChild(popup);
 
-            const audio = new Audio("Music/Achievements.mp3");
-            audio.volume = 0.5;
-            audio.play().catch(() => { });
+            // const audio = new Audio("Music/Achievements.mp3");
+            // audio.volume = 0.5;
+            // audio.play().catch(() => { });
 
-            audio.onended = () => { window.isAchievementPlaying = false; };
+            // audio.onended = () => { window.isAchievementPlaying = false; };
+            const audio = playAppTone("achievement");
+
+    if (audio) {
+        window.isAchievementPlaying = true;
+
+        audio.onended = () => {
+            window.isAchievementPlaying = false;
+        };
+    } else {
+        window.isAchievementPlaying = false;
+    }
 
             popup.style.opacity = 0;
             popup.style.transform = "translateY(-50px)";
@@ -1981,6 +1992,7 @@ document.getElementById("missionCounter").textContent = "0";
     dailyImprovementCount++;
 
     completedMissions++;
+        playAppTone("mission");
 
 
     localStorage.setItem(
@@ -3416,16 +3428,17 @@ function showMintedCard(card) {
     });
 
     // Play mint sound slightly after reveal begins
-    setTimeout(() => {
+    // setTimeout(() => {
 
-        const mintSound =
-            new Audio("Music/CardMint.mp3");
+    //     const mintSound =
+    //         new Audio("Music/CardMint.mp3");
 
-        mintSound.volume = 0.7;
+    //     mintSound.volume = 0.7;
 
-        mintSound.play().catch(() => {});
+    //     mintSound.play().catch(() => {});
 
-    }, 550);
+    // }, 550);
+        playAppTone("mission");
 
 
     // Close by tapping outside
