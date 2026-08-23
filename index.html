@@ -221,6 +221,99 @@
         <h3>Achievements</h3>
         <div id="achievementsViewer" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
 
+    <!-- ===========================
+     SOUND & TONES
+=========================== -->
+
+        <h3>Sound & Tones</h3>
+
+        <div class="sound-settings">
+
+            <div class="sound-setting-row">
+
+                <div class="sound-setting-info">
+                    <strong>Achievements</strong>
+                    <span>When you unlock an achievement</span>
+                </div>
+
+                <div class="sound-setting-control">
+
+                    <select id="achievementTone">
+                        <option value="default">Default</option>
+                        <option value="none">None</option>
+                        <option value="custom">Custom</option>
+                    </select>
+
+                    <input type="file" id="achievementToneFile" accept="audio/*" hidden>
+
+                    <button type="button" class="tone-upload-btn" id="achievementChooseBtn">
+                        Choose
+                    </button>
+
+                    <button type="button" class="tone-preview-btn" id="achievementPreviewBtn" disabled>
+                        ▶
+                    </button>
+
+                </div>
+
+            
+            </div>
+
+            <div class="sound-setting-row">
+
+                <div class="sound-setting-info">
+                    <strong>MissionTone</strong>
+                    <span>When you Complete a mission</span>
+                </div>
+                <div class="sound-setting-control">
+
+                    <select id="missionTone">
+                        <option value="default">Default</option>
+                        <option value="none">None</option>
+                        <option value="custom">Custom</option>
+                    </select>
+
+                    <input type="file" id="missionToneFile" accept="audio/*" hidden>
+
+                    <button type="button" class="tone-upload-btn" id="missionChooseBtn">
+                        Choose
+                    </button>
+
+                    <button type="button" class="tone-preview-btn" id="missionPreviewBtn" disabled>
+                        ▶
+                    </button>
+
+                </div>
+            </div>
+
+            <div class="sound-setting-row">
+
+                <div class="sound-setting-info">
+                    <strong>CardMint</strong>
+                    <span>When you Mint a card</span>
+                </div>
+                <div class="sound-setting-control">
+
+                    <select id="mintTone">
+                        <option value="default">Default</option>
+                        <option value="none">None</option>
+                        <option value="custom">Custom</option>
+                    </select>
+
+                    <input type="file" id="mintToneFile" accept="audio/*" hidden>
+
+                    <button type="button" class="tone-upload-btn" id="mintChooseBtn">
+                        Choose
+                    </button>
+
+                    <button type="button" class="tone-preview-btn" id="mintPreviewBtn" disabled>
+                        ▶
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        
         <h3>Backup & Restore</h3>
 
 <button class="danger-btn" style="background:#2563EB; margin-bottom:10px;"
@@ -403,6 +496,7 @@
         }
     </script>
     <script src="JS/cards.js"></script>
+    <script src="JS/sound.js"></script>
     <script src="JS/app.js"></script>
     </body>
 
