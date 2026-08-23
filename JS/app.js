@@ -2612,6 +2612,3 @@ window.closeMintedCard =
 
 
 
-
-
-
