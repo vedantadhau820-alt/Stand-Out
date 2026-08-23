@@ -1653,7 +1653,7 @@ function updateMission() {
        start a fresh occurrence.
     */
 
-    li.dataset.repeatKey = getRepeatKey(new Date(), repeat);
+    li.dataset.repeatKey = getRepeatKey(new Date(), newRepeat);
 
 
     /* =====================================================
@@ -3205,13 +3205,13 @@ document.getElementById("countdownCounter").textContent = "0";
            10. INITIALIZATION
         ========================================================= */
         window.addEventListener("load", () => {
+                loadData();
             enforceDailyReset();
             renderMarketplace();
             refreshRecurringMissions();
             checkMissedDeadlines();
             renderAchievements();
             renderCountdowns();
-            loadData();
             renderGoals();
     
 
