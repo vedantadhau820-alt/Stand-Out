@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.1.87";
+const CACHE_NAME = "standout-v2.1.88";
 //const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
@@ -63,7 +63,7 @@ const APP_SHELL = [
   // "/Music/m4.mp3",
   // "/Music/m5.mp3",
   // "/Music/m6.mp3",
-  "/Music/MintCard.mp3",
+  //"/Music/MintCard.mp3",
 ];
 
 
