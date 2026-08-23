@@ -73,20 +73,20 @@ setInterval(() => {
   el.textContent = "⬇️ Updating app" + ".".repeat(dots);
 }, 500);
 
-navigator.serviceWorker.register("/service-worker.js").then(reg => {
-  reg.onupdatefound = () => {
-    const newWorker = reg.installing;
-    newWorker.onstatechange = () => {
-      if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-        showSmartNotification(
-          "New version installed.",
-          "App Updated."
-        );
-        newWorker.postMessage("SKIP_WAITING");
-      }
-    };
-  };
-});
+// navigator.serviceWorker.register("/service-worker.js").then(reg => {
+//   reg.onupdatefound = () => {
+//     const newWorker = reg.installing;
+//     newWorker.onstatechange = () => {
+//       if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+//         showSmartNotification(
+//           "New version installed.",
+//           "App Updated."
+//         );
+//         newWorker.postMessage("SKIP_WAITING");
+//       }
+//     };
+//   };
+// });
 
 let currentMarketplaceFilter = "ALL";
 
