@@ -300,7 +300,11 @@ window.loadProgressFromFile = loadProgressFromFile;
     `;
 
       div.innerHTML = `
-  <img src="${card.image}">
+  <img
+  src="${card.image}"
+  class="${isOwned ? "owned-card-image" : "market-card-image"}"
+  alt="${card.title}"
+>
   <span class="grade-badge">${card.grade}</span>
 
   ${card.limited ? `<span class="limited-badge">LIMITED</span><strong>` : ""}
