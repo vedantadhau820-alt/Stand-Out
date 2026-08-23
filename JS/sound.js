@@ -20,7 +20,7 @@ const SOUND_FILES = {
 
     achievement: "Music/Achievements.mp3",
     mission: "Music/Complete.mp3",
-    mint: "Music/MintCard.mp3"
+    mint: "Music/CardMint.mp3"
 
 };
 
