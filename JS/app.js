@@ -2493,6 +2493,102 @@ function skipDayCheat() {
 };
 
 
+// New After August 2026
+
+/* =========================================================
+   FULL CARD MINT REVEAL
+========================================================= */
+
+function showMintedCard(card) {
+    if (!card) return;
+
+    // Play mint sound
+    const mintSound = new Audio(
+        "Music/CardMint.mp3"
+    );
+
+    mintSound.volume = 0.7;
+
+    mintSound.play().catch(() => {});
+
+
+    // Remove any existing reveal
+    document.getElementById("mintReveal")?.remove();
+
+    // Remove any existing reveal
+    document.getElementById("mintReveal")?.remove();
+
+    const overlay = document.createElement("div");
+
+    overlay.id = "mintReveal";
+
+    overlay.innerHTML = `
+        <div class="mint-reveal-content">
+
+            <button
+                class="mint-reveal-close"
+                onclick="closeMintedCard()"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+            <div class="mint-reveal-label">
+                CARD MINTED
+            </div>
+
+            <img
+                class="mint-reveal-image"
+                src="${card.image}"
+                alt="${card.title}"
+            >
+
+            <h2 class="mint-reveal-title">
+                ${card.title}
+            </h2>
+
+            <p class="mint-reveal-quote">
+                ${card.quote || ""}
+            </p>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    requestAnimationFrame(() => {
+        overlay.classList.add("show");
+    });
+
+    // Close by clicking outside the card
+    overlay.addEventListener("click", e => {
+        if (e.target === overlay) {
+            closeMintedCard();
+        }
+    });
+}
+
+
+function closeMintedCard() {
+
+    const reveal =
+        document.getElementById("mintReveal");
+
+    if (!reveal) return;
+
+    reveal.classList.remove("show");
+
+    setTimeout(() => {
+        reveal.remove();
+    }, 250);
+}
+
+
+window.showMintedCard =
+    showMintedCard;
+
+window.closeMintedCard =
+    closeMintedCard;
 
 
 
