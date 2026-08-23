@@ -3473,6 +3473,658 @@ window.showMintedCard =
 window.closeMintedCard =
     closeMintedCard;
 
+/* =========================================================
+   CUSTOM CARD CREATOR
+========================================================= */
+
+let customCardImageData = "";
+
+
+/* =========================================================
+   OPEN MODAL
+========================================================= */
+
+function openCustomCardModal() {
+
+    const modal =
+        document.getElementById(
+            "customCardModal"
+        );
+
+    if (!modal) return;
+
+    modal.classList.add("active");
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeCustomCardModal() {
+
+    const modal =
+        document.getElementById(
+            "customCardModal"
+        );
+
+    if (!modal) return;
+
+    modal.classList.remove("active");
+
+}
+
+
+/* =========================================================
+   IMAGE PICKER
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const picker =
+            document.getElementById(
+                "customCardImagePicker"
+            );
+
+        const input =
+            document.getElementById(
+                "customCardImage"
+            );
+
+
+        if (picker && input) {
+
+            picker.addEventListener(
+                "click",
+                () => {
+
+                    input.click();
+
+                }
+            );
+
+
+            input.addEventListener(
+                "change",
+                event => {
+
+                    const file =
+                        event.target.files?.[0];
+
+                    if (!file) return;
+
+
+                    if (
+                        !file.type.startsWith(
+                            "image/"
+                        )
+                    ) {
+
+                        customAlert(
+                            "Please choose an image."
+                        );
+
+                        return;
+
+                    }
+
+
+
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+
+                        const img = new Image();
+
+                        img.onload = () => {
+
+                            const MAX_SIZE = 1000;
+
+                            let width = img.width;
+                            let height = img.height;
+
+
+                            /* Keep aspect ratio */
+
+                            if (width > MAX_SIZE || height > MAX_SIZE) {
+
+                                if (width > height) {
+
+                                    height =
+                                        Math.round(
+                                            height *
+                                            (MAX_SIZE / width)
+                                        );
+
+                                    width = MAX_SIZE;
+
+                                } else {
+
+                                    width =
+                                        Math.round(
+                                            width *
+                                            (MAX_SIZE / height)
+                                        );
+
+                                    height = MAX_SIZE;
+
+                                }
+
+                            }
+
+
+                            const canvas =
+                                document.createElement(
+                                    "canvas"
+                                );
+
+                            canvas.width = width;
+                            canvas.height = height;
+
+
+                            const ctx =
+                                canvas.getContext(
+                                    "2d"
+                                );
+
+
+                            ctx.drawImage(
+                                img,
+                                0,
+                                0,
+                                width,
+                                height
+                            );
+
+
+                            /*
+                             * Convert to compressed JPEG.
+                             * This dramatically reduces IndexedDB usage.
+                             */
+
+                            customCardImageData =
+                                canvas.toDataURL(
+                                    "image/jpeg",
+                                    0.82
+                                );
+
+
+                            const preview =
+                                document.getElementById(
+                                    "customCardImagePreview"
+                                );
+
+                            const placeholder =
+                                document.getElementById(
+                                    "customCardImagePlaceholder"
+                                );
+
+
+                            if (preview) {
+
+                                preview.src =
+                                    customCardImageData;
+
+                                preview.style.display =
+                                    "block";
+
+                            }
+
+
+                            if (placeholder) {
+
+                                placeholder.style.display =
+                                    "none";
+
+                            }
+
+                        };
+
+
+                        img.onerror = () => {
+
+                            console.error(
+                                "Could not process card image."
+                            );
+
+                            customCardImageData = "";
+
+                            customAlert(
+                                "Could not process this image."
+                            );
+
+                        };
+
+
+                        img.src =
+                            reader.result;
+
+                    };
+
+                    reader.readAsDataURL(file);
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           LIMITED TOGGLE
+        ================================================= */
+
+        const limited =
+            document.getElementById(
+                "customCardLimited"
+            );
+
+        const expirationGroup =
+            document.getElementById(
+                "customCardExpirationGroup"
+            );
+
+
+        if (
+            limited &&
+            expirationGroup
+        ) {
+
+            limited.addEventListener(
+                "change",
+                () => {
+
+                    expirationGroup.style.display =
+                        limited.checked
+                            ? "block"
+                            : "none";
+
+                }
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CREATE CARD
+   STEP 1 ONLY
+========================================================= */
+
+/* =========================================================
+   CREATE / EDIT CUSTOM CARD
+========================================================= */
+
+async function createCustomCard() {
+
+    const title =
+        document.getElementById(
+            "customCardTitle"
+        )?.value.trim();
+
+    const quote =
+        document.getElementById(
+            "customCardQuote"
+        )?.value.trim();
+
+    const grade =
+        document.getElementById(
+            "customCardGrade"
+        )?.value || "A";
+
+    const cost =
+        Number(
+            document.getElementById(
+                "customCardCost"
+            )?.value
+        );
+
+    const limited =
+        document.getElementById(
+            "customCardLimited"
+        )?.checked || false;
+
+    const expiresAt =
+        document.getElementById(
+            "customCardExpiresAt"
+        )?.value || null;
+
+
+    /* =====================================================
+       VALIDATION
+    ===================================================== */
+
+    if (!customCardImageData) {
+
+        customAlert(
+            "Please choose card artwork."
+        );
+
+        return;
+
+    }
+
+
+    if (!title) {
+
+        customAlert(
+            "Please enter a card title."
+        );
+
+        return;
+
+    }
+
+
+    if (!quote) {
+
+        customAlert(
+            "Please enter a quote."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isFinite(cost) ||
+        cost < 0
+    ) {
+
+        customAlert(
+            "Please enter a valid card cost."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        limited &&
+        !expiresAt
+    ) {
+
+        customAlert(
+            "Limited cards require an expiration date."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        limited &&
+        new Date(expiresAt).getTime() <= Date.now()
+    ) {
+
+        customAlert(
+            "Expiration must be in the future."
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       LIMITED EDITION = W
+    ===================================================== */
+
+    const finalGrade =
+        limited
+            ? "W"
+            : grade;
+
+
+    /* =====================================================
+       CREATE OR UPDATE ID
+    ===================================================== */
+
+    const existingCard =
+        window.customCardEditId || null;
+
+
+    const card = {
+
+        id:
+            existingCard ||
+            `custom_${Date.now()}_${Math.random()
+                .toString(36)
+                .slice(2, 8)}`,
+
+        title,
+
+        quote,
+
+        grade:
+            finalGrade,
+
+        cost,
+
+        image:
+            customCardImageData,
+
+        limited,
+
+        expiresAt:
+            limited
+                ? expiresAt
+                : null,
+
+        custom:
+            true
+
+    };
+
+
+    /* =====================================================
+       SAVE TO INDEXEDDB
+    ===================================================== */
+
+    try {
+
+        await saveCustomCard(
+            card
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Failed to save custom card:",
+            error
+        );
+
+        customAlert(
+            "Could not save the card."
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       UPDATE CURRENT CATALOG
+    ===================================================== */
+
+    window.cardCatalog =
+        (window.cardCatalog || [])
+            .filter(
+                existing =>
+                    existing.id !== card.id
+            );
+
+
+    window.cardCatalog.push(
+        card
+    );
+
+
+    /* =====================================================
+       REFRESH MARKETPLACE
+    ===================================================== */
+
+    if (
+        typeof renderMarketplace ===
+        "function"
+    ) {
+
+        renderMarketplace(
+            window.currentMarketplaceFilter ||
+            "ALL"
+        );
+
+    }
+
+
+    /* =====================================================
+       REFRESH CUSTOM CARD MANAGER
+    ===================================================== */
+
+    if (
+        typeof renderCustomCardsManager ===
+        "function"
+    ) {
+
+        await renderCustomCardsManager();
+
+    }
+
+
+    /* =====================================================
+       CLOSE
+    ===================================================== */
+
+    closeCustomCardModal();
+
+
+    /* =====================================================
+       RESET
+    ===================================================== */
+
+    resetCustomCardForm();
+
+
+    window.customCardEditId =
+        null;
+
+
+    /* =====================================================
+       SUCCESS
+    ===================================================== */
+
+    customAlert(
+        existingCard
+            ? `"${title}" updated successfully.`
+            : `"${title}" added to the marketplace.`
+    );
+
+}
+
+function resetCustomCardForm() {
+
+    customCardImageData = "";
+
+    const title =
+        document.getElementById(
+            "customCardTitle"
+        );
+
+    const quote =
+        document.getElementById(
+            "customCardQuote"
+        );
+
+    const cost =
+        document.getElementById(
+            "customCardCost"
+        );
+
+    const image =
+        document.getElementById(
+            "customCardImagePreview"
+        );
+
+    const placeholder =
+        document.getElementById(
+            "customCardImagePlaceholder"
+        );
+
+    const file =
+        document.getElementById(
+            "customCardImage"
+        );
+
+    const limited =
+        document.getElementById(
+            "customCardLimited"
+        );
+
+    const expiration =
+        document.getElementById(
+            "customCardExpiresAt"
+        );
+
+    const expirationGroup =
+        document.getElementById(
+            "customCardExpirationGroup"
+        );
+
+
+    if (title) title.value = "";
+
+    if (quote) quote.value = "";
+
+    if (cost) cost.value = "";
+
+    const grade =
+    document.getElementById(
+        "customCardGrade"
+    );
+
+if (grade) {
+
+    grade.value = "A";
+
+    grade.disabled = false;
+
+}
+
+    if (file) file.value = "";
+
+    if (limited) limited.checked = false;
+
+    if (expiration) expiration.value = "";
+
+    if (expirationGroup) {
+        expirationGroup.style.display = "none";
+    }
+
+    if (image) {
+
+        image.src = "";
+
+        image.style.display =
+            "none";
+
+    }
+
+    if (placeholder) {
+
+        placeholder.style.display =
+            "flex";
+
+    }
+
+}
+
 
 
 
