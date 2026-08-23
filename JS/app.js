@@ -1510,22 +1510,36 @@ function addMission() {
             ${isHardcore ? " 🔥" : ""}
         </span>
 
-        <div class="deadline-row">
+       <div class="deadline-row">
 
-            <span class="deadlineDisplay">
-                ${deadlineText}
-            </span>
+    <span class="deadlineDisplay">
+        ${deadlineText}
+    </span>
 
-            <span class="overdueMark"></span>
+    ${
+        repeat !== "none"
+            ? `<span class="repeat-badge">
+                ↻ ${
+                    repeat === "daily"
+                        ? "Daily"
+                        : repeat === "weekly"
+                            ? "Weekly"
+                            : "Monthly"
+                }
+               </span>`
+            : ""
+    }
 
-            <button
-                class="complete-btn"
-                onclick="completeMission(this)"
-            >
-                ✔
-            </button>
+    <span class="overdueMark"></span>
 
-        </div>
+    <button
+        class="complete-btn"
+        onclick="completeMission(this)"
+    >
+        ✔
+    </button>
+
+</div>
     `;
 
 
@@ -1647,6 +1661,21 @@ function updateMission() {
     li.dataset.repeat =
         newRepeat;
 
+        const repeatBadge =
+    li.querySelector(".repeat-badge");
+
+if (repeatBadge) {
+
+    repeatBadge.textContent =
+        newRepeat === "daily"
+            ? "↻ Daily"
+            : newRepeat === "weekly"
+                ? "↻ Weekly"
+                : newRepeat === "monthly"
+                    ? "↻ Monthly"
+                    : "";
+
+}
 
     /*
        If recurrence was changed,
