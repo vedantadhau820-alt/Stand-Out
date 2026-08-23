@@ -188,7 +188,7 @@
   #timerScreen {
     position: fixed;
     top: 2.5vh !important;
-    left: 1.5vw !important;
+    left: 0vw !important;
 
     width: 100vh !important;
     height: 100vw !important;
