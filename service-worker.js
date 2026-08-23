@@ -63,6 +63,7 @@ const APP_SHELL = [
   // "/Music/m4.mp3",
   // "/Music/m5.mp3",
   // "/Music/m6.mp3",
+  "/Music/MintCard.mp3",
 ];
 
 
