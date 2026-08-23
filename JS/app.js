@@ -1155,6 +1155,34 @@ function gradeRank(grade) {
     ${skills}
   </select>
 
+  <div class="form-group">
+
+    <label for="missionRepeat">
+        Repeat
+    </label>
+
+    <select id="missionRepeat">
+
+        <option value="none">
+            Doesn't repeat
+        </option>
+
+        <option value="daily">
+            Every day
+        </option>
+
+        <option value="weekly">
+            Every week
+        </option>
+
+        <option value="monthly">
+            Every month
+        </option>
+
+    </select>
+
+</div>
+
   <label>Deadline</label>
   <input id="missionDeadline" type="datetime-local">
 
@@ -1182,6 +1210,32 @@ function gradeRank(grade) {
       <h3>Edit Mission</h3>
 
       <input id="editMissionInput" value="${oldText}">
+
+<label>Repeat</label>
+
+<select id="editMissionRepeat">
+
+  <option value="none"
+    ${skillDiv.dataset.repeat === "none" || !skillDiv.dataset.repeat ? "selected" : ""}>
+    Doesn't repeat
+  </option>
+
+  <option value="daily"
+    ${skillDiv.dataset.repeat === "daily" ? "selected" : ""}>
+    Every day
+  </option>
+
+  <option value="weekly"
+    ${skillDiv.dataset.repeat === "weekly" ? "selected" : ""}>
+    Every week
+  </option>
+
+  <option value="monthly"
+    ${skillDiv.dataset.repeat === "monthly" ? "selected" : ""}>
+    Every month
+  </option>
+
+</select>
 
       <label>Deadline</label>
       <input 
@@ -1329,11 +1383,28 @@ for (let i = 5; i <= 250; i += 5) {
     missionMilestones.push(i);
 }
 
-        function addMission() {
-    const text = document.getElementById("missionInput").value.trim();
-    const deadline = document.getElementById("missionDeadline").value;
-    const linkedSkill = document.getElementById("linkedSkill").value;
-    const isHardcore = document.getElementById("hardcoreToggle").checked;
+function addMission() {
+
+    const text =
+        document.getElementById("missionInput")
+            .value.trim();
+
+    const deadline =
+        document.getElementById("missionDeadline")
+            .value;
+
+    const linkedSkill =
+        document.getElementById("linkedSkill")
+            .value;
+
+    const isHardcore =
+        document.getElementById("hardcoreToggle")
+            .checked;
+
+    const repeat =
+        document.getElementById("missionRepeat")
+            .value;
+
 
     // ❌ Text required
     if (!text) {
@@ -1341,108 +1412,316 @@ for (let i = 5; i <= 250; i += 5) {
         return;
     }
 
+
     // 🔥 HARDCORE → DEADLINE REQUIRED
     if (isHardcore && !deadline) {
-        customAlert("🔥 Hardcore missions require a deadline.");
+
+        customAlert(
+            "🔥 Hardcore missions require a deadline."
+        );
+
         return;
     }
+
 
     // ❌ Past deadline not allowed
-    if (deadline && isPastDateTime(deadline)) {
-        customAlert("Deadline cannot be in the past.");
+    if (
+        deadline &&
+        isPastDateTime(deadline)
+    ) {
+
+        customAlert(
+            "Deadline cannot be in the past."
+        );
+
         return;
     }
 
-    const li = document.createElement("li");
-    li.dataset.deadline = deadline || "";
-    li.dataset.skill = linkedSkill || "";
-    li.dataset.completed = "false";
-    li.dataset.hardcore = isHardcore ? "true" : "false";
 
-    // Format deadline text
+    const li =
+        document.createElement("li");
+
+
+    /* =====================================================
+       MISSION DATA
+    ===================================================== */
+
+    li.dataset.deadline =
+        deadline || "";
+
+    li.dataset.skill =
+        linkedSkill || "";
+
+    li.dataset.completed =
+        "false";
+
+    li.dataset.hardcore =
+        isHardcore
+            ? "true"
+            : "false";
+
+    li.dataset.repeat =
+        repeat;
+
+    li.dataset.repeatKey =
+        getRepeatKey();
+
+
+    /* =====================================================
+       FORMAT DEADLINE
+    ===================================================== */
+
     let deadlineText = "";
+
     if (deadline) {
-        const d = new Date(deadline);
-        const date = d.toLocaleDateString([], { day: "numeric", month: "short" });
-        const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        deadlineText = `${date}, ${time}`;
+
+        const d =
+            new Date(deadline);
+
+        const date =
+            d.toLocaleDateString(
+                [],
+                {
+                    day: "numeric",
+                    month: "short"
+                }
+            );
+
+        const time =
+            d.toLocaleTimeString(
+                [],
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+
+        deadlineText =
+            `${date}, ${time}`;
     }
+
+
+    /* =====================================================
+       MISSION HTML
+    ===================================================== */
 
     li.innerHTML = `
         <span class="mission-text">
-          ${text} ${isHardcore ? "🔥" : ""}
+            ${text}
+            ${isHardcore ? " 🔥" : ""}
         </span>
 
         <div class="deadline-row">
-            <span class="deadlineDisplay">${deadlineText}</span>
+
+            <span class="deadlineDisplay">
+                ${deadlineText}
+            </span>
+
             <span class="overdueMark"></span>
-            <button class="complete-btn" onclick="completeMission(this)">✔</button>
+
+            <button
+                class="complete-btn"
+                onclick="completeMission(this)"
+            >
+                ✔
+            </button>
+
         </div>
     `;
 
-    // Click to edit (except complete)
-    li.addEventListener("click", (e) => {
-        if (e.target.classList.contains("complete-btn")) return;
-        openModal("edit-mission", li);
-    });
 
-    document.getElementById("mission-list").appendChild(li);
-    saveData();
-    closeModal();
+    /* =====================================================
+       CLICK TO EDIT
+    ===================================================== */
+
+    li.addEventListener(
+        "click",
+        (e) => {
+
+            if (
+                e.target.classList
+                    .contains("complete-btn")
+            ) {
+                return;
+            }
+
+            openModal(
+                "edit-mission",
+                li
+            );
         }
+    );
+
+
+    /* =====================================================
+       ADD + SAVE
+    ===================================================== */
+
+    document
+        .getElementById("mission-list")
+        .appendChild(li);
+
+    saveData();
+
+    closeModal();
+}
 
 
 
 
+        setInterval(checkMissedDeadlines, 30 * 1000); // check every 1 minute
+function updateMission() {
 
+    const li =
+        window.missionBeingEdited;
 
-        setInterval(checkMissedDeadlines, 1000); // check every 1 minute
-
-        function updateMission() {
-    const li = window.missionBeingEdited;
     if (!li) return;
 
-    const newText = document.getElementById("editMissionInput").value.trim();
-    const newDeadline = document.getElementById("editMissionDeadline").value;
-    const isHardcore = li.dataset.hardcore === "true";
+
+    const newText =
+        document.getElementById(
+            "editMissionInput"
+        ).value.trim();
+
+
+    const newDeadline =
+        document.getElementById(
+            "editMissionDeadline"
+        ).value;
+
+
+    const newRepeat =
+        document.getElementById(
+            "editMissionRepeat"
+        ).value;
+
+
+    const isHardcore =
+        li.dataset.hardcore === "true";
+
 
     if (!newText) {
+
         closeModal();
+
         return;
     }
 
-    // ❌ Hardcore → deadline cannot change
-    if (!isHardcore && newDeadline && isPastDateTime(newDeadline)) {
-        customAlert("Deadline cannot be in the past.");
+
+    /* =====================================================
+       DEADLINE VALIDATION
+    ===================================================== */
+
+    if (
+        !isHardcore &&
+        newDeadline &&
+        isPastDateTime(newDeadline)
+    ) {
+
+        customAlert(
+            "Deadline cannot be in the past."
+        );
+
         return;
     }
 
-    // ✅ Restore 🔥 if hardcore
-    li.querySelector(".mission-text").innerHTML =
-        newText + (isHardcore ? " 🔥" : "");
 
-    // Update deadline ONLY if not hardcore
+    /* =====================================================
+       UPDATE TEXT
+    ===================================================== */
+
+    li.querySelector(
+        ".mission-text"
+    ).innerHTML =
+        newText +
+        (
+            isHardcore
+                ? " 🔥"
+                : ""
+        );
+
+
+    /* =====================================================
+       UPDATE REPEAT
+    ===================================================== */
+
+    li.dataset.repeat =
+        newRepeat;
+
+
+    /*
+       If recurrence was changed,
+       start a fresh occurrence.
+    */
+
+    li.dataset.repeatKey =
+        getRepeatKey();
+
+
+    /* =====================================================
+       UPDATE DEADLINE
+    ===================================================== */
+
     if (!isHardcore) {
-        if (newDeadline) {
-            const d = new Date(newDeadline);
-            const date = d.toLocaleDateString([], { day: "numeric", month: "short" });
-            const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-            li.querySelector(".deadlineDisplay").textContent = `${date}, ${time}`;
-            li.dataset.deadline = newDeadline;
+        if (newDeadline) {
+
+            const d =
+                new Date(newDeadline);
+
+            const date =
+                d.toLocaleDateString(
+                    [],
+                    {
+                        day: "numeric",
+                        month: "short"
+                    }
+                );
+
+            const time =
+                d.toLocaleTimeString(
+                    [],
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                );
+
+            li.querySelector(
+                ".deadlineDisplay"
+            ).textContent =
+                `${date}, ${time}`;
+
+            li.dataset.deadline =
+                newDeadline;
+
         } else {
-            li.querySelector(".deadlineDisplay").textContent = "";
-            li.dataset.deadline = "";
+
+            li.querySelector(
+                ".deadlineDisplay"
+            ).textContent = "";
+
+            li.dataset.deadline =
+                "";
         }
 
-        // Reset overdue state if deadline changed
-        li.querySelector(".overdueMark").innerHTML = "";
+
+        /* Reset overdue state */
+
+        li.querySelector(
+            ".overdueMark"
+        ).innerHTML = "";
+
         delete li.dataset.deducted;
+        delete li.dataset.overdueNotified;
+        delete li.dataset.warned;
     }
+
 
     saveData();
+
     closeModal();
-        }
+}
         
 
         
@@ -1568,49 +1847,595 @@ document.getElementById("missionCounter").textContent = "0";
 
 
         function completeMission(btn) {
+
     enforceDailyReset();
+
     renderMarketplace(currentMarketplaceFilter);
 
-    const li = btn.closest("li");
-    const linkedSkill = li.dataset.skill;
-    const deadline = li.dataset.deadline;
 
-    li.classList.add("remove");
+    const li =
+        btn.closest("li");
+
+    if (!li) return;
+
+
+    const linkedSkill =
+        li.dataset.skill;
+
+    const deadline =
+        li.dataset.deadline;
+
+    const repeat =
+        li.dataset.repeat || "none";
+
+
+    /* =====================================================
+       PREVENT DOUBLE COMPLETION
+    ===================================================== */
+
+    if (
+        li.dataset.completed === "true"
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       MARK COMPLETED
+    ===================================================== */
+
     li.dataset.completed = "true";
-    setTimeout(() => li.remove(), 400);
 
-    // ❌ OVERDUE → NO GAIN
-    if (deadline && new Date(deadline).getTime() < Date.now()) {
-        showPopup("Mission was overdue. No improvement points gained.");
+
+    /* =====================================================
+       OVERDUE → NO REWARD
+    ===================================================== */
+
+    if (
+        deadline &&
+        new Date(deadline).getTime() < Date.now()
+    ) {
+
+        li.classList.add("remove");
+
+        if (repeat === "none") {
+
+            setTimeout(() => {
+                li.remove();
+            }, 400);
+
+        } else {
+
+            setTimeout(() => {
+
+                li.classList.remove(
+                    "remove"
+                );
+
+            }, 400);
+
+        }
+
+        showPopup(
+            "Mission was overdue. No improvement points gained."
+        );
+
         saveData();
+
         return;
     }
 
-    // ❌ DAILY LIMIT REACHED
-    if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
-        showPopup("You're too tired today. No improvement points gained.");
+
+    /* =====================================================
+       DAILY LIMIT
+    ===================================================== */
+
+    if (
+        dailyImprovementCount >=
+        DAILY_IMPROVEMENT_LIMIT
+    ) {
+
+        li.dataset.completed = "false";
+
+        showPopup(
+            "You're too tired today. No improvement points gained."
+        );
+
         saveData();
+
         return;
     }
 
-    // ✅ SUCCESSFUL COMPLETION
+
+    /* =====================================================
+       SUCCESSFUL COMPLETION
+    ===================================================== */
+
     dailyImprovementCount++;
+
     completedMissions++;
 
-    localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
-    localStorage.setItem("completedMissions", completedMissions);
 
-    document.getElementById("missionCounter").textContent = completedMissions;
+    localStorage.setItem(
+        "dailyImprovementCount",
+        dailyImprovementCount
+    );
+
+    localStorage.setItem(
+        "completedMissions",
+        completedMissions
+    );
+
+
+    document.getElementById(
+        "missionCounter"
+    ).textContent =
+        completedMissions;
+
+
+    /* =====================================================
+       SKILL XP
+    ===================================================== */
 
     if (linkedSkill) {
-        increaseSkillXP(linkedSkill, 1);
+
+        increaseSkillXP(
+            linkedSkill,
+            1
+        );
+
     }
 
+
+    /* =====================================================
+       ACHIEVEMENTS
+    ===================================================== */
+
     checkMissionAchievements();
-    showPopup("Mission completed! Improvement point gained.");
+
+
+    /* =====================================================
+       RECURRING vs ONE-TIME
+    ===================================================== */
+
+    if (repeat === "none") {
+
+        /*
+           Normal mission:
+           remove it permanently.
+        */
+
+        li.classList.add(
+            "remove"
+        );
+
+        setTimeout(() => {
+
+            li.remove();
+
+            saveData();
+
+        }, 400);
+
+
+    } else {
+
+        /*
+           Recurring mission:
+           KEEP the mission.
+
+           It becomes completed for
+           the current occurrence.
+
+           Tomorrow/week/month it will
+           be reset by the recurrence engine.
+        */
+
+        li.classList.add(
+            "completed"
+        );
+
+
+        const completeBtn =
+            li.querySelector(
+                ".complete-btn"
+            );
+
+        if (completeBtn) {
+
+            completeBtn.disabled =
+                true;
+
+            completeBtn.style.opacity =
+                "0.45";
+
+        }
+
+
+        /*
+           Remove deadline warning
+           because today's occurrence
+           has already been completed.
+        */
+
+        const overdueMark =
+            li.querySelector(
+                ".overdueMark"
+            );
+
+        if (overdueMark) {
+            overdueMark.innerHTML = "";
+        }
+
+    }
+
+
+    showPopup(
+        repeat === "none"
+            ? "Mission completed! Improvement point gained."
+            : "Mission completed! It will return for the next occurrence."
+    );
+
+
     saveData();
 }
+//
 
+/* =========================================================
+   RECURRING MISSIONS
+========================================================= */
+
+function getRepeatKey(date = new Date(), repeat = "daily") {
+
+    const d = new Date(date);
+
+    if (repeat === "daily") {
+
+        return [
+            d.getFullYear(),
+            String(d.getMonth() + 1).padStart(2, "0"),
+            String(d.getDate()).padStart(2, "0")
+        ].join("-");
+
+    }
+
+
+    if (repeat === "weekly") {
+
+        const day =
+            d.getDay();
+
+        d.setDate(
+            d.getDate() - day
+        );
+
+        return [
+            d.getFullYear(),
+            String(d.getMonth() + 1).padStart(2, "0"),
+            String(d.getDate()).padStart(2, "0")
+        ].join("-");
+
+    }
+
+
+    if (repeat === "monthly") {
+
+        return [
+            d.getFullYear(),
+            String(d.getMonth() + 1).padStart(2, "0")
+        ].join("-");
+
+    }
+
+
+    return "once";
+}
+
+
+/* =========================================================
+   REFRESH RECURRING MISSIONS
+========================================================= */
+
+function refreshRecurringMissions() {
+
+    const missions =
+        document.querySelectorAll(
+            "#mission-list li"
+        );
+
+    const today = new Date();
+
+    let changed = false;
+
+
+    missions.forEach(li => {
+
+        const repeat =
+            li.dataset.repeat || "none";
+
+        if (repeat === "none") {
+            return;
+        }
+
+
+        const currentKey =
+            getRepeatKey(
+                today,
+                repeat
+            );
+
+        const previousKey =
+            li.dataset.repeatKey;
+
+
+        /*
+         * First time this mission is using
+         * recurrence.
+         */
+
+        if (!previousKey) {
+
+            li.dataset.repeatKey =
+                currentKey;
+
+            changed = true;
+
+            return;
+        }
+
+
+        /*
+         * Same occurrence.
+         * Don't reset anything.
+         */
+
+        if (previousKey === currentKey) {
+            return;
+        }
+
+
+        /*
+         * NEW OCCURRENCE
+         */
+
+        resetRecurringMission(
+            li,
+            currentKey
+        );
+
+        changed = true;
+
+    });
+
+
+    if (changed) {
+        saveData();
+    }
+}
+
+
+/* =========================================================
+   RESET ONE RECURRING MISSION
+========================================================= */
+
+function resetRecurringMission(li, currentKey) {
+
+    const repeat =
+        li.dataset.repeat || "none";
+
+
+    /* New occurrence */
+
+    li.dataset.repeatKey =
+        currentKey;
+
+    li.dataset.completed =
+        "false";
+
+
+    /* Reset visual state */
+
+    li.classList.remove(
+        "completed",
+        "remove"
+    );
+
+
+    /* Reset old warning / penalty state */
+
+    delete li.dataset.deducted;
+    delete li.dataset.overdueNotified;
+    delete li.dataset.warned;
+    delete li.dataset.hardcorePunished;
+
+
+    /* Enable complete button */
+
+    const completeBtn =
+        li.querySelector(
+            ".complete-btn"
+        );
+
+    if (completeBtn) {
+
+        completeBtn.disabled =
+            false;
+
+        completeBtn.style.opacity =
+            "";
+
+    }
+
+
+    /* Clear overdue indicator */
+
+    const overdueMark =
+        li.querySelector(
+            ".overdueMark"
+        );
+
+    if (overdueMark) {
+        overdueMark.textContent = "";
+    }
+
+
+    /* Move deadline */
+
+    if (repeat !== "none") {
+
+        shiftRecurringDeadline(
+            li,
+            repeat
+        );
+
+    }
+}
+
+
+/* =========================================================
+   UPDATE DAILY DEADLINE
+========================================================= */
+
+function shiftRecurringDeadline(li, repeat) {
+
+    if (!li) return;
+
+    const oldDeadline = li.dataset.deadline;
+
+    if (!oldDeadline) return;
+
+    const oldDate = new Date(oldDeadline);
+
+    if (isNaN(oldDate.getTime())) return;
+
+    let nextDeadline = new Date(oldDate);
+
+
+    /* =========================
+       DAILY
+    ========================= */
+
+    if (repeat === "daily") {
+
+        nextDeadline.setDate(
+            nextDeadline.getDate() + 1
+        );
+
+    }
+
+
+    /* =========================
+       WEEKLY
+    ========================= */
+
+    else if (repeat === "weekly") {
+
+        nextDeadline.setDate(
+            nextDeadline.getDate() + 7
+        );
+
+    }
+
+
+    /* =========================
+       MONTHLY
+    ========================= */
+
+    else if (repeat === "monthly") {
+
+        const originalDay =
+            nextDeadline.getDate();
+
+        nextDeadline.setMonth(
+            nextDeadline.getMonth() + 1
+        );
+
+        /*
+         * Handle:
+         * Jan 31 → Feb 28
+         */
+
+        if (
+            nextDeadline.getDate() !==
+            originalDay
+        ) {
+            nextDeadline.setDate(0);
+        }
+
+    }
+
+
+    else {
+        return;
+    }
+
+
+    /* =========================
+       SAVE ISO-LIKE LOCAL VALUE
+    ========================= */
+
+    const year =
+        nextDeadline.getFullYear();
+
+    const month =
+        String(
+            nextDeadline.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            nextDeadline.getDate()
+        ).padStart(2, "0");
+
+    const hours =
+        String(
+            nextDeadline.getHours()
+        ).padStart(2, "0");
+
+    const minutes =
+        String(
+            nextDeadline.getMinutes()
+        ).padStart(2, "0");
+
+    const newDeadline =
+        `${year}-${month}-${day}T${hours}:${minutes}`;
+
+
+    /* =========================
+       UPDATE DATA
+    ========================= */
+
+    li.dataset.deadline =
+        newDeadline;
+
+
+    /* =========================
+       UPDATE VISIBLE DEADLINE
+    ========================= */
+
+    const deadlineDisplay =
+        li.querySelector(".deadlineDisplay");
+
+    if (deadlineDisplay) {
+
+        deadlineDisplay.textContent =
+            nextDeadline.toLocaleDateString(
+                [],
+                {
+                    day: "numeric",
+                    month: "short"
+                }
+            )
+            + ", " +
+            nextDeadline.toLocaleTimeString(
+                [],
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+    }
+}
 
 
      function increaseSkillXP(skillName, amount) {
@@ -2387,6 +3212,7 @@ document.getElementById("countdownCounter").textContent = "0";
             checkMissedDeadlines();
             renderAchievements();
             renderCountdowns();
+        refreshRecurringMissions();
             loadData();
             renderGoals();
     
