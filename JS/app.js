@@ -3438,7 +3438,7 @@ function showMintedCard(card) {
     //     mintSound.play().catch(() => {});
 
     // }, 550);
-        playAppTone("mission");
+        playAppTone("CardMint");
 
 
     // Close by tapping outside
