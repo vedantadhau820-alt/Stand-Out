@@ -2502,20 +2502,6 @@ function skipDayCheat() {
 function showMintedCard(card) {
     if (!card) return;
 
-    // Play mint sound
-    const mintSound = new Audio(
-        "Music/CardMint.mp3"
-    );
-
-    mintSound.volume = 0.7;
-
-    mintSound.play().catch(() => {});
-
-
-    // Remove any existing reveal
-    document.getElementById("mintReveal")?.remove();
-
-    // Remove any existing reveal
     document.getElementById("mintReveal")?.remove();
 
     const overlay = document.createElement("div");
@@ -2525,23 +2511,25 @@ function showMintedCard(card) {
     overlay.innerHTML = `
         <div class="mint-reveal-content">
 
-            <button
-                class="mint-reveal-close"
-                onclick="closeMintedCard()"
-                aria-label="Close"
-            >
-                ×
-            </button>
-
             <div class="mint-reveal-label">
                 CARD MINTED
             </div>
 
-            <img
-                class="mint-reveal-image"
-                src="${card.image}"
-                alt="${card.title}"
-            >
+            <div class="mint-card-stage">
+
+                <div class="mint-card-light"></div>
+
+                <img
+                    class="mint-reveal-image"
+                    src="${card.image}"
+                    alt="${card.title}"
+                >
+
+            </div>
+
+            <div class="mint-reveal-earned">
+                YOU EARNED THIS
+            </div>
 
             <h2 class="mint-reveal-title">
                 ${card.title}
@@ -2551,20 +2539,43 @@ function showMintedCard(card) {
                 ${card.quote || ""}
             </p>
 
+            <button
+                class="mint-reveal-close"
+                onclick="closeMintedCard()"
+            >
+                Continue
+            </button>
+
         </div>
     `;
 
     document.body.appendChild(overlay);
 
+    // Start animation
     requestAnimationFrame(() => {
         overlay.classList.add("show");
     });
 
-    // Close by clicking outside the card
+    // Play mint sound slightly after reveal begins
+    setTimeout(() => {
+
+        const mintSound =
+            new Audio("Music/CardMint.mp3");
+
+        mintSound.volume = 0.7;
+
+        mintSound.play().catch(() => {});
+
+    }, 550);
+
+
+    // Close by tapping outside
     overlay.addEventListener("click", e => {
+
         if (e.target === overlay) {
             closeMintedCard();
         }
+
     });
 }
 
@@ -2580,7 +2591,7 @@ function closeMintedCard() {
 
     setTimeout(() => {
         reveal.remove();
-    }, 250);
+    }, 300);
 }
 
 
@@ -2589,12 +2600,6 @@ window.showMintedCard =
 
 window.closeMintedCard =
     closeMintedCard;
-
-
-
-
-
-
 
 
 
