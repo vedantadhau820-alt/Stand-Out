@@ -384,6 +384,8 @@ function buyCard(cardId) {
         "Card Minted",
         `"${card.title}" is now part of your identity.`
       );
+
+            showMintedCard(card);
     }
   );
             }
