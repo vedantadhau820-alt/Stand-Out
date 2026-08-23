@@ -313,6 +313,52 @@
                 </div>
             </div>
         </div>
+
+        <!-- =====================================================
+     CUSTOM CARDS
+===================================================== -->
+
+<div class="account-group">
+
+    <div class="account-group-title">
+        Custom Cards
+    </div>
+
+    <div class="custom-cards-account">
+        <br>
+        <p class="custom-card-description">Create your own collectible cards for the marketplace.
+        </p>
+
+
+        <!-- CREATE -->
+
+        <button
+            type="button"
+            class="custom-card-add-btn"
+            onclick="openCustomCardCreator()"
+        >
+
+            <span class="custom-card-add-icon">
+                ＋
+            </span>
+
+            <span>
+                Create Custom Card
+            </span>
+
+        </button>
+
+
+        <!-- MANAGED CUSTOM CARDS -->
+
+        <div
+            id="customCardsManager"
+            class="custom-cards-manager"
+        ></div>
+
+    </div>
+
+</div>
         
         <h3>Backup & Restore</h3>
 
@@ -483,6 +529,296 @@
         </div>
     </div>
 
+    <!-- =========================================================
+     CUSTOM CARD MODAL
+========================================================= -->
+
+<div
+    id="customCardModal"
+    class="custom-card-modal"
+>
+
+    <div class="custom-card-modal-content">
+
+        <!-- CLOSE -->
+
+        <button
+            type="button"
+            class="custom-card-modal-close"
+            onclick="closeCustomCardModal()"
+        >
+            ×
+        </button>
+
+
+        <!-- =================================================
+             HEADER
+        ================================================= -->
+
+        <div class="custom-card-modal-header">
+
+            <span class="custom-card-modal-eyebrow">
+                MARKETPLACE
+            </span>
+
+            <h2>
+                Create Custom Card
+            </h2>
+
+            <p>
+                Create a card that represents you.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             CARD ARTWORK
+        ================================================= -->
+
+        <div class="custom-card-field">
+
+            <label>
+                Card Artwork
+            </label>
+
+            <div
+                class="custom-card-image-picker"
+                id="customCardImagePicker"
+            >
+
+                <img
+                    id="customCardImagePreview"
+                    alt="Card artwork preview"
+                >
+
+                <div
+                    id="customCardImagePlaceholder"
+                    class="custom-card-image-placeholder"
+                >
+
+                    <span>＋</span>
+
+                    <strong>
+                        Choose Artwork
+                    </strong>
+
+                    <small>
+                        JPG, PNG or WebP
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <input
+                type="file"
+                id="customCardImage"
+                accept="image/png,image/jpeg,image/webp"
+                hidden
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             TITLE
+        ================================================= -->
+
+        <div class="custom-card-field">
+
+            <label for="customCardTitle">
+                Card Title
+            </label>
+
+            <input
+                id="customCardTitle"
+                type="text"
+                maxlength="40"
+                placeholder="Enter card title"
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             QUOTE
+        ================================================= -->
+
+        <div class="custom-card-field">
+
+            <label for="customCardQuote">
+                Quote
+            </label>
+
+            <textarea
+                id="customCardQuote"
+                maxlength="160"
+                rows="3"
+                placeholder="Enter a quote..."
+            ></textarea>
+
+        </div>
+
+
+        <!-- =================================================
+             GRADE + COST
+        ================================================= -->
+
+        <div class="custom-card-two-column">
+
+
+            <!-- GRADE -->
+
+            <div class="custom-card-field">
+
+                <label for="customCardGrade">
+                    Grade
+                </label>
+
+                <select
+                    id="customCardGrade"
+                >
+
+                    <option value="A">
+                        A
+                    </option>
+
+                    <option value="B">
+                        B
+                    </option>
+
+                    <option value="C">
+                        C
+                    </option>
+
+                    <option value="D">
+                        D
+                    </option>
+
+                    <option value="E">
+                        E
+                    </option>
+
+                    <option value="S">
+                        S
+                    </option>
+
+                    <option value="W">
+                        W
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- COST -->
+
+            <div class="custom-card-field">
+
+                <label for="customCardCost">
+                    Cost
+                </label>
+
+                <input
+                    id="customCardCost"
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="100"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LIMITED EDITION
+        ================================================= -->
+
+        <div class="custom-card-limited-row">
+
+            <div>
+
+                <strong>
+                    Limited Edition
+                </strong>
+
+                <span>
+                    Limited cards use Grade W.
+                </span>
+
+            </div>
+
+
+            <label class="toggle">
+
+                <input
+                    type="checkbox"
+                    id="customCardLimited"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <!-- =================================================
+             EXPIRATION
+        ================================================= -->
+
+        <div
+            class="custom-card-field"
+            id="customCardExpirationGroup"
+            style="display: none;"
+        >
+
+            <label for="customCardExpiresAt">
+                Expires On
+            </label>
+
+            <input
+                id="customCardExpiresAt"
+                type="datetime-local"
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================= -->
+
+        <div class="custom-card-actions">
+
+            <button
+                type="button"
+                class="custom-card-cancel"
+                onclick="closeCustomCardModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="custom-card-create"
+                onclick="createCustomCard()"
+            >
+                Create Card
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+    
     <script>
         if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
@@ -498,6 +834,7 @@
     <script src="JS/cards.js"></script>
     <script src="JS/sound.js"></script>
     <script src="JS/app.js"></script>
+    <script src="JS/custom-cards.js"></script>
     </body>
 
 </html>
