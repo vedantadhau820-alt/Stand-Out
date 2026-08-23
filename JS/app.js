@@ -1463,8 +1463,7 @@ function addMission() {
     li.dataset.repeat =
         repeat;
 
-    li.dataset.repeatKey =
-        getRepeatKey();
+    li.dataset.repeatKey = getRepeatKey(new Date(), repeat);
 
 
     /* =====================================================
@@ -1654,8 +1653,7 @@ function updateMission() {
        start a fresh occurrence.
     */
 
-    li.dataset.repeatKey =
-        getRepeatKey();
+    li.dataset.repeatKey = getRepeatKey(new Date(), repeat);
 
 
     /* =====================================================
@@ -3209,10 +3207,10 @@ document.getElementById("countdownCounter").textContent = "0";
         window.addEventListener("load", () => {
             enforceDailyReset();
             renderMarketplace();
+            refreshRecurringMissions();
             checkMissedDeadlines();
             renderAchievements();
             renderCountdowns();
-        refreshRecurringMissions();
             loadData();
             renderGoals();
     
