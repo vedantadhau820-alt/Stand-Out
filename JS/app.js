@@ -73,20 +73,6 @@ setInterval(() => {
     el.textContent = "⬇️ Updating app" + ".".repeat(dots);
 }, 500);
 
-// navigator.serviceWorker.register("/service-worker.js").then(reg => {
-//   reg.onupdatefound = () => {
-//     const newWorker = reg.installing;
-//     newWorker.onstatechange = () => {
-//       if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-//         showSmartNotification(
-//           "New version installed.",
-//           "App Updated."
-//         );
-//         newWorker.postMessage("SKIP_WAITING");
-//       }
-//     };
-//   };
-// });
 
 let currentMarketplaceFilter = "ALL";
 
@@ -5060,25 +5046,7 @@ async function resetData() {
 
 
         /* =====================================================
-           18. RESET SOUND UI
-        ===================================================== */
-
-        if (
-            typeof initializeSoundSettings ===
-            "function"
-        ) {
-
-            /*
-             * Rebuild sound controls
-             * using factory defaults.
-             */
-            await initializeSoundSettings();
-
-        }
-
-
-        /* =====================================================
-           19. RESET CUSTOM CARD CONTROLS
+           18. RESET CUSTOM CARD CONTROLS
         ===================================================== */
 
         if (
@@ -5092,7 +5060,7 @@ async function resetData() {
 
 
         /* =====================================================
-           20. SUCCESS
+           19. SUCCESS
         ===================================================== */
 
         customAlert(
@@ -5309,17 +5277,7 @@ function showMintedCard(card) {
         overlay.classList.add("show");
     });
 
-    // Play mint sound slightly after reveal begins
-    // setTimeout(() => {
-
-    //     const mintSound =
-    //         new Audio("Music/CardMint.mp3");
-
-    //     mintSound.volume = 0.7;
-
-    //     mintSound.play().catch(() => {});
-
-    // }, 550);
+   
     playAppTone("mint");
 
 
