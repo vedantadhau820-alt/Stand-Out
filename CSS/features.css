@@ -473,3 +473,266 @@
   gap: 10px;
   margin-top: 1.2rem;
 }
+
+/* =========================================================
+   GOAL ACTION BUTTONS
+========================================================= */
+
+.goal-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+
+/* =========================================================
+   SHARED
+========================================================= */
+
+.goal-actions button {
+    appearance: none;
+    border: 1px solid transparent;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 34px;
+
+    padding: 0 13px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .12s ease;
+}
+
+.goal-actions button:active {
+    transform: scale(.95);
+}
+
+
+/* =========================================================
+   ACHIEVE
+========================================================= */
+
+.goal-achieve-btn {
+    background: #2563eb;
+    border-color: #3474ed !important;
+
+    color: #ffffff;
+}
+
+.goal-achieve-btn:hover {
+    background: #3274ee;
+    border-color: #4381ef !important;
+}
+
+.goal-achieve-btn:active {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   EDIT
+========================================================= */
+
+.goal-edit-btn {
+    background: #181e27;
+    border-color: #293342 !important;
+
+    color: #aeb8c6;
+}
+
+.goal-edit-btn:hover {
+    background: #202833;
+    border-color: #374457 !important;
+
+    color: #ffffff;
+}
+
+.goal-edit-btn:active {
+    background: #151a22;
+}
+
+
+/* =========================================================
+   REMOVE
+========================================================= */
+
+.goal-remove-btn {
+    background: transparent;
+    border-color: #292f38 !important;
+
+    color: #727c89;
+}
+
+.goal-remove-btn:hover {
+    background: rgba(239, 68, 68, .08);
+
+    border-color: rgba(239, 68, 68, .25) !important;
+
+    color: #ef7777;
+}
+
+.goal-remove-btn:active {
+    background: rgba(239, 68, 68, .13);
+}
+
+
+/* =========================================================
+   ACHIEVED STATE
+========================================================= */
+
+.goal-achieved .goal-actions {
+    margin-top: 14px;
+}
+
+.goal-achieved .goal-achieve-btn,
+.goal-achieved .goal-edit-btn,
+.goal-achieved .goal-remove-btn {
+    display: none;
+}
+
+
+/* =========================================================
+   LOCKED HIGH-PRIORITY GOAL
+========================================================= */
+
+.goal-locked {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 34px;
+
+    padding: 0 11px;
+
+    border: 1px solid #252c37;
+    border-radius: 9px;
+
+    background: #151a21;
+
+    color: #626c79;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .goal-actions {
+        gap: 7px;
+        margin-top: 14px;
+    }
+
+    .goal-actions button {
+        min-height: 33px;
+        padding: 0 11px;
+
+        font-size: 10px;
+    }
+
+}
+
+/* =========================================================
+   GOAL PRIORITY BADGE
+========================================================= */
+
+.goal-priority {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 58px;
+    height: 25px;
+
+    padding: 0 9px;
+
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 700;
+
+    line-height: 1;
+    letter-spacing: .6px;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   HIGH
+========================================================= */
+
+.goal-priority.High {
+    background: rgba(239, 68, 68, 0.10);
+
+    border: 1px solid rgba(239, 68, 68, 0.22);
+
+    color: #f87171;
+}
+
+
+/* =========================================================
+   MEDIUM
+========================================================= */
+
+.goal-priority.Medium {
+    background: rgba(245, 158, 11, 0.10);
+
+    border: 1px solid rgba(245, 158, 11, 0.22);
+
+    color: #fbbf24;
+}
+
+
+/* =========================================================
+   LOW
+========================================================= */
+
+.goal-priority.Low {
+    background: rgba(59, 130, 246, 0.10);
+
+    border: 1px solid rgba(59, 130, 246, 0.22);
+
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .goal-priority {
+        min-width: 54px;
+        height: 24px;
+
+        padding: 0 8px;
+
+        font-size: 9px;
+    }
+
+}
