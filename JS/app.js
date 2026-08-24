@@ -407,7 +407,23 @@ async function saveProgressToFile() {
 
     }
 
-}
+    window.addEventListener("load", () => {
+    loadData();
+    enforceDailyReset();
+    renderMarketplace();
+    refreshRecurringMissions();
+    checkMissedDeadlines();
+    renderAchievements();
+    renderCountdowns();
+    renderGoals();
+
+
+    const activePage = document.querySelector("section.active")
+        ? document.querySelector("section.active").id
+        : "missions";
+
+    showPage(activePage);
+});
 
 
 
@@ -516,7 +532,7 @@ async function loadProgressFromFile() {
         if (
             !backup ||
             backup.backupType !==
-            "STANDOUT_COMPLETE"
+                "STANDOUT_COMPLETE"
         ) {
 
             customAlert(
@@ -531,7 +547,7 @@ async function loadProgressFromFile() {
         if (
             !backup.localStorage ||
             typeof backup.localStorage !==
-            "object"
+                "object"
         ) {
 
             customAlert(
@@ -547,16 +563,134 @@ async function loadProgressFromFile() {
    CUSTOM CONFIRM
 ========================================================= */
 
-       
-        const confirmed =
-            await customConfirm(
-                "Your current progress will be replaced by the backup.",
-                "Restore Backup?"
+function customConfirm(message, title = "Are you sure?") {
+
+    return new Promise(resolve => {
+
+        const overlay =
+            document.createElement("div");
+
+        overlay.className =
+            "custom-confirm-overlay";
+
+        overlay.innerHTML = `
+
+            <div class="custom-confirm-card">
+
+                <div class="custom-confirm-title">
+                    ${escapeHTML(title)}
+                </div>
+
+                <div class="custom-confirm-message">
+                    ${escapeHTML(message)}
+                </div>
+
+                <div class="custom-confirm-actions">
+
+                    <button
+                        type="button"
+                        class="custom-confirm-cancel"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        class="custom-confirm-ok"
+                    >
+                        Continue
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(
+            overlay
+        );
+
+
+        const cancel =
+            overlay.querySelector(
+                ".custom-confirm-cancel"
             );
 
-        if (!confirmed) {
-            return;
+        const ok =
+            overlay.querySelector(
+                ".custom-confirm-ok"
+            );
+
+
+        function close(result) {
+
+            overlay.classList.remove(
+                "active"
+            );
+
+            setTimeout(() => {
+
+                overlay.remove();
+
+                resolve(result);
+
+            }, 200);
+
         }
+
+
+        cancel.onclick = () => {
+            close(false);
+        };
+
+
+        ok.onclick = () => {
+            close(true);
+        };
+
+
+        overlay.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    overlay
+                ) {
+
+                    close(false);
+
+                }
+
+            }
+        );
+
+
+        requestAnimationFrame(() => {
+
+            requestAnimationFrame(() => {
+
+                overlay.classList.add(
+                    "active"
+                );
+
+            });
+
+        });
+
+    });
+
+}
+
+        const confirmed =
+    await customConfirm(
+        "Your current progress will be replaced by the backup.",
+        "Restore Backup?"
+    );
+
+if (!confirmed) {
+    return;
+}
 
 
         /* =====================================================
@@ -617,78 +751,78 @@ async function loadProgressFromFile() {
    RELOAD RUNTIME DATA AFTER RESTORE
 ===================================================== */
 
-        goalsData =
-            JSON.parse(
-                localStorage.getItem("goalsData")
-            ) || [];
+goalsData =
+    JSON.parse(
+        localStorage.getItem("goalsData")
+    ) || [];
 
-        countdowns =
-            JSON.parse(
-                localStorage.getItem("countdowns")
-            ) || [];
+countdowns =
+    JSON.parse(
+        localStorage.getItem("countdowns")
+    ) || [];
 
-        completedMissions =
-            Number(
-                localStorage.getItem("completedMissions")
-            ) || 0;
+completedMissions =
+    Number(
+        localStorage.getItem("completedMissions")
+    ) || 0;
 
-        dailyImprovementCount =
-            Number(
-                localStorage.getItem("dailyImprovementCount")
-            ) || 0;
+dailyImprovementCount =
+    Number(
+        localStorage.getItem("dailyImprovementCount")
+    ) || 0;
 
-        lastImprovementDate =
-            localStorage.getItem("lastImprovementDate") ||
-            getISTDate().toISOString().slice(0, 10);
+lastImprovementDate =
+    localStorage.getItem("lastImprovementDate") ||
+    getISTDate().toISOString().slice(0, 10);
 
-        /* =====================================================
-       RELOAD MUSIC / SOUND RUNTIME STATE
-    ===================================================== */
+    /* =====================================================
+   RELOAD MUSIC / SOUND RUNTIME STATE
+===================================================== */
 
-        try {
+try {
 
-            if (
-                typeof loadSoundSettings ===
-                "function"
-            ) {
+    if (
+        typeof loadSoundSettings ===
+        "function"
+    ) {
 
-                await loadSoundSettings();
+        await loadSoundSettings();
 
-            }
+    }
 
-        } catch (error) {
+} catch (error) {
 
-            console.warn(
-                "Could not reload sound settings:",
-                error
-            );
+    console.warn(
+        "Could not reload sound settings:",
+        error
+    );
 
-        }
+}
 
 
-        /* =====================================================
-           REFRESH MUSIC UI
-        ===================================================== */
+/* =====================================================
+   REFRESH MUSIC UI
+===================================================== */
 
-        try {
+try {
 
-            if (
-                typeof renderSoundSettings ===
-                "function"
-            ) {
+    if (
+        typeof renderSoundSettings ===
+        "function"
+    ) {
 
-                renderSoundSettings();
+        renderSoundSettings();
 
-            }
+    }
 
-        } catch (error) {
+} catch (error) {
 
-            console.warn(
-                "Could not refresh sound settings UI:",
-                error
-            );
+    console.warn(
+        "Could not refresh sound settings UI:",
+        error
+    );
 
-        }
+}
         /* =====================================================
            8. RESTORE CUSTOM CARDS
         ===================================================== */
@@ -781,7 +915,7 @@ async function loadProgressFromFile() {
 
             }
 
-
+            
 
         }
 
@@ -936,6 +1070,24 @@ async function loadProgressFromFile() {
 }
 
 
+window.addEventListener("load", () => {
+    loadData();
+restoreTimerMusic()
+    enforceDailyReset();
+    renderMarketplace();
+    refreshRecurringMissions();
+    checkMissedDeadlines();
+    renderAchievements();
+    renderCountdowns();
+    renderGoals();
+
+
+    const activePage = document.querySelector("section.active")
+        ? document.querySelector("section.active").id
+        : "missions";
+
+    showPage(activePage);
+});
 
 document.getElementById("importProgressFile").addEventListener("change", function (e) {
     const file = e.target.files[0];
@@ -960,25 +1112,6 @@ document.getElementById("importProgressFile").addEventListener("change", functio
 
     reader.readAsText(file);
     e.target.value = "";
-});
-
-window.addEventListener("load", () => {
-    loadData();
-    restoreTimerMusic()
-    enforceDailyReset();
-    renderMarketplace();
-    refreshRecurringMissions();
-    checkMissedDeadlines();
-    renderAchievements();
-    renderCountdowns();
-    renderGoals();
-
-
-    const activePage = document.querySelector("section.active")
-        ? document.querySelector("section.active").id
-        : "missions";
-
-    showPage(activePage);
 });
 
 window.saveProgressToFile = saveProgressToFile;
@@ -1160,20 +1293,7 @@ function renderMyCards() {
     }
 
     ownedList.forEach(card => {
-
         const data = ownedCards[card.id];
-
-        const isOwned =
-            !!data;
-
-        const mintedAt =
-            data?.mintedAt
-                ? formatDate(data.mintedAt)
-                : "";
-
-        const canBuy =
-            completedMissions >= card.cost;
-
 
         const div = document.createElement("div");
         div.className = `flex-card owned grade-${card.grade.toLowerCase()}`;
@@ -1969,9 +2089,9 @@ function openModal(type, skillDiv = null) {
    ADD SKILL
 ===================================================== */
 
-    if (type === "skill") {
+if (type === "skill") {
 
-        content.innerHTML = `
+    content.innerHTML = `
         <h3>Add Skill</h3>
 
         <input
@@ -1997,17 +2117,17 @@ function openModal(type, skillDiv = null) {
         </button>
     `;
 
-        /* Focus input automatically */
+    /* Focus input automatically */
 
-        setTimeout(() => {
+    setTimeout(() => {
 
-            document
-                .getElementById("skillInput")
-                ?.focus();
+        document
+            .getElementById("skillInput")
+            ?.focus();
 
-        }, 50);
+    }, 50);
 
-    }
+}
 
     // ---- Edit Mission ----
     if (type === "edit-mission" && skillDiv) {
@@ -2077,8 +2197,6 @@ function openModal(type, skillDiv = null) {
         window.missionBeingEdited = skillDiv;
     }
 
-    
-
     // ---- Add Goal ----
 if (type === "goal") {
 
@@ -2124,6 +2242,28 @@ if (type === "goal") {
         "goalDeadline"
     ).min = now;
 }
+    
+
+    // ---- Add Goal ----
+    if (type === "goal") {
+        content.innerHTML = `
+    <h3>Add Goal</h3>
+    <input id="goalInput" placeholder="Goal">
+
+    <label>Priority</label>
+    <select id="priorityInput">
+      <option>High</option>
+      <option>Medium</option>
+      <option>Low</option>
+    </select>
+
+    <label>Deadline</label>
+    <input id="goalDeadline" type="datetime-local">
+
+    <button onclick="addGoal()">Add</button>
+    <button onclick="closeModal()">Cancel</button>
+  `;
+    }
 
 
     // ---- Add Countdown (FIXED) ----
@@ -2165,175 +2305,22 @@ function closeAlert() {
     document.getElementById("alertModal").classList.remove("active");
 }
 
-/* =========================================================
-   CUSTOM CONFIRM
-   Supports:
-   await customConfirm(...)
-   customConfirm(..., callback)
-========================================================= */
+/* Confirm */
+let confirmCallback = null;
 
-function customConfirm(
-    message,
-    titleOrCallback = "Are you sure?"
-) {
+function customConfirm(msg, callback) {
+    confirmCallback = callback;
+    document.getElementById("confirmMsg").textContent = msg;
+    document.getElementById("confirmModal").classList.add("active");
+}
 
-    const callback =
-        typeof titleOrCallback === "function"
-            ? titleOrCallback
-            : null;
+function confirmYes() {
+    if (confirmCallback) confirmCallback();
+    document.getElementById("confirmModal").classList.remove("active");
+}
 
-    const title =
-        typeof titleOrCallback === "string"
-            ? titleOrCallback
-            : "Are you sure?";
-
-
-    return new Promise(resolve => {
-
-        const overlay =
-            document.createElement("div");
-
-        overlay.className =
-            "custom-confirm-overlay";
-
-        overlay.innerHTML = `
-
-            <div class="custom-confirm-card">
-
-                <div class="custom-confirm-title">
-                    ${escapeHTML(title)}
-                </div>
-
-                <div class="custom-confirm-message">
-                    ${escapeHTML(message)}
-                </div>
-
-                <div class="custom-confirm-actions">
-
-                    <button
-                        type="button"
-                        class="custom-confirm-cancel"
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        type="button"
-                        class="custom-confirm-ok"
-                    >
-                        Continue
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-        document.body.appendChild(
-            overlay
-        );
-
-
-        const cancel =
-            overlay.querySelector(
-                ".custom-confirm-cancel"
-            );
-
-        const ok =
-            overlay.querySelector(
-                ".custom-confirm-ok"
-            );
-
-
-        let closed = false;
-
-
-        function close(result) {
-
-            if (closed) {
-                return;
-            }
-
-            closed = true;
-
-            overlay.classList.remove(
-                "active"
-            );
-
-
-            if (
-                result &&
-                callback
-            ) {
-
-                try {
-
-                    callback();
-
-                } catch (error) {
-
-                    console.error(
-                        "Confirm callback failed:",
-                        error
-                    );
-
-                }
-
-            }
-
-
-            setTimeout(() => {
-
-                overlay.remove();
-
-                resolve(result);
-
-            }, 200);
-
-        }
-
-
-        cancel.onclick = () => {
-            close(false);
-        };
-
-
-        ok.onclick = () => {
-            close(true);
-        };
-
-
-        overlay.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target ===
-                    overlay
-                ) {
-
-                    close(false);
-
-                }
-
-            }
-        );
-
-
-        requestAnimationFrame(() => {
-
-            requestAnimationFrame(() => {
-
-                overlay.classList.add(
-                    "active"
-                );
-
-            });
-
-        });
-
-    });
-
+function confirmNo() {
+    document.getElementById("confirmModal").classList.remove("active");
 }
 
 
@@ -2879,77 +2866,77 @@ function completeMission(btn) {
        OVERDUE → NO REWARD
     ===================================================== */
 
-    if (
-        deadline &&
-        new Date(deadline).getTime() < Date.now()
-    ) {
+   if (
+    deadline &&
+    new Date(deadline).getTime() < Date.now()
+) {
 
-        /*
-         * Mission is already overdue.
-         * It gets NO Improvement Point.
-         */
+    /*
+     * Mission is already overdue.
+     * It gets NO Improvement Point.
+     */
 
-        const completeBtn =
-            li.querySelector(".complete-btn");
+    const completeBtn =
+        li.querySelector(".complete-btn");
 
-        /*
-         * Disable the button immediately.
-         * This occurrence is finished.
-         */
+    /*
+     * Disable the button immediately.
+     * This occurrence is finished.
+     */
 
-        if (completeBtn) {
+    if (completeBtn) {
 
-            completeBtn.disabled = true;
+        completeBtn.disabled = true;
 
-            completeBtn.style.opacity = "0.45";
+        completeBtn.style.opacity = "0.45";
 
-        }
-
-
-        /*
-         * Mark the occurrence visually.
-         */
-
-        li.classList.add("completed");
+    }
 
 
-        /*
-         * One-time missions disappear.
-         */
+    /*
+     * Mark the occurrence visually.
+     */
 
-        if (repeat === "none") {
-
-            li.classList.add("remove");
-
-            setTimeout(() => {
-
-                li.remove();
-
-                saveData();
-
-            }, 400);
-
-        }
+    li.classList.add("completed");
 
 
-        /*
-         * Recurring missions stay visible.
-         * The recurrence engine will reset them
-         * when the next occurrence begins.
-         */
+    /*
+     * One-time missions disappear.
+     */
 
-        else {
+    if (repeat === "none") {
 
-            showPopup(
-                "Mission was overdue. No improvement points gained."
-            );
+        li.classList.add("remove");
+
+        setTimeout(() => {
+
+            li.remove();
 
             saveData();
 
-        }
+        }, 400);
 
-        return;
     }
+
+
+    /*
+     * Recurring missions stay visible.
+     * The recurrence engine will reset them
+     * when the next occurrence begins.
+     */
+
+    else {
+
+        showPopup(
+            "Mission was overdue. No improvement points gained."
+        );
+
+        saveData();
+
+    }
+
+    return;
+}
 
 
     /* =====================================================
@@ -3904,8 +3891,8 @@ function renderGoals() {
                 d.toLocaleDateString([], {
                     day: "numeric",
                     month: "short"
-                })
-
+                }) 
+            
         }
 
         const reward =
@@ -3950,13 +3937,14 @@ function renderGoals() {
 
 <div class="goal-actions">
 
-    ${goal.achieved
-                ? `
+    ${
+        goal.achieved
+        ? `
             <span class="achieved-badge">
                 ✓ Achieved
             </span>
         `
-                : `
+        : `
             <button
                 class="goal-achieve-btn"
                 onclick="event.stopPropagation();
@@ -3965,13 +3953,14 @@ function renderGoals() {
                 Achieve
             </button>
 
-            ${goal.priority === "High"
-                    ? `
+            ${
+                goal.priority === "High"
+                ? `
                     <span class="goal-locked">
                         🔒 Locked
                     </span>
                 `
-                    : `
+                : `
                     <button
                         class="goal-edit-btn"
                         onclick="event.stopPropagation();
@@ -3980,7 +3969,7 @@ function renderGoals() {
                         Edit
                     </button>
                 `
-                }
+            }
 
             <button
                 class="goal-remove-btn"
@@ -3990,7 +3979,7 @@ function renderGoals() {
                 Remove
             </button>
         `
-            }
+    }
 
 </div>
         `;
@@ -4389,7 +4378,7 @@ function removeGoal(goalId) {
     if (!goal) return;
 
     // Achieved = permanent
-
+    
 
     customConfirm(
         `Remove "${goal.title}"?`,
@@ -5236,7 +5225,7 @@ window.addEventListener("load", () => {
 
     showPage(activePage);
 });
-
+    
 document.querySelectorAll("#goal-list .goal").forEach(div => {
 
     const removeBtn =
@@ -5776,9 +5765,9 @@ async function createCustomCard() {
     ===================================================== */
 
     const imageData =
-        window.customCardImageData ||
-        customCardImageData ||
-        "";
+    window.customCardImageData ||
+    customCardImageData ||
+    "";
 
 
     /*
