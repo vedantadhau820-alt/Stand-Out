@@ -31,48 +31,6 @@ if ("serviceWorker" in navigator) {
     });
 }
 
-function restoreTimerMusic() {
-
-    const select =
-        document.getElementById("musicSelect");
-
-    if (!select || !music) {
-        return;
-    }
-
-    const file =
-        select.value;
-
-    if (!file) {
-        return;
-    }
-
-    musicMode = "preset";
-
-    playlist = [];
-
-    currentTrackIndex = 0;
-
-    music.src = file;
-
-    music.loop = true;
-
-    const volume =
-        document.getElementById("musicVolume");
-
-    if (volume) {
-        music.volume =
-            Number(volume.value);
-    }
-
-    music.load();
-
-    console.log(
-        "Music restored:",
-        file
-    );
-}
-
 function showUpdatingIndicator() {
     if (document.getElementById("sw-updating")) return;
 
@@ -1048,8 +1006,6 @@ try {
     }
 
 }
-
-restoreTimerMusic()
 
 document.getElementById("importProgressFile").addEventListener("change", function (e) {
     const file = e.target.files[0];
