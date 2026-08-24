@@ -31,6 +31,48 @@ if ("serviceWorker" in navigator) {
     });
 }
 
+function restoreTimerMusic() {
+
+    const select =
+        document.getElementById("musicSelect");
+
+    if (!select || !music) {
+        return;
+    }
+
+    const file =
+        select.value;
+
+    if (!file) {
+        return;
+    }
+
+    musicMode = "preset";
+
+    playlist = [];
+
+    currentTrackIndex = 0;
+
+    music.src = file;
+
+    music.loop = true;
+
+    const volume =
+        document.getElementById("musicVolume");
+
+    if (volume) {
+        music.volume =
+            Number(volume.value);
+    }
+
+    music.load();
+
+    console.log(
+        "Music restored:",
+        file
+    );
+}
+
 function showUpdatingIndicator() {
     if (document.getElementById("sw-updating")) return;
 
@@ -499,19 +541,138 @@ async function loadProgressFromFile() {
         }
 
 
-        /* =====================================================
-           5. CONFIRM
-        ===================================================== */
+        /* =========================================================
+   CUSTOM CONFIRM
+========================================================= */
 
-        const confirmed =
-            confirm(
-                "Restore this backup?\n\n" +
-                "Your current progress will be replaced."
+function customConfirm(message, title = "Are you sure?") {
+
+    return new Promise(resolve => {
+
+        const overlay =
+            document.createElement("div");
+
+        overlay.className =
+            "custom-confirm-overlay";
+
+        overlay.innerHTML = `
+
+            <div class="custom-confirm-card">
+
+                <div class="custom-confirm-title">
+                    ${escapeHTML(title)}
+                </div>
+
+                <div class="custom-confirm-message">
+                    ${escapeHTML(message)}
+                </div>
+
+                <div class="custom-confirm-actions">
+
+                    <button
+                        type="button"
+                        class="custom-confirm-cancel"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        class="custom-confirm-ok"
+                    >
+                        Continue
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(
+            overlay
+        );
+
+
+        const cancel =
+            overlay.querySelector(
+                ".custom-confirm-cancel"
             );
 
-        if (!confirmed) {
-            return;
+        const ok =
+            overlay.querySelector(
+                ".custom-confirm-ok"
+            );
+
+
+        function close(result) {
+
+            overlay.classList.remove(
+                "active"
+            );
+
+            setTimeout(() => {
+
+                overlay.remove();
+
+                resolve(result);
+
+            }, 200);
+
         }
+
+
+        cancel.onclick = () => {
+            close(false);
+        };
+
+
+        ok.onclick = () => {
+            close(true);
+        };
+
+
+        overlay.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    overlay
+                ) {
+
+                    close(false);
+
+                }
+
+            }
+        );
+
+
+        requestAnimationFrame(() => {
+
+            requestAnimationFrame(() => {
+
+                overlay.classList.add(
+                    "active"
+                );
+
+            });
+
+        });
+
+    });
+
+}
+
+        const confirmed =
+    await customConfirm(
+        "Your current progress will be replaced by the backup.",
+        "Restore Backup?"
+    );
+
+if (!confirmed) {
+    return;
+}
 
 
         /* =====================================================
@@ -596,6 +757,54 @@ lastImprovementDate =
     localStorage.getItem("lastImprovementDate") ||
     getISTDate().toISOString().slice(0, 10);
 
+    /* =====================================================
+   RELOAD MUSIC / SOUND RUNTIME STATE
+===================================================== */
+
+try {
+
+    if (
+        typeof loadSoundSettings ===
+        "function"
+    ) {
+
+        await loadSoundSettings();
+
+    }
+
+} catch (error) {
+
+    console.warn(
+        "Could not reload sound settings:",
+        error
+    );
+
+}
+
+
+/* =====================================================
+   REFRESH MUSIC UI
+===================================================== */
+
+try {
+
+    if (
+        typeof renderSoundSettings ===
+        "function"
+    ) {
+
+        renderSoundSettings();
+
+    }
+
+} catch (error) {
+
+    console.warn(
+        "Could not refresh sound settings UI:",
+        error
+    );
+
+}
         /* =====================================================
            8. RESTORE CUSTOM CARDS
         ===================================================== */
@@ -839,6 +1048,8 @@ lastImprovementDate =
     }
 
 }
+
+restoreTimerMusic()
 
 document.getElementById("importProgressFile").addEventListener("change", function (e) {
     const file = e.target.files[0];
