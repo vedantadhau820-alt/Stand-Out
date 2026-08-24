@@ -3749,103 +3749,535 @@ function loadData() {
     });
 }
 
+/* =========================================================
+   COMPLETE APP RESET
+   EVERYTHING → FACTORY STATE
+========================================================= */
 
-function resetData() {
-    // ===============================
-    // 1. RESET RUNTIME MEMORY (🔥 IMPORTANT)
-    // ===============================
-    completedMissions = 0;
-    appNotifications = [];
+async function resetData() {
 
-    dailyImprovementCount = 0;
-    lastImprovementDate = new Date().toDateString();
+    try {
 
-    localStorage.removeItem("dailyImprovementCount");
-    localStorage.removeItem("lastImprovementDate");
+        /* =====================================================
+           1. STOP ACTIVE AUDIO
+        ===================================================== */
 
-
-    // RESET COUNTDOWNS
-    countdowns = [];
-    localStorage.removeItem("countdowns");
-
-    if (window.timerInterval) {
-        clearInterval(window.timerInterval);
-        window.timerInterval = null;
-    }
-
-    document.getElementById("countdown-list").innerHTML = "";
-    document.getElementById("countdownCounter").textContent = "0";
-
-
-
-    // Reset achievements in memory
-    achievementsData = achievements.map(a => ({ ...a, unlocked: false }));
-
-    // ===============================
-    // RESET MARKETPLACE
-    // ===============================
-    ownedCards = {};
-    localStorage.removeItem("ownedCards");
-
-    // Re-render marketplace UI
-    renderMarketplace();
-    renderMyCards();
-    // ===============================
-    // 2. CLEAR LOCAL STORAGE
-    // ===============================
-    localStorage.removeItem("missions");
-    localStorage.removeItem("completedMissions");
-    localStorage.removeItem("missionHistory");
-    localStorage.removeItem("goals");
-    localStorage.removeItem("skills");
-    localStorage.removeItem("countdowns");
-    localStorage.removeItem("achievements");
-    localStorage.removeItem("appNotifications");
-    localStorage.removeItem("lastNotifCount");
-
-    // Extra safety cleanup
-    Object.keys(localStorage).forEach(key => {
         if (
-            key.startsWith("mission") ||
-            key.startsWith("goal") ||
-            key.includes("timer") ||
-            key.includes("notif")
+            typeof stopActiveTone ===
+            "function"
         ) {
-            localStorage.removeItem(key);
+            stopActiveTone();
         }
-    });
 
-    // ===============================
-    // 3. RESET UI (🔥 ALSO REQUIRED)
-    // ===============================
-    document.getElementById("missionCounter").textContent = "0";
-    document.getElementById("countdownCounter").textContent = "0";
+        if (
+            typeof stopPreview ===
+            "function"
+        ) {
+            stopPreview();
+        }
 
-    document.getElementById("mission-list").innerHTML = "";
-    document.getElementById("skill-list").innerHTML = "";
-    document.getElementById("goal-list").innerHTML = "";
-    document.getElementById("countdown-list").innerHTML = "";
 
-    // Reset notifications UI
-    const notifList = document.getElementById("notificationList");
-    if (notifList) {
-        notifList.innerHTML = `<p style="opacity:0.6;">No notifications</p>`;
+        /* =====================================================
+           2. RESET RUNTIME MEMORY
+        ===================================================== */
+
+        completedMissions = 0;
+
+        appNotifications = [];
+
+        dailyImprovementCount = 0;
+
+        lastImprovementDate =
+            new Date().toDateString();
+
+
+        /* =====================================================
+           3. RESET MAIN DATA ARRAYS
+        ===================================================== */
+
+        if (
+            typeof missions !==
+            "undefined"
+        ) {
+            missions = [];
+        }
+
+        if (
+            typeof goalsData !==
+            "undefined"
+        ) {
+            goalsData = [];
+        }
+
+        if (
+            typeof countdowns !==
+            "undefined"
+        ) {
+            countdowns = [];
+        }
+
+        if (
+            typeof ownedCards !==
+            "undefined"
+        ) {
+            ownedCards = {};
+        }
+
+        if (
+            typeof achievementsData !==
+            "undefined" &&
+            typeof achievements !==
+            "undefined"
+        ) {
+
+            achievementsData =
+                achievements.map(
+                    achievement => ({
+                        ...achievement,
+                        unlocked: false
+                    })
+                );
+
+        }
+
+
+        /* =====================================================
+           4. RESET CUSTOM CARD MEMORY
+        ===================================================== */
+
+        window.customCardEditId =
+            null;
+
+        window.customCardImageData =
+            "";
+
+        if (
+            typeof customCardImageData !==
+            "undefined"
+        ) {
+            customCardImageData = "";
+        }
+
+
+        /* =====================================================
+           5. RESET CUSTOM CARDS DATABASE
+        ===================================================== */
+
+        try {
+
+            if (
+                typeof customCardDB !==
+                "undefined" &&
+                customCardDB
+            ) {
+
+                customCardDB.close();
+
+                customCardDB = null;
+
+            }
+
+            await new Promise(
+                (resolve, reject) => {
+
+                    const request =
+                        indexedDB.deleteDatabase(
+                            "standout-custom-cards"
+                        );
+
+                    request.onsuccess =
+                        () => resolve();
+
+                    request.onerror =
+                        () => reject(
+                            request.error
+                        );
+
+                    request.onblocked =
+                        () => {
+
+                            console.warn(
+                                "Custom card database deletion is blocked."
+                            );
+
+                            resolve();
+
+                        };
+
+                }
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Failed to reset custom cards:",
+                error
+            );
+
+        }
+
+
+        /* =====================================================
+           6. RESET CUSTOM AUDIO DATABASE
+        ===================================================== */
+
+        try {
+
+            if (
+                typeof soundDB !==
+                "undefined" &&
+                soundDB
+            ) {
+
+                soundDB.close();
+
+                soundDB = null;
+
+            }
+
+            await new Promise(
+                (resolve, reject) => {
+
+                    const request =
+                        indexedDB.deleteDatabase(
+                            "standout-sounds"
+                        );
+
+                    request.onsuccess =
+                        () => resolve();
+
+                    request.onerror =
+                        () => reject(
+                            request.error
+                        );
+
+                    request.onblocked =
+                        () => {
+
+                            console.warn(
+                                "Sound database deletion is blocked."
+                            );
+
+                            resolve();
+
+                        };
+
+                }
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Failed to reset custom audio:",
+                error
+            );
+
+        }
+
+
+        /* =====================================================
+           7. RESET SOUND SETTINGS
+        ===================================================== */
+
+        localStorage.removeItem(
+            "standout_sound_settings"
+        );
+
+        if (
+            typeof DEFAULT_SOUND_SETTINGS !==
+            "undefined"
+        ) {
+
+            soundSettings = {
+                ...DEFAULT_SOUND_SETTINGS
+            };
+
+        }
+
+
+        /* =====================================================
+           8. RESET ALL LOCAL STORAGE
+        ===================================================== */
+
+        localStorage.clear();
+
+
+        /* =====================================================
+           9. RESET CARD CATALOG
+           Keep only built-in cards.
+        ===================================================== */
+
+        if (
+            Array.isArray(
+                window.cardCatalog
+            )
+        ) {
+
+            window.cardCatalog =
+                window.cardCatalog.filter(
+                    card => !card.custom
+                );
+
+        }
+
+
+        /* =====================================================
+           10. RESET TIMER
+        ===================================================== */
+
+        if (
+            window.timerInterval
+        ) {
+
+            clearInterval(
+                window.timerInterval
+            );
+
+            window.timerInterval =
+                null;
+
+        }
+
+
+        /* =====================================================
+           11. RESET PREVIEW / AUDIO REFERENCES
+        ===================================================== */
+
+        if (
+            typeof activeTone !==
+            "undefined"
+        ) {
+            activeTone = null;
+        }
+
+        if (
+            typeof previewAudio !==
+            "undefined"
+        ) {
+            previewAudio = null;
+        }
+
+        if (
+            typeof previewType !==
+            "undefined"
+        ) {
+            previewType = null;
+        }
+
+
+        /* =====================================================
+           12. RESET UI
+        ===================================================== */
+
+        const missionList =
+            document.getElementById(
+                "mission-list"
+            );
+
+        const skillList =
+            document.getElementById(
+                "skill-list"
+            );
+
+        const goalList =
+            document.getElementById(
+                "goal-list"
+            );
+
+        const countdownList =
+            document.getElementById(
+                "countdown-list"
+            );
+
+        if (missionList)
+            missionList.innerHTML = "";
+
+        if (skillList)
+            skillList.innerHTML = "";
+
+        if (goalList)
+            goalList.innerHTML = "";
+
+        if (countdownList)
+            countdownList.innerHTML = "";
+
+
+        /* =====================================================
+           13. RESET COUNTERS
+        ===================================================== */
+
+        const missionCounter =
+            document.getElementById(
+                "missionCounter"
+            );
+
+        const countdownCounter =
+            document.getElementById(
+                "countdownCounter"
+            );
+
+        if (missionCounter)
+            missionCounter.textContent = "0";
+
+        if (countdownCounter)
+            countdownCounter.textContent = "0";
+
+
+        /* =====================================================
+           14. RESET NOTIFICATIONS UI
+        ===================================================== */
+
+        const notificationList =
+            document.getElementById(
+                "notificationList"
+            );
+
+        if (notificationList) {
+
+            notificationList.innerHTML =
+                `<p style="opacity:.6;">
+                    No notifications
+                </p>`;
+
+        }
+
+
+        const notificationBadge =
+            document.getElementById(
+                "notifyBadge"
+            );
+
+        if (notificationBadge) {
+
+            notificationBadge.style.display =
+                "none";
+
+            notificationBadge.textContent =
+                "";
+
+        }
+
+
+        /* =====================================================
+           15. RESET CUSTOM CARD MANAGER
+        ===================================================== */
+
+        const customCardsManager =
+            document.getElementById(
+                "customCardsManager"
+            );
+
+        if (customCardsManager) {
+
+            customCardsManager.innerHTML =
+                `
+                <div class="custom-cards-empty">
+                    You haven't created any
+                    custom cards yet.
+                </div>
+                `;
+
+        }
+
+
+        /* =====================================================
+           16. RESET MARKETPLACE
+        ===================================================== */
+
+        if (
+            typeof renderMarketplace ===
+            "function"
+        ) {
+
+            renderMarketplace(
+                "ALL"
+            );
+
+        }
+
+        if (
+            typeof renderMyCards ===
+            "function"
+        ) {
+
+            renderMyCards();
+
+        }
+
+
+        /* =====================================================
+           17. RESET ACHIEVEMENTS
+        ===================================================== */
+
+        if (
+            typeof renderAchievements ===
+            "function"
+        ) {
+
+            renderAchievements();
+
+        }
+
+
+        /* =====================================================
+           18. RESET SOUND UI
+        ===================================================== */
+
+        if (
+            typeof initializeSoundSettings ===
+            "function"
+        ) {
+
+            /*
+             * Rebuild sound controls
+             * using factory defaults.
+             */
+            await initializeSoundSettings();
+
+        }
+
+
+        /* =====================================================
+           19. RESET CUSTOM CARD CONTROLS
+        ===================================================== */
+
+        if (
+            typeof initializeCustomCardGradeControls ===
+            "function"
+        ) {
+
+            initializeCustomCardGradeControls();
+
+        }
+
+
+        /* =====================================================
+           20. SUCCESS
+        ===================================================== */
+
+        customAlert(
+            "Everything has been reset to factory state."
+        );
+
+        console.log(
+            "✓ COMPLETE APP RESET"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Complete reset failed:",
+            error
+        );
+
+        customAlert(
+            "Reset failed. Check the console."
+        );
+
     }
 
-    const badge = document.getElementById("notifyBadge");
-    if (badge) {
-        badge.style.display = "none";
-        badge.textContent = "";
-    }
-
-    // Save reset achievements back
-    localStorage.setItem("achievements", JSON.stringify(achievementsData));
-    renderAchievements();
-
-    customAlert("All data has been reset successfully!");
 }
-
-
 function isPastDateTime(dateTimeValue) {
     if (!dateTimeValue) return false; // allow empty deadlines
     return new Date(dateTimeValue).getTime() < Date.now();
