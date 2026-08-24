@@ -2247,25 +2247,50 @@ function openModal(type, skillDiv = null) {
     
 
     // ---- Add Goal ----
-    if (type === "goal") {
-        content.innerHTML = `
-    <h3>Add Goal</h3>
-    <input id="goalInput" placeholder="Goal">
+if (type === "goal") {
 
-    <label>Priority</label>
-    <select id="priorityInput">
-      <option>High</option>
-      <option>Medium</option>
-      <option>Low</option>
-    </select>
+    content.innerHTML = `
+        <h3>Add Goal</h3>
 
-    <label>Deadline</label>
-    <input id="goalDeadline" type="datetime-local">
+        <input
+            id="goalInput"
+            placeholder="Goal"
+            maxlength="100"
+        >
 
-    <button onclick="addGoal()">Add</button>
-    <button onclick="closeModal()">Cancel</button>
-  `;
-    }
+        <label>Priority</label>
+
+        <select id="priorityInput">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+
+        <label>Deadline</label>
+
+        <input
+            id="goalDeadline"
+            type="datetime-local"
+        >
+
+        <button onclick="addGoal()">
+            Add Goal
+        </button>
+
+        <button onclick="closeModal()">
+            Cancel
+        </button>
+    `;
+
+    const now =
+        new Date()
+            .toISOString()
+            .slice(0, 16);
+
+    document.getElementById(
+        "goalDeadline"
+    ).min = now;
+}
 
 
     // ---- Add Countdown (FIXED) ----
