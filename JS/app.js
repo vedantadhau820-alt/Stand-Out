@@ -568,6 +568,33 @@ async function loadProgressFromFile() {
             }
         );
 
+        /* =====================================================
+   RELOAD RUNTIME DATA AFTER RESTORE
+===================================================== */
+
+goalsData =
+    JSON.parse(
+        localStorage.getItem("goalsData")
+    ) || [];
+
+countdowns =
+    JSON.parse(
+        localStorage.getItem("countdowns")
+    ) || [];
+
+completedMissions =
+    Number(
+        localStorage.getItem("completedMissions")
+    ) || 0;
+
+dailyImprovementCount =
+    Number(
+        localStorage.getItem("dailyImprovementCount")
+    ) || 0;
+
+lastImprovementDate =
+    localStorage.getItem("lastImprovementDate") ||
+    getISTDate().toISOString().slice(0, 10);
 
         /* =====================================================
            8. RESTORE CUSTOM CARDS
