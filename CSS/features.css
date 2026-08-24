@@ -736,3 +736,277 @@
     }
 
 }
+
+/* =========================================================
+   GOAL ACHIEVEMENT VIDEO
+========================================================= */
+
+.goal-achievement-video {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999999;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: #050607;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity .35s ease;
+}
+
+
+.goal-achievement-video.active {
+
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+
+.goal-achievement-video.closing {
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.goal-achievement-video-content {
+
+    width: min(
+        760px,
+        100%
+    );
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.goal-achievement-video-title {
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: .2em;
+
+    text-transform: uppercase;
+
+    opacity: 0;
+
+    transform:
+        translateY(-8px);
+
+    transition:
+        opacity .45s ease .15s,
+        transform .45s
+        cubic-bezier(.16,1,.3,1)
+        .15s;
+}
+
+
+.goal-achievement-video.active
+.goal-achievement-video-title {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+/* =========================================================
+   VIDEO FRAME
+========================================================= */
+
+.goal-achievement-video-frame {
+
+    position: relative;
+
+    width: 100%;
+
+    max-height: 70vh;
+
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    background: #000;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.55);
+
+    transform:
+        scale(.96);
+
+    opacity: 0;
+
+    transition:
+        opacity .5s ease .1s,
+        transform .6s
+        cubic-bezier(.16,1,.3,1)
+        .1s;
+}
+
+
+.goal-achievement-video.active
+.goal-achievement-video-frame {
+
+    opacity: 1;
+
+    transform:
+        scale(1);
+}
+
+
+.goal-achievement-video-frame video {
+
+    display: block;
+
+    width: 100%;
+
+    max-height: 70vh;
+
+    object-fit: contain;
+
+    background: #000;
+}
+
+
+/* =========================================================
+   CONTINUE BUTTON
+========================================================= */
+
+.goal-achievement-continue {
+
+    appearance: none;
+
+    min-width: 120px;
+
+    height: 40px;
+
+    padding: 0 18px;
+
+    border-radius: 10px;
+
+    border: 1px solid
+        rgba(255,255,255,.12);
+
+    background:
+        rgba(255,255,255,.07);
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    opacity: 0;
+
+    transform:
+        translateY(8px);
+
+    transition:
+        opacity .45s ease .25s,
+        transform .45s
+        cubic-bezier(.16,1,.3,1)
+        .25s,
+        background .18s ease,
+        border-color .18s ease;
+}
+
+
+.goal-achievement-video.active
+.goal-achievement-continue {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+
+.goal-achievement-continue:hover {
+
+    background:
+        rgba(255,255,255,.12);
+
+    border-color:
+        rgba(255,255,255,.2);
+}
+
+
+.goal-achievement-continue:active {
+
+    transform:
+        scale(.96);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .goal-achievement-video {
+
+        padding: 18px;
+    }
+
+    .goal-achievement-video-content {
+
+        gap: 14px;
+    }
+
+    .goal-achievement-video-title {
+
+        font-size: 11px;
+
+        letter-spacing: .17em;
+    }
+
+    .goal-achievement-video-frame {
+
+        border-radius: 14px;
+    }
+
+    .goal-achievement-continue {
+
+        width: 100%;
+
+        max-width: 220px;
+    }
+}
