@@ -1921,30 +1921,66 @@ function completeMission(btn) {
        OVERDUE → NO REWARD
     ===================================================== */
 
-    if (
-        deadline &&
-        new Date(deadline).getTime() < Date.now()
-    ) {
+   if (
+    deadline &&
+    new Date(deadline).getTime() < Date.now()
+) {
+
+    /*
+     * Mission is already overdue.
+     * It gets NO Improvement Point.
+     */
+
+    const completeBtn =
+        li.querySelector(".complete-btn");
+
+    /*
+     * Disable the button immediately.
+     * This occurrence is finished.
+     */
+
+    if (completeBtn) {
+
+        completeBtn.disabled = true;
+
+        completeBtn.style.opacity = "0.45";
+
+    }
+
+
+    /*
+     * Mark the occurrence visually.
+     */
+
+    li.classList.add("completed");
+
+
+    /*
+     * One-time missions disappear.
+     */
+
+    if (repeat === "none") {
 
         li.classList.add("remove");
 
-        if (repeat === "none") {
+        setTimeout(() => {
 
-            setTimeout(() => {
-                li.remove();
-            }, 400);
+            li.remove();
 
-        } else {
+            saveData();
 
-            setTimeout(() => {
+        }, 400);
 
-                li.classList.remove(
-                    "remove"
-                );
+    }
 
-            }, 400);
 
-        }
+    /*
+     * Recurring missions stay visible.
+     * The recurrence engine will reset them
+     * when the next occurrence begins.
+     */
+
+    else {
 
         showPopup(
             "Mission was overdue. No improvement points gained."
@@ -1952,8 +1988,10 @@ function completeMission(btn) {
 
         saveData();
 
-        return;
     }
+
+    return;
+}
 
 
     /* =====================================================
