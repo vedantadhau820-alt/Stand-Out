@@ -1809,6 +1809,50 @@ function openModal(type, skillDiv = null) {
 
     }
 
+    /* =====================================================
+   ADD SKILL
+===================================================== */
+
+if (type === "skill") {
+
+    content.innerHTML = `
+        <h3>Add Skill</h3>
+
+        <input
+            id="skillInput"
+            type="text"
+            placeholder="Enter skill name"
+            maxlength="50"
+            autocomplete="off"
+        >
+
+        <button
+            type="button"
+            onclick="addSkill()"
+        >
+            Add Skill
+        </button>
+
+        <button
+            type="button"
+            onclick="closeModal()"
+        >
+            Cancel
+        </button>
+    `;
+
+    /* Focus input automatically */
+
+    setTimeout(() => {
+
+        document
+            .getElementById("skillInput")
+            ?.focus();
+
+    }, 50);
+
+}
+
     // ---- Edit Mission ----
     if (type === "edit-mission" && skillDiv) {
         const oldText = skillDiv.querySelector(".mission-text").textContent.replace("🔥", "").trim();
