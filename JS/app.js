@@ -3122,12 +3122,9 @@ function markGoalAchieved(goalId) {
     renderMarketplace(currentMarketplaceFilter);
 
     // Celebration
-    playAppTone("mission");
+    // playAppTone("mint");
 
-    showGoalAchievementAnimation(
-        goal.title,
-        reward
-    );
+    playGoalAchievementVideo()
 
     pushNotification(
         "Goal Achieved 🎯",
@@ -3145,68 +3142,147 @@ function markGoalAchieved(goalId) {
    GOAL ACHIEVEMENT ANIMATION
 --------------------------------------------------------- */
 
-function showGoalAchievementAnimation(title, reward) {
+function playGoalAchievementVideo() {
 
     const overlay =
         document.createElement("div");
 
     overlay.className =
-        "goal-achievement-overlay";
+        "goal-achievement-video";
 
     overlay.innerHTML = `
 
-        <div class="goal-achievement-card">
+        <div class="goal-achievement-video-content">
 
-            <div class="goal-achievement-check">
-                ✓
-            </div>
-
-            <div class="goal-achievement-label">
+            <div class="goal-achievement-video-title">
                 GOAL ACHIEVED
             </div>
 
-            <h2>
-                ${escapeHTML(title)}
-            </h2>
+            <div class="goal-achievement-video-frame">
 
-            <div class="goal-achievement-reward">
-                +${reward} Improvement Points
+                <video
+                    autoplay
+                    playsinline
+                    preload="auto"
+                >
+                    <source
+                        src="/AchievedGoal.mp4"
+                        type="video/mp4"
+                    >
+                </video>
+
             </div>
+
+            <button
+                type="button"
+                class="goal-achievement-continue"
+            >
+                Continue
+            </button>
 
         </div>
     `;
 
     document.body.appendChild(overlay);
 
-    /*
-     * Let browser paint first,
-     * then trigger the entrance.
-     */
-    requestAnimationFrame(() => {
 
-        requestAnimationFrame(() => {
+    const video =
+        overlay.querySelector("video");
 
-            overlay.classList.add("active");
+    const continueButton =
+        overlay.querySelector(
+            ".goal-achievement-continue"
+        );
 
-        });
+
+    /* =========================================
+       PLAY
+    ========================================= */
+
+    video.play().catch(error => {
+
+        console.warn(
+            "Goal achievement video could not autoplay:",
+            error
+        );
 
     });
 
-    /*
-     * Hold the moment long enough
-     * for it to actually feel rewarding.
-     */
-    setTimeout(() => {
 
-        overlay.classList.remove("active");
+    /* =========================================
+       CLOSE
+    ========================================= */
+
+    function closeVideo() {
+
+        if (
+            overlay.classList.contains(
+                "closing"
+            )
+        ) {
+            return;
+        }
+
+        video.pause();
+
+        overlay.classList.add(
+            "closing"
+        );
 
         setTimeout(() => {
 
             overlay.remove();
 
-        }, 400);
+        }, 350);
+    }
 
-    }, 2800);
+
+    /* =========================================
+       CONTINUE BUTTON
+    ========================================= */
+
+    continueButton.addEventListener(
+        "click",
+        closeVideo
+    );
+
+
+    /* =========================================
+       VIDEO FINISHED
+    ========================================= */
+
+    video.addEventListener(
+        "ended",
+        closeVideo
+    );
+
+
+    /* =========================================
+       VIDEO ERROR
+    ========================================= */
+
+    video.addEventListener(
+        "error",
+        closeVideo
+    );
+
+
+    /* =========================================
+       SHOW
+    ========================================= */
+
+    requestAnimationFrame(() => {
+
+        requestAnimationFrame(() => {
+
+            overlay.classList.add(
+                "active"
+            );
+
+        });
+
+    });
+
 }
 
 
