@@ -185,30 +185,632 @@ function restoreAppSnapshot(data) {
     document.getElementById("missionCounter").textContent = completedMissions;
 }
 
-function saveProgressToFile() {
+/* =========================================================
+   COMPLETE BACKUP
+   Everything EXCEPT custom audio
+========================================================= */
 
-    const snapshot = getAppSnapshot();
-    const blob = new Blob(
-        [JSON.stringify(snapshot, null, 2)],
-        { type: "application/json" }
-    );
+async function saveProgressToFile() {
 
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `standout-backup-${Date.now()}.json`;
+    try {
 
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+        /* =====================================================
+           1. COLLECT LOCAL STORAGE
+        ===================================================== */
 
-    URL.revokeObjectURL(a.href);
+        const localStorageData = {};
+
+        for (
+            let i = 0;
+            i < localStorage.length;
+            i++
+        ) {
+
+            const key =
+                localStorage.key(i);
+
+            if (!key) {
+                continue;
+            }
+
+            localStorageData[key] =
+                localStorage.getItem(key);
+
+        }
+
+
+        /* =====================================================
+           2. GET CUSTOM CARDS
+        ===================================================== */
+
+        let customCards = [];
+
+        try {
+
+            if (
+                typeof getCustomCards ===
+                "function"
+            ) {
+
+                customCards =
+                    await getCustomCards();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to backup custom cards:",
+                error
+            );
+
+        }
+
+
+        /* =====================================================
+           3. CREATE BACKUP
+        ===================================================== */
+
+        const backup = {
+
+            backupVersion: 3,
+
+            backupType:
+                "STANDOUT_COMPLETE",
+
+            createdAt:
+                new Date().toISOString(),
+
+
+            /* ---------------------------------------------
+               LOCAL STORAGE
+            --------------------------------------------- */
+
+            localStorage:
+                localStorageData,
+
+
+            /* ---------------------------------------------
+               CUSTOM CARDS
+               Artwork is already stored inside the card
+               object as image data.
+            --------------------------------------------- */
+
+            customCards:
+                customCards
+
+        };
+
+
+        /* =====================================================
+           4. CONVERT TO JSON
+        ===================================================== */
+
+        const json =
+            JSON.stringify(
+                backup,
+                null,
+                2
+            );
+
+
+        const blob =
+            new Blob(
+                [json],
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+
+        /* =====================================================
+           5. DOWNLOAD
+        ===================================================== */
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+        link.href =
+            url;
+
+        link.download =
+            `standout-backup-${getBackupDate()}.json`;
+
+        document.body.appendChild(
+            link
+        );
+
+        link.click();
+
+        link.remove();
+
+        URL.revokeObjectURL(
+            url
+        );
+
+
+        /* =====================================================
+           6. SUCCESS
+        ===================================================== */
+
+        customAlert(
+            "Backup created successfully."
+        );
+
+
+        console.log(
+            "✓ Standout backup created",
+            backup
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Backup failed:",
+            error
+        );
+
+        customAlert(
+            "Could not create backup."
+        );
+
+    }
+
 }
 
-function loadProgressFromFile() {
-    customConfirm(
-        "Restoring will overwrite your current progress. Continue?",
-        () => document.getElementById("importProgressFile").click()
-    );
+
+/* =========================================================
+   BACKUP DATE
+========================================================= */
+
+function getBackupDate() {
+
+    const date =
+        new Date();
+
+    return [
+
+        date.getFullYear(),
+
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0"),
+
+        String(
+            date.getDate()
+        ).padStart(2, "0")
+
+    ].join("-");
+
+}
+
+/* =========================================================
+   COMPLETE RESTORE
+   Restores EVERYTHING from backup
+   EXCEPT custom audio
+========================================================= */
+
+async function loadProgressFromFile() {
+
+    try {
+
+        /* =====================================================
+           1. CREATE FILE INPUT
+        ===================================================== */
+
+        const input =
+            document.createElement("input");
+
+        input.type = "file";
+        input.accept = ".json,application/json";
+
+
+        /* =====================================================
+           2. WAIT FOR FILE
+        ===================================================== */
+
+        const file =
+            await new Promise(resolve => {
+
+                input.onchange = () => {
+
+                    resolve(
+                        input.files?.[0] ||
+                        null
+                    );
+
+                };
+
+                input.click();
+
+            });
+
+
+        if (!file) {
+            return;
+        }
+
+
+        /* =====================================================
+           3. READ FILE
+        ===================================================== */
+
+        const text =
+            await file.text();
+
+        let backup;
+
+        try {
+
+            backup =
+                JSON.parse(text);
+
+        } catch (error) {
+
+            customAlert(
+                "This backup file is not valid."
+            );
+
+            return;
+
+        }
+
+
+        /* =====================================================
+           4. VALIDATE BACKUP
+        ===================================================== */
+
+        if (
+            !backup ||
+            backup.backupType !==
+                "STANDOUT_COMPLETE"
+        ) {
+
+            customAlert(
+                "This is not a valid Standout backup."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !backup.localStorage ||
+            typeof backup.localStorage !==
+                "object"
+        ) {
+
+            customAlert(
+                "Backup data is incomplete."
+            );
+
+            return;
+
+        }
+
+
+        /* =====================================================
+           5. CONFIRM
+        ===================================================== */
+
+        const confirmed =
+            confirm(
+                "Restore this backup?\n\n" +
+                "Your current progress will be replaced."
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        /* =====================================================
+           6. STOP ACTIVE AUDIO
+        ===================================================== */
+
+        if (
+            typeof stopActiveTone ===
+            "function"
+        ) {
+
+            stopActiveTone();
+
+        }
+
+        if (
+            typeof stopPreview ===
+            "function"
+        ) {
+
+            stopPreview();
+
+        }
+
+
+        /* =====================================================
+           7. RESTORE LOCAL STORAGE
+        ===================================================== */
+
+        localStorage.clear();
+
+        Object.entries(
+            backup.localStorage
+        ).forEach(
+            ([key, value]) => {
+
+                try {
+
+                    localStorage.setItem(
+                        key,
+                        value
+                    );
+
+                } catch (error) {
+
+                    console.warn(
+                        "Could not restore localStorage key:",
+                        key,
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           8. RESTORE CUSTOM CARDS
+        ===================================================== */
+
+        if (
+            Array.isArray(
+                backup.customCards
+            )
+        ) {
+
+            try {
+
+                /* ---------------------------------------------
+                   Open custom card database
+                --------------------------------------------- */
+
+                await openCustomCardDB();
+
+
+                /* ---------------------------------------------
+                   Clear existing custom cards
+                --------------------------------------------- */
+
+                const db =
+                    customCardDB ||
+                    await openCustomCardDB();
+
+                await new Promise(
+                    (resolve, reject) => {
+
+                        const transaction =
+                            db.transaction(
+                                "cards",
+                                "readwrite"
+                            );
+
+                        const store =
+                            transaction.objectStore(
+                                "cards"
+                            );
+
+                        store.clear();
+
+                        transaction.oncomplete =
+                            () => resolve();
+
+                        transaction.onerror =
+                            () => reject(
+                                transaction.error
+                            );
+
+                    }
+                );
+
+
+                /* ---------------------------------------------
+                   Restore cards
+                --------------------------------------------- */
+
+                for (
+                    const card
+                    of backup.customCards
+                ) {
+
+                    if (
+                        !card ||
+                        !card.id
+                    ) {
+                        continue;
+                    }
+
+                    await saveCustomCard(
+                        card
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to restore custom cards:",
+                    error
+                );
+
+                customAlert(
+                    "Progress restored, but custom cards could not be restored."
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           9. IMPORTANT:
+              DO NOT RESTORE CUSTOM AUDIO
+        ===================================================== */
+
+        /*
+         * The backup intentionally contains
+         * no custom audio.
+         *
+         * Existing custom audio remains untouched.
+         */
+
+
+        /* =====================================================
+           10. RELOAD RUNTIME STATE
+        ===================================================== */
+
+        if (
+            typeof loadData ===
+            "function"
+        ) {
+
+            loadData();
+
+        }
+
+
+        /* =====================================================
+           11. RESTORE CUSTOM CARDS INTO CATALOG
+        ===================================================== */
+
+        if (
+            typeof loadCustomCardsIntoMarketplace ===
+            "function"
+        ) {
+
+            await loadCustomCardsIntoMarketplace();
+
+        }
+
+
+        /* =====================================================
+           12. REFRESH UI
+        ===================================================== */
+
+        if (
+            typeof renderMissions ===
+            "function"
+        ) {
+
+            renderMissions();
+
+        }
+
+        if (
+            typeof renderGoals ===
+            "function"
+        ) {
+
+            renderGoals();
+
+        }
+
+        if (
+            typeof renderSkills ===
+            "function"
+        ) {
+
+            renderSkills();
+
+        }
+
+        if (
+            typeof renderCountdowns ===
+            "function"
+        ) {
+
+            renderCountdowns();
+
+        }
+
+        if (
+            typeof renderAchievements ===
+            "function"
+        ) {
+
+            renderAchievements();
+
+        }
+
+        if (
+            typeof renderMarketplace ===
+            "function"
+        ) {
+
+            renderMarketplace(
+                window.currentMarketplaceFilter ||
+                "ALL"
+            );
+
+        }
+
+        if (
+            typeof renderMyCards ===
+            "function"
+        ) {
+
+            renderMyCards();
+
+        }
+
+        if (
+            typeof renderCustomCardsManager ===
+            "function"
+        ) {
+
+            await renderCustomCardsManager();
+
+        }
+
+
+        /* =====================================================
+           13. SUCCESS
+        ===================================================== */
+
+        customAlert(
+            "Backup restored successfully."
+        );
+
+        console.log(
+            "✓ Complete Standout backup restored."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Restore failed:",
+            error
+        );
+
+        customAlert(
+            "Could not restore backup."
+        );
+
+    }
+
 }
 
 document.getElementById("importProgressFile").addEventListener("change", function (e) {
