@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="CSS/timer.css">
 <link rel="stylesheet" href="CSS/features.css">
 <link rel="stylesheet" href="CSS/effects.css">
+<link rel="stylesheet" href="CSS/momentum.css">
     
 </head>
 
@@ -107,10 +108,27 @@
        Missions Section
   ============================ -->
     <section id="missions" class="active">
-        <h2>Missions</h2>
-        <p>Improvement Points: <span id="missionCounter">0</span></p>
-        <ul id="mission-list"></ul>
-    </section>
+
+    <div class="missions-header">
+
+        <div class="missions-title">
+            <h2>Missions</h2>
+
+            <p>
+                Improvement Points:
+                <span id="missionCounter">0</span>
+            </p>
+        </div>
+
+        <div id="momentum-slot"></div>
+
+    </div>
+
+    <div id="momentum-panel-slot"></div>
+
+    <ul id="mission-list"></ul>
+
+</section>
 
     <!-- Floating Add Button -->
     <button class="plus-btn" id="globalAddBtn" onclick="openModal('mission')">+ Add</button>
@@ -778,6 +796,7 @@
     <script src="JS/cards.js"></script>
     <script src="JS/sound.js"></script>
     <script src="JS/app.js"></script>
+    <script src="JS/momentum.js"></script>
     <script src="JS/custom-cards.js"></script>
     </body>
 
