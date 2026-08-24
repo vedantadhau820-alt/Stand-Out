@@ -5225,13 +5225,16 @@ window.addEventListener("load", () => {
 
     showPage(activePage);
 });
-
+    
 document.querySelectorAll("#goal-list .goal").forEach(div => {
-    div.classList.add("show");
-    const removeBtn = div.querySelector(".remove-btn");
+
+    const removeBtn =
+        div.querySelector(".remove-btn");
+
     if (removeBtn) {
         removeBtn.onclick = () => removeGoal(removeBtn);
     }
+
 });
 
 //Cheats
