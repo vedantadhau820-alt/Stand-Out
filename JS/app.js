@@ -1275,29 +1275,52 @@ function openModal(type, skillDiv = null) {
         window.missionBeingEdited = skillDiv;
     }
 
-    // ---- Add Skill ----
-    if (type === "skill") {
-        content.innerHTML = `
-      <h3>Add Skill</h3>
-      <input id="skillInput" placeholder="Skill name">
-      <button onclick="addSkill()">Add</button>
-      <button onclick="closeModal()">Cancel</button>
-      `;
-        //   <input id="progressInput" type="number" placeholder="Progress % (0-100)">
-    }
+    // ---- Add Goal ----
+if (type === "goal") {
 
-    // ---- Edit Skill ----
-    if (type === "edit-skill" && skillDiv) {
-        const skillName = skillDiv.querySelector("strong").textContent;
-        const currentProgress =
-            skillDiv.querySelector(".progress-bar").style.width.replace("%", "");
+    content.innerHTML = `
+        <h3>Add Goal</h3>
 
-        content.innerHTML = `
-      <h3>Edit ${skillName}</h3>
-      <button onclick="deleteSkill('${skillName}')">Delete</button>
-      <button onclick="closeModal()">Cancel</button>
+        <input
+            id="goalInput"
+            placeholder="Goal"
+            maxlength="100"
+        >
+
+        <label>Priority</label>
+
+        <select id="priorityInput">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+
+        <label>Deadline</label>
+
+        <input
+            id="goalDeadline"
+            type="datetime-local"
+        >
+
+        <button onclick="addGoal()">
+            Add Goal
+        </button>
+
+        <button onclick="closeModal()">
+            Cancel
+        </button>
     `;
-    }
+
+    const now =
+        new Date()
+            .toISOString()
+            .slice(0, 16);
+
+    document.getElementById(
+        "goalDeadline"
+    ).min = now;
+}
+    
 
     // ---- Add Goal ----
     if (type === "goal") {
@@ -2690,145 +2713,421 @@ function deleteSkill(skillName) {
 /* =========================================================
    7. GOALS MODULE
 ========================================================= */
+
 let goalsData = JSON.parse(localStorage.getItem("goalsData")) || [];
 
 function saveGoals() {
     localStorage.setItem("goalsData", JSON.stringify(goalsData));
 }
 
+/* ---------------------------------------------------------
+   GOAL REWARD
+--------------------------------------------------------- */
+
+function getGoalReward(priority) {
+    if (priority === "Low") return 5;
+    if (priority === "Medium") return 10;
+    if (priority === "High") return 15;
+    return 0;
+}
+
+/* ---------------------------------------------------------
+   ADD GOAL
+--------------------------------------------------------- */
+
 function addGoal() {
-    const title = document.getElementById("goalInput").value.trim();
-    const priority = document.getElementById("priorityInput").value;
-    const deadline = document.getElementById("goalDeadline").value;
 
-    if (!title) return closeModal();
+    const title =
+        document.getElementById("goalInput").value.trim();
 
-    if (deadline && isPastDateTime(deadline)) {
+    const priority =
+        document.getElementById("priorityInput").value;
+
+    const deadline =
+        document.getElementById("goalDeadline").value;
+
+    if (!title) {
+        closeModal();
+        return;
+    }
+
+    if (!deadline) {
+        customAlert("Please set a deadline.");
+        return;
+    }
+
+    if (isPastDateTime(deadline)) {
         customAlert("Deadline cannot be in the past.");
         return;
     }
 
     const newGoal = {
         id: Date.now().toString(),
+
         title,
+
         priority,
+
         deadline,
+
         achieved: false,
-        achievedAt: null
+
+        achievedAt: null,
+
+        // Prevent duplicate overdue penalties
+        overduePenaltyApplied: false,
+
+        // Prevent duplicate warnings
+        warned: false
     };
 
     goalsData.push(newGoal);
+
     saveGoals();
+
     renderGoals();
+
     closeModal();
 }
 
+
+/* ---------------------------------------------------------
+   EDIT GOAL
+--------------------------------------------------------- */
+
+function openEditGoal(goalId) {
+
+    const goal = goalsData.find(g => g.id === goalId);
+
+    if (!goal) return;
+
+    // Achieved goals are permanently locked
+    if (goal.achieved) {
+        customAlert("Achieved goals cannot be edited.");
+        return;
+    }
+
+    // High priority goals are locked
+    if (goal.priority === "High") {
+        customAlert("High priority goals cannot be edited.");
+        return;
+    }
+
+    const content =
+        document.getElementById("modal-content");
+
+    const modal =
+        document.getElementById("modal");
+
+    modal.classList.add("active");
+
+    content.innerHTML = `
+        <h3>Edit Goal</h3>
+
+        <input
+            id="editGoalInput"
+            value="${escapeHTML(goal.title)}"
+            placeholder="Goal"
+        >
+
+        <label>Priority</label>
+
+        <select id="editGoalPriority">
+
+            <option value="Low"
+                ${goal.priority === "Low" ? "selected" : ""}>
+                Low
+            </option>
+
+            <option value="Medium"
+                ${goal.priority === "Medium" ? "selected" : ""}>
+                Medium
+            </option>
+
+        </select>
+
+        <label>Deadline</label>
+
+        <input
+            id="editGoalDeadline"
+            type="datetime-local"
+            value="${goal.deadline || ""}"
+        >
+
+        <button onclick="updateGoal('${goal.id}')">
+            Update
+        </button>
+
+        <button onclick="closeModal()">
+            Cancel
+        </button>
+    `;
+}
+
+
+/* ---------------------------------------------------------
+   UPDATE GOAL
+--------------------------------------------------------- */
+
+function updateGoal(goalId) {
+
+    const goal = goalsData.find(g => g.id === goalId);
+
+    if (!goal) return;
+
+    if (goal.achieved) {
+        customAlert("Achieved goals cannot be edited.");
+        return;
+    }
+
+    if (goal.priority === "High") {
+        customAlert("High priority goals cannot be edited.");
+        return;
+    }
+
+    const newTitle =
+        document.getElementById("editGoalInput")
+            .value.trim();
+
+    const newPriority =
+        document.getElementById("editGoalPriority")
+            .value;
+
+    const newDeadline =
+        document.getElementById("editGoalDeadline")
+            .value;
+
+    if (!newTitle) {
+        customAlert("Goal name cannot be empty.");
+        return;
+    }
+
+    if (!newDeadline) {
+        customAlert("Please set a deadline.");
+        return;
+    }
+
+    if (isPastDateTime(newDeadline)) {
+        customAlert("Deadline cannot be in the past.");
+        return;
+    }
+
+    goal.title = newTitle;
+
+    goal.priority = newPriority;
+
+    goal.deadline = newDeadline;
+
+    // Editing resets deadline-related state
+    goal.warned = false;
+
+    goal.overduePenaltyApplied = false;
+
+    saveGoals();
+
+    renderGoals();
+
+    closeModal();
+}
+
+
+/* ---------------------------------------------------------
+   RENDER GOALS
+--------------------------------------------------------- */
+
 function renderGoals() {
-    const container = document.getElementById("goal-list");
+
+    const container =
+        document.getElementById("goal-list");
+
     container.innerHTML = "";
 
     goalsData.forEach(goal => {
-        const div = document.createElement("div");
+
+        const div =
+            document.createElement("div");
+
         div.className = "goal show";
+
+        div.dataset.goalId = goal.id;
+
+        div.dataset.deadline =
+            goal.deadline || "";
 
         if (goal.achieved) {
             div.classList.add("goal-achieved");
         }
 
         let formattedDeadline = "";
+
         if (goal.deadline) {
-            const d = new Date(goal.deadline);
-            formattedDeadline = d.toLocaleDateString([], { day: "numeric", month: "short" });
+
+            const d =
+                new Date(goal.deadline);
+
+            formattedDeadline =
+                d.toLocaleDateString([], {
+                    day: "numeric",
+                    month: "short"
+                }) 
+            
         }
 
+        const reward =
+            getGoalReward(goal.priority);
+
+        const isLocked =
+            goal.achieved ||
+            goal.priority === "High";
+
         div.innerHTML = `
+
             <div class="goal-header">
-                <span class="goal-title">${goal.title}</span>
-                <span class="goal-priority ${goal.priority}">
-                    <strong>${goal.priority}</strong>
+
+                <span class="goal-title">
+                    ${escapeHTML(goal.title)}
                 </span>
+
+                <span class="goal-priority ${goal.priority}">
+                    ${goal.priority}
+                </span>
+
             </div>
 
-            <div class="goal-subrow">
-                <span class="goal-deadline">${formattedDeadline}</span>
 
-                ${goal.achieved
-                ? `<span class="achieved-badge">
-                             🏆 Achieved • ${goal.achievedAt}
-                           </span>`
+            <div class="goal-meta">
+
+                <span class="goal-deadline">
+                    ${formattedDeadline}
+                </span>
+
+            </div>
+
+
+            <div class="goal-status-row">
+
+                <span class="goal-timer"></span>
+
+                <span class="goal-overdue"></span>
+
+            </div>
+
+
+<div class="goal-actions">
+
+    ${
+        goal.achieved
+        ? `
+            <span class="achieved-badge">
+                ✓ Achieved
+            </span>
+        `
+        : `
+            <button
+                class="goal-achieve-btn"
+                onclick="event.stopPropagation();
+                markGoalAchieved('${goal.id}')"
+            >
+                Achieve
+            </button>
+
+            ${
+                goal.priority === "High"
+                ? `
+                    <span class="goal-locked">
+                        🔒 Locked
+                    </span>
+                `
                 : `
-                           <button onclick="markGoalAchieved('${goal.id}')">
-                             Achieved
-                           </button>
-                          `
+                    <button
+                        class="goal-edit-btn"
+                        onclick="event.stopPropagation();
+                        openEditGoal('${goal.id}')"
+                    >
+                        Edit
+                    </button>
+                `
             }
 
-                <button onclick="removeGoal('${goal.id}')">
-                    Remove
-                </button>
-            </div>
+            <button
+                class="goal-remove-btn"
+                onclick="event.stopPropagation();
+                removeGoal('${goal.id}')"
+            >
+                Remove
+            </button>
+        `
+    }
+
+</div>
         `;
 
         container.appendChild(div);
     });
+
+    updateGoalTimers();
 }
 
-function loadAchievements() {
-    const container = document.getElementById("achievementsViewer");
-    container.innerHTML = "";
 
-    const logs = JSON.parse(localStorage.getItem("achievements")) || [];
-
-    logs.forEach(a => {
-        const div = document.createElement("div");
-        div.className = "achievement-card";
-        div.style.cssText = `
-            background:#111; 
-            color:white; 
-            padding:8px 12px;
-            border-radius:8px;
-            margin:4px;
-        `;
-        div.innerHTML = `
-            <strong>${a.title}</strong><br>
-            <span style="font-size:12px; opacity:0.8;">Achieved on ${a.date}</span>
-        `;
-        container.appendChild(div);
-    });
-}
-
+/* ---------------------------------------------------------
+   ACHIEVE GOAL
+--------------------------------------------------------- */
 
 function markGoalAchieved(goalId) {
-    const goal = goalsData.find(g => g.id === goalId);
+
+    const goal =
+        goalsData.find(g => g.id === goalId);
+
     if (!goal || goal.achieved) return;
 
-    // 🎯 Mark achieved
+    // Safety: cannot complete overdue goals
+    if (
+        goal.deadline &&
+        new Date(goal.deadline).getTime() <= Date.now()
+    ) {
+        customAlert(
+            "This goal is overdue and can no longer be achieved."
+        );
+
+        return;
+    }
+
     goal.achieved = true;
-    goal.achievedAt = new Date().toLocaleDateString([], {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    });
 
-    // 🏆 Calculate reward
-    let reward = 0;
+    goal.achievedAt =
+        new Date().toLocaleDateString([], {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
 
-    if (goal.priority === "Low") reward = 5;
-    if (goal.priority === "Medium") reward = 10;
-    if (goal.priority === "High") reward = 15;
+    const reward =
+        getGoalReward(goal.priority);
 
-    // 💎 Add improvement points
     completedMissions += reward;
 
-    localStorage.setItem("completedMissions", completedMissions);
-    document.getElementById("missionCounter").textContent = completedMissions;
+    localStorage.setItem(
+        "completedMissions",
+        completedMissions
+    );
 
-    // 💾 Save goals
+    document.getElementById(
+        "missionCounter"
+    ).textContent = completedMissions;
+
     saveGoals();
+
     renderGoals();
 
-    // 🎉 Celebration
-    launchConfetti();
+    renderMarketplace(currentMarketplaceFilter);
+
+    // Celebration
+    playAppTone("mission");
+
+    showGoalAchievementAnimation(
+        goal.title,
+        reward
+    );
 
     pushNotification(
         "Goal Achieved 🎯",
@@ -2839,84 +3138,290 @@ function markGoalAchieved(goalId) {
         "Goal Completed!",
         `+${reward} Improvement Points earned`
     );
-
-    // 🔥 Re-render marketplace because points changed
-    renderMarketplace(currentMarketplaceFilter);
 }
 
-function launchConfetti() {
-    for (let i = 0; i < 25; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        document.body.appendChild(c);
 
-        const size = Math.random() * 8 + 4;
-        c.style.width = size + "px";
-        c.style.height = size + "px";
-        c.style.left = Math.random() * window.innerWidth + "px";
-        c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+/* ---------------------------------------------------------
+   GOAL ACHIEVEMENT ANIMATION
+--------------------------------------------------------- */
 
-        c.style.animationDuration = (Math.random() * 1 + 0.7) + "s";
+function showGoalAchievementAnimation(title, reward) {
 
-        setTimeout(() => c.remove(), 1200);
-    }
+    const overlay =
+        document.createElement("div");
+
+    overlay.className =
+        "goal-achievement-overlay";
+
+    overlay.innerHTML = `
+
+        <div class="goal-achievement-card">
+
+            <div class="goal-achievement-check">
+                ✓
+            </div>
+
+            <div class="goal-achievement-label">
+                GOAL ACHIEVED
+            </div>
+
+            <h2>
+                ${escapeHTML(title)}
+            </h2>
+
+            <div class="goal-achievement-reward">
+                +${reward} Improvement Points
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    /*
+     * Let browser paint first,
+     * then trigger the entrance.
+     */
+    requestAnimationFrame(() => {
+
+        requestAnimationFrame(() => {
+
+            overlay.classList.add("active");
+
+        });
+
+    });
+
+    /*
+     * Hold the moment long enough
+     * for it to actually feel rewarding.
+     */
+    setTimeout(() => {
+
+        overlay.classList.remove("active");
+
+        setTimeout(() => {
+
+            overlay.remove();
+
+        }, 400);
+
+    }, 2800);
 }
+
+
+/* ---------------------------------------------------------
+   GOAL TIMER + OVERDUE SYSTEM
+--------------------------------------------------------- */
 
 function updateGoalTimers() {
-    const goals = document.querySelectorAll("#goal-list .goal");
 
-    goals.forEach(goal => {
-        const deadline = goal.dataset.deadline;
-        if (!deadline) return;
+    const goalElements =
+        document.querySelectorAll(
+            "#goal-list .goal"
+        );
 
-        const timer = goal.querySelector(".goal-timer");
-        const overdueBadge = goal.querySelector(".goal-overdue");
+    goalElements.forEach(el => {
 
-        const diff = new Date(deadline).getTime() - Date.now();
+        const goalId =
+            el.dataset.goalId;
+
+        const goal =
+            goalsData.find(
+                g => g.id === goalId
+            );
+
+        if (!goal || goal.achieved) return;
+
+        if (!goal.deadline) return;
+
+        const deadline =
+            new Date(goal.deadline).getTime();
+
+        const diff =
+            deadline - Date.now();
+
+        const timer =
+            el.querySelector(".goal-timer");
+
+        const overdueBadge =
+            el.querySelector(".goal-overdue");
+
+
+        /* -------------------------
+           STILL ACTIVE
+        ------------------------- */
 
         if (diff > 0) {
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-            timer.textContent = `${hours}h ${minutes}m left`;
+            const days =
+                Math.floor(
+                    diff /
+                    (1000 * 60 * 60 * 24)
+                );
+
+            const hours =
+                Math.floor(
+                    (diff %
+                        (1000 * 60 * 60 * 24)) /
+                    (1000 * 60 * 60)
+                );
+
+            const minutes =
+                Math.floor(
+                    (diff %
+                        (1000 * 60 * 60)) /
+                    (1000 * 60)
+                );
+
+            if (days > 0) {
+
+                timer.textContent =
+                    `${days}d ${hours}h left`;
+
+            } else {
+
+                timer.textContent =
+                    `${hours}h ${minutes}m left`;
+            }
+
             overdueBadge.innerHTML = "";
 
-            if (diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
-                goal.dataset.warned = "true";
-                pushNotification(
-                    "Goal Reminder",
-                    `Your goal "${goal.querySelector('.goal-title').textContent}" is due soon (within 2 hours).`
-                );
-            }
 
-        } else {
-            timer.textContent = "";
-            overdueBadge.innerHTML = `<span class="overdue-badge">Overdue</span>`;
+            // Due soon notification
+            if (
+                diff <= 2 * 60 * 60 * 1000 &&
+                !goal.warned
+            ) {
 
-            if (!goal.dataset.overdueNotified) {
-                goal.dataset.overdueNotified = "true";
+                goal.warned = true;
 
                 pushNotification(
-                    "⚠ Goal Overdue",
-                    `"${goal.querySelector('.goal-title').textContent}" deadline has passed!`
+                    "Goal Deadline",
+                    `"${goal.title}" is due within 2 hours.`
                 );
+
+                saveGoals();
             }
+
+            return;
+        }
+
+
+        /* -------------------------
+           OVERDUE
+        ------------------------- */
+
+        timer.textContent = "";
+
+        overdueBadge.innerHTML =
+            `<span class="overdue-badge">
+                Overdue
+            </span>`;
+
+
+        /*
+         * PENALTY
+         *
+         * Only happens once.
+         */
+
+        if (!goal.overduePenaltyApplied) {
+
+            goal.overduePenaltyApplied = true;
+
+            const penalty =
+                getGoalReward(goal.priority);
+
+            completedMissions -= penalty;
+
+            localStorage.setItem(
+                "completedMissions",
+                completedMissions
+            );
+
+            document.getElementById(
+                "missionCounter"
+            ).textContent =
+                completedMissions;
+
+
+            pushNotification(
+                "⚠ Goal Failed",
+                `"${goal.title}" expired. -${penalty} Improvement Points`
+            );
+
+
+            showSmartNotification(
+                "Goal Overdue",
+                `-${penalty} Improvement Points`
+            );
+
+
+            saveGoals();
+
+            renderMarketplace(
+                currentMarketplaceFilter
+            );
         }
     });
 }
 
-// Run every second
-setInterval(updateGoalTimers, 1000);
 
-
+/* ---------------------------------------------------------
+   REMOVE GOAL
+--------------------------------------------------------- */
 
 function removeGoal(goalId) {
-    goalsData = goalsData.filter(g => g.id !== goalId);
-    saveGoals();
-    renderGoals();
+
+    const goal =
+        goalsData.find(g => g.id === goalId);
+
+    if (!goal) return;
+
+    // Achieved = permanent
+    
+
+    customConfirm(
+        `Remove "${goal.title}"?`,
+        () => {
+
+            goalsData =
+                goalsData.filter(
+                    g => g.id !== goalId
+                );
+
+            saveGoals();
+
+            renderGoals();
+        }
+    );
 }
 
 
+/* ---------------------------------------------------------
+   SAFE TEXT
+--------------------------------------------------------- */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* ---------------------------------------------------------
+   GOAL TIMER
+--------------------------------------------------------- */
+
+setInterval(
+    updateGoalTimers,
+    1000
+);
 
 /* =========================================================
    8. COUNTDOWNS MODULE
