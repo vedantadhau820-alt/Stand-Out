@@ -547,174 +547,7 @@ async function loadProgressFromFile() {
    CUSTOM CONFIRM
 ========================================================= */
 
-        /* =========================================================
-           CUSTOM CONFIRM
-           Supports BOTH:
-           await customConfirm(...)
-           customConfirm(..., callback)
-        ========================================================= */
-
-        function customConfirm(
-            message,
-            titleOrCallback = "Are you sure?"
-        ) {
-
-            const callback =
-                typeof titleOrCallback === "function"
-                    ? titleOrCallback
-                    : null;
-
-            const title =
-                typeof titleOrCallback === "string"
-                    ? titleOrCallback
-                    : "Are you sure?";
-
-
-            return new Promise(resolve => {
-
-                const overlay =
-                    document.createElement("div");
-
-                overlay.className =
-                    "custom-confirm-overlay";
-
-                overlay.innerHTML = `
-
-            <div class="custom-confirm-card">
-
-                <div class="custom-confirm-title">
-                    ${escapeHTML(title)}
-                </div>
-
-                <div class="custom-confirm-message">
-                    ${escapeHTML(message)}
-                </div>
-
-                <div class="custom-confirm-actions">
-
-                    <button
-                        type="button"
-                        class="custom-confirm-cancel"
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        type="button"
-                        class="custom-confirm-ok"
-                    >
-                        Continue
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-                document.body.appendChild(
-                    overlay
-                );
-
-
-                const cancel =
-                    overlay.querySelector(
-                        ".custom-confirm-cancel"
-                    );
-
-                const ok =
-                    overlay.querySelector(
-                        ".custom-confirm-ok"
-                    );
-
-
-                let closed = false;
-
-
-                function close(result) {
-
-                    if (closed) {
-                        return;
-                    }
-
-                    closed = true;
-
-                    overlay.classList.remove(
-                        "active"
-                    );
-
-
-                    if (
-                        result &&
-                        callback
-                    ) {
-
-                        try {
-                            callback();
-                        } catch (error) {
-
-                            console.error(
-                                "Confirm callback failed:",
-                                error
-                            );
-
-                        }
-
-                    }
-
-
-                    setTimeout(() => {
-
-                        overlay.remove();
-
-                        resolve(result);
-
-                    }, 200);
-
-                }
-
-
-                cancel.onclick = () => {
-                    close(false);
-                };
-
-
-                ok.onclick = () => {
-                    close(true);
-                };
-
-
-                overlay.addEventListener(
-                    "click",
-                    event => {
-
-                        if (
-                            event.target ===
-                            overlay
-                        ) {
-
-                            close(false);
-
-                        }
-
-                    }
-                );
-
-
-                requestAnimationFrame(() => {
-
-                    requestAnimationFrame(() => {
-
-                        overlay.classList.add(
-                            "active"
-                        );
-
-                    });
-
-                });
-
-            });
-
-        }
+       
         const confirmed =
             await customConfirm(
                 "Your current progress will be replaced by the backup.",
@@ -2332,22 +2165,175 @@ function closeAlert() {
     document.getElementById("alertModal").classList.remove("active");
 }
 
-/* Confirm */
-let confirmCallback = null;
+/* =========================================================
+   CUSTOM CONFIRM
+   Supports:
+   await customConfirm(...)
+   customConfirm(..., callback)
+========================================================= */
 
-function customConfirm(msg, callback) {
-    confirmCallback = callback;
-    document.getElementById("confirmMsg").textContent = msg;
-    document.getElementById("confirmModal").classList.add("active");
-}
+function customConfirm(
+    message,
+    titleOrCallback = "Are you sure?"
+) {
 
-function confirmYes() {
-    if (confirmCallback) confirmCallback();
-    document.getElementById("confirmModal").classList.remove("active");
-}
+    const callback =
+        typeof titleOrCallback === "function"
+            ? titleOrCallback
+            : null;
 
-function confirmNo() {
-    document.getElementById("confirmModal").classList.remove("active");
+    const title =
+        typeof titleOrCallback === "string"
+            ? titleOrCallback
+            : "Are you sure?";
+
+
+    return new Promise(resolve => {
+
+        const overlay =
+            document.createElement("div");
+
+        overlay.className =
+            "custom-confirm-overlay";
+
+        overlay.innerHTML = `
+
+            <div class="custom-confirm-card">
+
+                <div class="custom-confirm-title">
+                    ${escapeHTML(title)}
+                </div>
+
+                <div class="custom-confirm-message">
+                    ${escapeHTML(message)}
+                </div>
+
+                <div class="custom-confirm-actions">
+
+                    <button
+                        type="button"
+                        class="custom-confirm-cancel"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        class="custom-confirm-ok"
+                    >
+                        Continue
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(
+            overlay
+        );
+
+
+        const cancel =
+            overlay.querySelector(
+                ".custom-confirm-cancel"
+            );
+
+        const ok =
+            overlay.querySelector(
+                ".custom-confirm-ok"
+            );
+
+
+        let closed = false;
+
+
+        function close(result) {
+
+            if (closed) {
+                return;
+            }
+
+            closed = true;
+
+            overlay.classList.remove(
+                "active"
+            );
+
+
+            if (
+                result &&
+                callback
+            ) {
+
+                try {
+
+                    callback();
+
+                } catch (error) {
+
+                    console.error(
+                        "Confirm callback failed:",
+                        error
+                    );
+
+                }
+
+            }
+
+
+            setTimeout(() => {
+
+                overlay.remove();
+
+                resolve(result);
+
+            }, 200);
+
+        }
+
+
+        cancel.onclick = () => {
+            close(false);
+        };
+
+
+        ok.onclick = () => {
+            close(true);
+        };
+
+
+        overlay.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    overlay
+                ) {
+
+                    close(false);
+
+                }
+
+            }
+        );
+
+
+        requestAnimationFrame(() => {
+
+            requestAnimationFrame(() => {
+
+                overlay.classList.add(
+                    "active"
+                );
+
+            });
+
+        });
+
+    });
+
 }
 
 
