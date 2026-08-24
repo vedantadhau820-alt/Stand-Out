@@ -3869,7 +3869,7 @@ function renderGoals() {
         const div =
             document.createElement("div");
 
-        div.className = "goal show";
+        div.className = "goal";
 
         div.dataset.goalId = goal.id;
 
@@ -4655,7 +4655,6 @@ function loadData() {
 
     // ---- GOALS ----
     document.querySelectorAll("#goal-list .goal").forEach(div => {
-        div.classList.add("show");
         const removeBtn = div.querySelector(".remove-btn");
         if (removeBtn) {
             removeBtn.onclick = () => removeGoal(removeBtn);
