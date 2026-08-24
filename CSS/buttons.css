@@ -223,7 +223,7 @@
     border-radius: 12px;
     padding: 10px;
     position: relative;
-    animation: celebrateScale 0.4s ease-out;
+    /* animation: celebrateScale 0.4s ease-out; */
     box-shadow: 0 0 5px gold;
 }
 
@@ -237,7 +237,7 @@
     font-size: 13px;
     border-radius: 6px;
     display: inline-block;
-    animation: badgeDrop 0.3s ease-out;
+    /* animation: badgeDrop 0.3s ease-out; */
 }
 
 /* Button fix */
