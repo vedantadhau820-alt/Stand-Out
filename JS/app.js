@@ -3869,7 +3869,7 @@ function renderGoals() {
         const div =
             document.createElement("div");
 
-        div.className = "goal";
+        div.className = "goal show";
 
         div.dataset.goalId = goal.id;
 
@@ -4655,6 +4655,7 @@ function loadData() {
 
     // ---- GOALS ----
     document.querySelectorAll("#goal-list .goal").forEach(div => {
+        div.classList.add("show");
         const removeBtn = div.querySelector(".remove-btn");
         if (removeBtn) {
             removeBtn.onclick = () => removeGoal(removeBtn);
@@ -5225,16 +5226,13 @@ window.addEventListener("load", () => {
 
     showPage(activePage);
 });
-    
+
 document.querySelectorAll("#goal-list .goal").forEach(div => {
-
-    const removeBtn =
-        div.querySelector(".remove-btn");
-
+    div.classList.add("show");
+    const removeBtn = div.querySelector(".remove-btn");
     if (removeBtn) {
         removeBtn.onclick = () => removeGoal(removeBtn);
     }
-
 });
 
 //Cheats
