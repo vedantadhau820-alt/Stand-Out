@@ -407,7 +407,25 @@ async function saveProgressToFile() {
 
     }
 
-}
+    window.addEventListener("load", () => {
+    loadData();
+    enforceDailyReset();
+    renderMarketplace();
+    refreshRecurringMissions();
+    checkMissedDeadlines();
+    renderAchievements();
+    renderCountdowns();
+    renderGoals();
+
+
+    const activePage = document.querySelector("section.active")
+        ? document.querySelector("section.active").id
+        : "missions";
+
+    showPage(activePage);
+});
+
+
 
 
 /* =========================================================
@@ -897,6 +915,8 @@ try {
 
             }
 
+            
+
         }
 
 
@@ -1049,7 +1069,25 @@ try {
 
 }
 
+
+window.addEventListener("load", () => {
+    loadData();
 restoreTimerMusic()
+    enforceDailyReset();
+    renderMarketplace();
+    refreshRecurringMissions();
+    checkMissedDeadlines();
+    renderAchievements();
+    renderCountdowns();
+    renderGoals();
+
+
+    const activePage = document.querySelector("section.active")
+        ? document.querySelector("section.active").id
+        : "missions";
+
+    showPage(activePage);
+});
 
 document.getElementById("importProgressFile").addEventListener("change", function (e) {
     const file = e.target.files[0];
