@@ -31,48 +31,6 @@ if ("serviceWorker" in navigator) {
     });
 }
 
-function restoreTimerMusic() {
-
-    const select =
-        document.getElementById("musicSelect");
-
-    if (!select || !music) {
-        return;
-    }
-
-    const file =
-        select.value;
-
-    if (!file) {
-        return;
-    }
-
-    musicMode = "preset";
-
-    playlist = [];
-
-    currentTrackIndex = 0;
-
-    music.src = file;
-
-    music.loop = true;
-
-    const volume =
-        document.getElementById("musicVolume");
-
-    if (volume) {
-        music.volume =
-            Number(volume.value);
-    }
-
-    music.load();
-
-    console.log(
-        "Music restored:",
-        file
-    );
-}
-
 function showUpdatingIndicator() {
     if (document.getElementById("sw-updating")) return;
 
@@ -407,9 +365,7 @@ async function saveProgressToFile() {
 
     }
 
-
-
-
+}
 
 
 /* =========================================================
@@ -543,138 +499,19 @@ async function loadProgressFromFile() {
         }
 
 
-        /* =========================================================
-   CUSTOM CONFIRM
-========================================================= */
-
-function customConfirm(message, title = "Are you sure?") {
-
-    return new Promise(resolve => {
-
-        const overlay =
-            document.createElement("div");
-
-        overlay.className =
-            "custom-confirm-overlay";
-
-        overlay.innerHTML = `
-
-            <div class="custom-confirm-card">
-
-                <div class="custom-confirm-title">
-                    ${escapeHTML(title)}
-                </div>
-
-                <div class="custom-confirm-message">
-                    ${escapeHTML(message)}
-                </div>
-
-                <div class="custom-confirm-actions">
-
-                    <button
-                        type="button"
-                        class="custom-confirm-cancel"
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        type="button"
-                        class="custom-confirm-ok"
-                    >
-                        Continue
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-        document.body.appendChild(
-            overlay
-        );
-
-
-        const cancel =
-            overlay.querySelector(
-                ".custom-confirm-cancel"
-            );
-
-        const ok =
-            overlay.querySelector(
-                ".custom-confirm-ok"
-            );
-
-
-        function close(result) {
-
-            overlay.classList.remove(
-                "active"
-            );
-
-            setTimeout(() => {
-
-                overlay.remove();
-
-                resolve(result);
-
-            }, 200);
-
-        }
-
-
-        cancel.onclick = () => {
-            close(false);
-        };
-
-
-        ok.onclick = () => {
-            close(true);
-        };
-
-
-        overlay.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target ===
-                    overlay
-                ) {
-
-                    close(false);
-
-                }
-
-            }
-        );
-
-
-        requestAnimationFrame(() => {
-
-            requestAnimationFrame(() => {
-
-                overlay.classList.add(
-                    "active"
-                );
-
-            });
-
-        });
-
-    });
-
-}
+        /* =====================================================
+           5. CONFIRM
+        ===================================================== */
 
         const confirmed =
-    await customConfirm(
-        "Your current progress will be replaced by the backup.",
-        "Restore Backup?"
-    );
+            confirm(
+                "Restore this backup?\n\n" +
+                "Your current progress will be replaced."
+            );
 
-if (!confirmed) {
-    return;
-}
+        if (!confirmed) {
+            return;
+        }
 
 
         /* =====================================================
@@ -759,54 +596,6 @@ lastImprovementDate =
     localStorage.getItem("lastImprovementDate") ||
     getISTDate().toISOString().slice(0, 10);
 
-    /* =====================================================
-   RELOAD MUSIC / SOUND RUNTIME STATE
-===================================================== */
-
-try {
-
-    if (
-        typeof loadSoundSettings ===
-        "function"
-    ) {
-
-        await loadSoundSettings();
-
-    }
-
-} catch (error) {
-
-    console.warn(
-        "Could not reload sound settings:",
-        error
-    );
-
-}
-
-
-/* =====================================================
-   REFRESH MUSIC UI
-===================================================== */
-
-try {
-
-    if (
-        typeof renderSoundSettings ===
-        "function"
-    ) {
-
-        renderSoundSettings();
-
-    }
-
-} catch (error) {
-
-    console.warn(
-        "Could not refresh sound settings UI:",
-        error
-    );
-
-}
         /* =====================================================
            8. RESTORE CUSTOM CARDS
         ===================================================== */
@@ -898,8 +687,6 @@ try {
                 return;
 
             }
-
-            
 
         }
 
@@ -1053,56 +840,31 @@ try {
 
 }
 
-}
+document.getElementById("importProgressFile").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
-const importProgressFile =
-    document.getElementById("importProgressFile");
+    const reader = new FileReader();
 
-if (importProgressFile) {
+    reader.onload = () => {
+        try {
+            const text = reader.result.replace(/^\uFEFF/, "").trim();
+            const data = JSON.parse(text);
+            console.log("RAW FILE TEXT:", reader.result);
+            console.log("PARSED DATA:", data);
 
-    importProgressFile.addEventListener(
-        "change",
-        function (e) {
-
-            const file = e.target.files[0];
-
-            if (!file) return;
-
-            const reader = new FileReader();
-
-            reader.onload = () => {
-
-                try {
-
-                    const text =
-                        reader.result
-                            .replace(/^\uFEFF/, "")
-                            .trim();
-
-                    const data =
-                        JSON.parse(text);
-
-                    restoreAppSnapshot(data);
-
-                } catch (err) {
-
-                    console.error(
-                        "Restore failed:",
-                        err
-                    );
-
-                    customAlert(
-                        "Invalid or corrupted backup file."
-                    );
-                }
-            };
-
-            reader.readAsText(file);
-
-            e.target.value = "";
+            restoreAppSnapshot(data);
+            customAlert("Progress restored successfully!");
+        } catch (err) {
+            console.error("Restore failed:", err);
+            customAlert("Invalid or corrupted backup file.");
         }
-    );
-}
+    };
+
+    reader.readAsText(file);
+    e.target.value = "";
+});
+
 window.saveProgressToFile = saveProgressToFile;
 window.loadProgressFromFile = loadProgressFromFile;
 
@@ -2232,6 +1994,27 @@ if (type === "goal") {
     ).min = now;
 }
     
+
+    // ---- Add Goal ----
+    if (type === "goal") {
+        content.innerHTML = `
+    <h3>Add Goal</h3>
+    <input id="goalInput" placeholder="Goal">
+
+    <label>Priority</label>
+    <select id="priorityInput">
+      <option>High</option>
+      <option>Medium</option>
+      <option>Low</option>
+    </select>
+
+    <label>Deadline</label>
+    <input id="goalDeadline" type="datetime-local">
+
+    <button onclick="addGoal()">Add</button>
+    <button onclick="closeModal()">Cancel</button>
+  `;
+    }
 
 
     // ---- Add Countdown (FIXED) ----
@@ -3837,7 +3620,7 @@ function renderGoals() {
         const div =
             document.createElement("div");
 
-        div.className = "goal";
+        div.className = "goal show";
 
         div.dataset.goalId = goal.id;
 
@@ -4623,6 +4406,7 @@ function loadData() {
 
     // ---- GOALS ----
     document.querySelectorAll("#goal-list .goal").forEach(div => {
+        div.classList.add("show");
         const removeBtn = div.querySelector(".remove-btn");
         if (removeBtn) {
             removeBtn.onclick = () => removeGoal(removeBtn);
@@ -5193,16 +4977,13 @@ window.addEventListener("load", () => {
 
     showPage(activePage);
 });
-    
+
 document.querySelectorAll("#goal-list .goal").forEach(div => {
-
-    const removeBtn =
-        div.querySelector(".remove-btn");
-
+    div.classList.add("show");
+    const removeBtn = div.querySelector(".remove-btn");
     if (removeBtn) {
         removeBtn.onclick = () => removeGoal(removeBtn);
     }
-
 });
 
 //Cheats
@@ -5210,31 +4991,14 @@ document.querySelectorAll("#goal-list .goal").forEach(div => {
 let resetHoldTimer = null;
 const RESET_HOLD_DURATION = 5000; // 5 seconds
 
-const resetBtn = document.getElementById("resetDataBtn");
+const resetBtn = document.getElementById("resetDataBtn"); // your reset button ID
 
-if (resetBtn) {
+resetBtn.addEventListener("touchstart", startResetHold);
+resetBtn.addEventListener("mousedown", startResetHold);
 
-    resetBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-
-        const confirmed = await customConfirm(
-            "This will permanently erase all your progress.",
-            "Reset Everything?"
-        );
-
-        if (!confirmed) return;
-
-        await resetData();
-    });
-
-    // 5-second hold = cheat menu
-    resetBtn.addEventListener("touchstart", startResetHold);
-    resetBtn.addEventListener("mousedown", startResetHold);
-
-    resetBtn.addEventListener("touchend", cancelResetHold);
-    resetBtn.addEventListener("mouseup", cancelResetHold);
-    resetBtn.addEventListener("mouseleave", cancelResetHold);
-}
+resetBtn.addEventListener("touchend", cancelResetHold);
+resetBtn.addEventListener("mouseup", cancelResetHold);
+resetBtn.addEventListener("mouseleave", cancelResetHold);
 
 function startResetHold() {
     resetHoldTimer = setTimeout(() => {
