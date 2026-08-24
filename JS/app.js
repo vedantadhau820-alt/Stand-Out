@@ -503,15 +503,7 @@ async function loadProgressFromFile() {
            5. CONFIRM
         ===================================================== */
 
-        const confirmed =
-            confirm(
-                "Restore this backup?\n\n" +
-                "Your current progress will be replaced."
-            );
-
-        if (!confirmed) {
-            return;
-        }
+    
 
 
         /* =====================================================
