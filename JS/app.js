@@ -715,6 +715,54 @@ lastImprovementDate =
     localStorage.getItem("lastImprovementDate") ||
     getISTDate().toISOString().slice(0, 10);
 
+    /* =====================================================
+   RELOAD MUSIC / SOUND RUNTIME STATE
+===================================================== */
+
+try {
+
+    if (
+        typeof loadSoundSettings ===
+        "function"
+    ) {
+
+        await loadSoundSettings();
+
+    }
+
+} catch (error) {
+
+    console.warn(
+        "Could not reload sound settings:",
+        error
+    );
+
+}
+
+
+/* =====================================================
+   REFRESH MUSIC UI
+===================================================== */
+
+try {
+
+    if (
+        typeof renderSoundSettings ===
+        "function"
+    ) {
+
+        renderSoundSettings();
+
+    }
+
+} catch (error) {
+
+    console.warn(
+        "Could not refresh sound settings UI:",
+        error
+    );
+
+}
         /* =====================================================
            8. RESTORE CUSTOM CARDS
         ===================================================== */
