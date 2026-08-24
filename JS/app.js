@@ -407,23 +407,7 @@ async function saveProgressToFile() {
 
     }
 
-    window.addEventListener("load", () => {
-    loadData();
-    enforceDailyReset();
-    renderMarketplace();
-    refreshRecurringMissions();
-    checkMissedDeadlines();
-    renderAchievements();
-    renderCountdowns();
-    renderGoals();
 
-
-    const activePage = document.querySelector("section.active")
-        ? document.querySelector("section.active").id
-        : "missions";
-
-    showPage(activePage);
-});
 
 
 
@@ -1069,51 +1053,56 @@ try {
 
 }
 
+}
 
-window.addEventListener("load", () => {
-    loadData();
-restoreTimerMusic()
-    enforceDailyReset();
-    renderMarketplace();
-    refreshRecurringMissions();
-    checkMissedDeadlines();
-    renderAchievements();
-    renderCountdowns();
-    renderGoals();
+const importProgressFile =
+    document.getElementById("importProgressFile");
 
+if (importProgressFile) {
 
-    const activePage = document.querySelector("section.active")
-        ? document.querySelector("section.active").id
-        : "missions";
+    importProgressFile.addEventListener(
+        "change",
+        function (e) {
 
-    showPage(activePage);
-});
+            const file = e.target.files[0];
 
-document.getElementById("importProgressFile").addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
+            if (!file) return;
 
-    const reader = new FileReader();
+            const reader = new FileReader();
 
-    reader.onload = () => {
-        try {
-            const text = reader.result.replace(/^\uFEFF/, "").trim();
-            const data = JSON.parse(text);
-            console.log("RAW FILE TEXT:", reader.result);
-            console.log("PARSED DATA:", data);
+            reader.onload = () => {
 
-            restoreAppSnapshot(data);
-            customAlert("Progress restored successfully!");
-        } catch (err) {
-            console.error("Restore failed:", err);
-            customAlert("Invalid or corrupted backup file.");
+                try {
+
+                    const text =
+                        reader.result
+                            .replace(/^\uFEFF/, "")
+                            .trim();
+
+                    const data =
+                        JSON.parse(text);
+
+                    restoreAppSnapshot(data);
+
+                } catch (err) {
+
+                    console.error(
+                        "Restore failed:",
+                        err
+                    );
+
+                    customAlert(
+                        "Invalid or corrupted backup file."
+                    );
+                }
+            };
+
+            reader.readAsText(file);
+
+            e.target.value = "";
         }
-    };
-
-    reader.readAsText(file);
-    e.target.value = "";
-});
-
+    );
+}
 window.saveProgressToFile = saveProgressToFile;
 window.loadProgressFromFile = loadProgressFromFile;
 
@@ -2243,27 +2232,6 @@ if (type === "goal") {
     ).min = now;
 }
     
-
-    // ---- Add Goal ----
-    if (type === "goal") {
-        content.innerHTML = `
-    <h3>Add Goal</h3>
-    <input id="goalInput" placeholder="Goal">
-
-    <label>Priority</label>
-    <select id="priorityInput">
-      <option>High</option>
-      <option>Medium</option>
-      <option>Low</option>
-    </select>
-
-    <label>Deadline</label>
-    <input id="goalDeadline" type="datetime-local">
-
-    <button onclick="addGoal()">Add</button>
-    <button onclick="closeModal()">Cancel</button>
-  `;
-    }
 
 
     // ---- Add Countdown (FIXED) ----
@@ -5242,14 +5210,31 @@ document.querySelectorAll("#goal-list .goal").forEach(div => {
 let resetHoldTimer = null;
 const RESET_HOLD_DURATION = 5000; // 5 seconds
 
-const resetBtn = document.getElementById("resetDataBtn"); // your reset button ID
+const resetBtn = document.getElementById("resetDataBtn");
 
-resetBtn.addEventListener("touchstart", startResetHold);
-resetBtn.addEventListener("mousedown", startResetHold);
+if (resetBtn) {
 
-resetBtn.addEventListener("touchend", cancelResetHold);
-resetBtn.addEventListener("mouseup", cancelResetHold);
-resetBtn.addEventListener("mouseleave", cancelResetHold);
+    resetBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const confirmed = await customConfirm(
+            "This will permanently erase all your progress.",
+            "Reset Everything?"
+        );
+
+        if (!confirmed) return;
+
+        await resetData();
+    });
+
+    // 5-second hold = cheat menu
+    resetBtn.addEventListener("touchstart", startResetHold);
+    resetBtn.addEventListener("mousedown", startResetHold);
+
+    resetBtn.addEventListener("touchend", cancelResetHold);
+    resetBtn.addEventListener("mouseup", cancelResetHold);
+    resetBtn.addEventListener("mouseleave", cancelResetHold);
+}
 
 function startResetHold() {
     resetHoldTimer = setTimeout(() => {
