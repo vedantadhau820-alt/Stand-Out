@@ -563,7 +563,28 @@ async function loadProgressFromFile() {
    CUSTOM CONFIRM
 ========================================================= */
 
-function customConfirm(message, title = "Are you sure?") {
+/* =========================================================
+   CUSTOM CONFIRM
+   Supports BOTH:
+   await customConfirm(...)
+   customConfirm(..., callback)
+========================================================= */
+
+function customConfirm(
+    message,
+    titleOrCallback = "Are you sure?"
+) {
+
+    const callback =
+        typeof titleOrCallback === "function"
+            ? titleOrCallback
+            : null;
+
+    const title =
+        typeof titleOrCallback === "string"
+            ? titleOrCallback
+            : "Are you sure?";
+
 
     return new Promise(resolve => {
 
@@ -622,11 +643,40 @@ function customConfirm(message, title = "Are you sure?") {
             );
 
 
+        let closed = false;
+
+
         function close(result) {
+
+            if (closed) {
+                return;
+            }
+
+            closed = true;
 
             overlay.classList.remove(
                 "active"
             );
+
+
+            if (
+                result &&
+                callback
+            ) {
+
+                try {
+                    callback();
+                } catch (error) {
+
+                    console.error(
+                        "Confirm callback failed:",
+                        error
+                    );
+
+                }
+
+            }
+
 
             setTimeout(() => {
 
@@ -681,7 +731,6 @@ function customConfirm(message, title = "Are you sure?") {
     });
 
 }
-
         const confirmed =
     await customConfirm(
         "Your current progress will be replaced by the backup.",
