@@ -458,7 +458,7 @@ async function loadProgressFromFile() {
         if (
             !backup ||
             backup.backupType !==
-                "STANDOUT_COMPLETE"
+            "STANDOUT_COMPLETE"
         ) {
 
             customAlert(
@@ -473,7 +473,7 @@ async function loadProgressFromFile() {
         if (
             !backup.localStorage ||
             typeof backup.localStorage !==
-                "object"
+            "object"
         ) {
 
             customAlert(
@@ -489,17 +489,17 @@ async function loadProgressFromFile() {
    CUSTOM CONFIRM
 ========================================================= */
 
-function customConfirm(message, title = "Are you sure?") {
+        function customConfirm(message, title = "Are you sure?") {
 
-    return new Promise(resolve => {
+            return new Promise(resolve => {
 
-        const overlay =
-            document.createElement("div");
+                const overlay =
+                    document.createElement("div");
 
-        overlay.className =
-            "custom-confirm-overlay";
+                overlay.className =
+                    "custom-confirm-overlay";
 
-        overlay.innerHTML = `
+                overlay.innerHTML = `
 
             <div class="custom-confirm-card">
 
@@ -532,91 +532,91 @@ function customConfirm(message, title = "Are you sure?") {
             </div>
         `;
 
-        document.body.appendChild(
-            overlay
-        );
-
-
-        const cancel =
-            overlay.querySelector(
-                ".custom-confirm-cancel"
-            );
-
-        const ok =
-            overlay.querySelector(
-                ".custom-confirm-ok"
-            );
-
-
-        function close(result) {
-
-            overlay.classList.remove(
-                "active"
-            );
-
-            setTimeout(() => {
-
-                overlay.remove();
-
-                resolve(result);
-
-            }, 200);
-
-        }
-
-
-        cancel.onclick = () => {
-            close(false);
-        };
-
-
-        ok.onclick = () => {
-            close(true);
-        };
-
-
-        overlay.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target ===
+                document.body.appendChild(
                     overlay
-                ) {
+                );
 
-                    close(false);
+
+                const cancel =
+                    overlay.querySelector(
+                        ".custom-confirm-cancel"
+                    );
+
+                const ok =
+                    overlay.querySelector(
+                        ".custom-confirm-ok"
+                    );
+
+
+                function close(result) {
+
+                    overlay.classList.remove(
+                        "active"
+                    );
+
+                    setTimeout(() => {
+
+                        overlay.remove();
+
+                        resolve(result);
+
+                    }, 200);
 
                 }
 
-            }
-        );
+
+                cancel.onclick = () => {
+                    close(false);
+                };
 
 
-        requestAnimationFrame(() => {
+                ok.onclick = () => {
+                    close(true);
+                };
 
-            requestAnimationFrame(() => {
 
-                overlay.classList.add(
-                    "active"
+                overlay.addEventListener(
+                    "click",
+                    event => {
+
+                        if (
+                            event.target ===
+                            overlay
+                        ) {
+
+                            close(false);
+
+                        }
+
+                    }
                 );
+
+
+                requestAnimationFrame(() => {
+
+                    requestAnimationFrame(() => {
+
+                        overlay.classList.add(
+                            "active"
+                        );
+
+                    });
+
+                });
 
             });
 
-        });
-
-    });
-
-}
+        }
 
         const confirmed =
-    await customConfirm(
-        "Your current progress will be replaced by the backup.",
-        "Restore Backup?"
-    );
+            await customConfirm(
+                "Your current progress will be replaced by the backup.",
+                "Restore Backup?"
+            );
 
-if (!confirmed) {
-    return;
-}
+        if (!confirmed) {
+            return;
+        }
 
 
         /* =====================================================
@@ -677,78 +677,78 @@ if (!confirmed) {
    RELOAD RUNTIME DATA AFTER RESTORE
 ===================================================== */
 
-goalsData =
-    JSON.parse(
-        localStorage.getItem("goalsData")
-    ) || [];
+        goalsData =
+            JSON.parse(
+                localStorage.getItem("goalsData")
+            ) || [];
 
-countdowns =
-    JSON.parse(
-        localStorage.getItem("countdowns")
-    ) || [];
+        countdowns =
+            JSON.parse(
+                localStorage.getItem("countdowns")
+            ) || [];
 
-completedMissions =
-    Number(
-        localStorage.getItem("completedMissions")
-    ) || 0;
+        completedMissions =
+            Number(
+                localStorage.getItem("completedMissions")
+            ) || 0;
 
-dailyImprovementCount =
-    Number(
-        localStorage.getItem("dailyImprovementCount")
-    ) || 0;
+        dailyImprovementCount =
+            Number(
+                localStorage.getItem("dailyImprovementCount")
+            ) || 0;
 
-lastImprovementDate =
-    localStorage.getItem("lastImprovementDate") ||
-    getISTDate().toISOString().slice(0, 10);
+        lastImprovementDate =
+            localStorage.getItem("lastImprovementDate") ||
+            getISTDate().toISOString().slice(0, 10);
 
-    /* =====================================================
-   RELOAD MUSIC / SOUND RUNTIME STATE
-===================================================== */
+        /* =====================================================
+       RELOAD MUSIC / SOUND RUNTIME STATE
+    ===================================================== */
 
-try {
+        try {
 
-    if (
-        typeof loadSoundSettings ===
-        "function"
-    ) {
+            if (
+                typeof loadSoundSettings ===
+                "function"
+            ) {
 
-        await loadSoundSettings();
+                await loadSoundSettings();
 
-    }
+            }
 
-} catch (error) {
+        } catch (error) {
 
-    console.warn(
-        "Could not reload sound settings:",
-        error
-    );
+            console.warn(
+                "Could not reload sound settings:",
+                error
+            );
 
-}
+        }
 
 
-/* =====================================================
-   REFRESH MUSIC UI
-===================================================== */
+        /* =====================================================
+           REFRESH MUSIC UI
+        ===================================================== */
 
-try {
+        try {
 
-    if (
-        typeof renderSoundSettings ===
-        "function"
-    ) {
+            if (
+                typeof renderSoundSettings ===
+                "function"
+            ) {
 
-        renderSoundSettings();
+                renderSoundSettings();
 
-    }
+            }
 
-} catch (error) {
+        } catch (error) {
 
-    console.warn(
-        "Could not refresh sound settings UI:",
-        error
-    );
+            console.warn(
+                "Could not refresh sound settings UI:",
+                error
+            );
 
-}
+        }
         /* =====================================================
            8. RESTORE CUSTOM CARDS
         ===================================================== */
@@ -1272,16 +1272,36 @@ document.getElementById("marketplaceIcon").onclick = () => {
     }
 };
 
+/* =========================================================
+   MONTHLY REPORT TOGGLE
+========================================================= */
 
-document.getElementById("timerCloseBtn").onclick = () => {
-    document.getElementById("timerScreen").style.display = "none";
-    document.querySelector(".top-navbar").style.display = "flex";
-    document.querySelector(".bottom-nav").style.display = "flex";
+const monthlyReportIcon = document.getElementById("monthlyReportIcon");
 
-    clearInterval(timerInterval);
-    stopAllMusic();
-};
+if (monthlyReportIcon) {
+    monthlyReportIcon.addEventListener("click", () => {
+        const report = document.getElementById("monthlyReport");
+        const missions = document.getElementById("missions");
 
+        if (!report || !missions) return;
+
+        const isOpen = report.classList.contains("active");
+
+        if (isOpen) {
+            report.classList.remove("active");
+            missions.classList.add("active");
+        } else {
+            document.querySelectorAll("section").forEach(section => {
+                section.classList.remove("active");
+            });
+
+            report.classList.add("active");
+            renderMonthlyReport();
+        }
+
+        updatePlusBtn(isOpen ? "missions" : "monthlyReport");
+    });
+}
 
 let playlist = [];
 let currentTrackIndex = 0;
@@ -1587,6 +1607,2226 @@ window.addEventListener("load", () => {
     checkMissedDeadlines();
 });
 
+/* =========================================================
+   MONTHLY REPORT — PERFORMANCE HISTORY
+========================================================= */
+
+function getPerformanceDate() {
+    return getISTDate().toISOString().slice(0, 10);
+}
+
+function recordMissionPerformance(
+    li,
+    status,
+    pointsDelta = 0
+) {
+    if (!li) return;
+
+    const date =
+        li.dataset.repeat !== "none" &&
+            li.dataset.repeatKey
+            ? li.dataset.repeatKey
+            : getPerformanceDate();
+
+    if (!missionHistory[date]) {
+        missionHistory[date] = {
+            completed: 0,
+            missed: 0,
+            pointsDelta: 0,
+            events: []
+        };
+    }
+
+    const missionId =
+        li.dataset.missionId ||
+        li.dataset.deadline ||
+        li.querySelector(".mission-text")?.textContent?.trim() ||
+        "unknown";
+
+    const missionName =
+        li.querySelector(".mission-text")
+            ?.textContent
+            ?.trim() ||
+        "Mission";
+
+    /*
+     * One mission occurrence =
+     *
+     * mission identity + logical date
+     */
+    const occurrenceKey =
+        `${missionId}|${date}`;
+
+    const existingEvent =
+        missionHistory[date].events.find(
+            event =>
+                event.key === occurrenceKey
+        );
+
+    /*
+     * If this occurrence has already been
+     * recorded, don't create another event.
+     */
+    if (existingEvent) {
+
+        /*
+         * Allow an existing event to transition
+         * from "missed" → "completed" only if
+         * the app legitimately allows that.
+         *
+         * For now, keep the first recorded state.
+         */
+        return;
+    }
+
+    const isRecurring =
+        li.dataset.repeat &&
+        li.dataset.repeat !== "none";
+
+    const isHardcore =
+        li.dataset.hardcore === "true";
+
+    let missionType = "one-time";
+
+    if (isHardcore) {
+        missionType = "hardcore";
+    } else if (isRecurring) {
+        missionType = "recurring";
+    }
+
+    missionHistory[date].events.push({
+        key: occurrenceKey,
+        missionId,
+        mission: missionName,
+
+        type: missionType,
+
+        status,
+        pointsDelta,
+
+        timestamp:
+            new Date().toISOString()
+    });
+
+    if (status === "completed") {
+        missionHistory[date].completed++;
+    }
+
+    if (status === "missed") {
+        missionHistory[date].missed++;
+    }
+
+    missionHistory[date].pointsDelta +=
+        pointsDelta;
+
+    localStorage.setItem(
+        "missionHistory",
+        JSON.stringify(missionHistory)
+    );
+}
+
+/* =========================================================
+   MONTHLY REPORT — METRICS ENGINE
+========================================================= */
+
+function calculateMonthMetrics(year, month) {
+    const metrics = {
+        completed: 0,
+        missed: 0,
+        activeDays: 0,
+        improvementPoints: 0,
+        consistency: 0
+    };
+
+    const monthPrefix =
+        `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    const days =
+        Object.keys(missionHistory)
+            .filter(date => date.startsWith(monthPrefix));
+
+    days.forEach(date => {
+        const day = missionHistory[date];
+
+        if (!day) return;
+
+        metrics.completed +=
+            Number(day.completed) || 0;
+
+        metrics.missed +=
+            Number(day.missed) || 0;
+
+        metrics.improvementPoints +=
+            Number(day.pointsDelta) || 0;
+
+        /*
+         * A day counts as active when
+         * something actually happened.
+         */
+        const events =
+            Array.isArray(day.events)
+                ? day.events
+                : [];
+
+        if (events.length > 0) {
+            metrics.activeDays++;
+        }
+    });
+
+    const totalMissions =
+        metrics.completed +
+        metrics.missed;
+
+    if (totalMissions > 0) {
+        metrics.consistency =
+            Math.round(
+                (metrics.completed /
+                    totalMissions) * 100
+            );
+    }
+
+    return metrics;
+}
+
+/* =========================================================
+   MONTHLY REPORT — MISSION TYPE PERFORMANCE
+========================================================= */
+
+function calculateMissionTypePerformance(year, month) {
+
+    const monthPrefix =
+        `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    const result = {
+        hardcore: 0,
+        recurring: 0,
+        oneTime: 0
+    };
+
+    Object.keys(missionHistory)
+        .filter(date =>
+            date.startsWith(monthPrefix)
+        )
+        .forEach(date => {
+
+            const day =
+                missionHistory[date];
+
+            const events =
+                Array.isArray(day.events)
+                    ? day.events
+                    : [];
+
+            events.forEach(event => {
+
+                if (event.type === "hardcore") {
+                    result.hardcore++;
+                }
+
+                else if (
+                    event.type === "recurring"
+                ) {
+                    result.recurring++;
+                }
+
+                else if (event.type === "one-time") {
+                    result.oneTime++;
+                }
+
+            });
+
+        });
+
+    return result;
+}
+/* =========================================================
+   MONTHLY REPORT — DAILY CONSISTENCY DATA
+========================================================= */
+
+function calculateDailyConsistency(year, month) {
+
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+    const result = [];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+
+        const dateKey =
+            `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+        const dayData =
+            missionHistory[dateKey];
+
+        const completed =
+            Number(dayData?.completed) || 0;
+
+        const missed =
+            Number(dayData?.missed) || 0;
+
+        const total =
+            completed + missed;
+
+        const consistency =
+            total > 0
+                ? Math.round(
+                    (completed / total) * 100
+                )
+                : null;
+
+        result.push({
+            day,
+            date: dateKey,
+            completed,
+            missed,
+            consistency
+        });
+    }
+
+    return result;
+}
+
+/* =========================================================
+   MONTHLY REPORT — MISSION PERFORMANCE
+========================================================= */
+
+function calculateMissionPerformance(year, month) {
+
+    const monthPrefix =
+        `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    const performance = {
+        completed: 0,
+        missed: 0,
+        total: 0,
+        completionRate: 0
+    };
+
+    Object.keys(missionHistory)
+        .filter(date => date.startsWith(monthPrefix))
+        .forEach(date => {
+
+            const day =
+                missionHistory[date];
+
+            performance.completed +=
+                Number(day.completed) || 0;
+
+            performance.missed +=
+                Number(day.missed) || 0;
+        });
+
+
+    performance.total =
+        performance.completed +
+        performance.missed;
+
+
+    if (performance.total > 0) {
+
+        performance.completionRate =
+            Math.round(
+                (
+                    performance.completed /
+                    performance.total
+                ) * 100
+            );
+
+    }
+
+
+    return performance;
+}
+/* =========================================================
+   MONTHLY REPORT — MONTH OVERVIEW
+========================================================= */
+
+function renderMonthlyReport() {
+
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        now.getMonth();
+
+    const metrics =
+        calculateMonthMetrics(
+            year,
+            month
+        );
+
+
+    /* =========================
+       MONTH NAME
+    ========================= */
+
+    const monthName =
+        new Date(
+            year,
+            month,
+            1
+        ).toLocaleDateString(
+            [],
+            {
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+    /* =========================
+       UPDATE UI
+    ========================= */
+
+    const monthElement =
+        document.getElementById(
+            "monthlyReportMonth"
+        );
+
+    const consistencyElement =
+        document.getElementById(
+            "monthlyConsistency"
+        );
+
+    const completedElement =
+        document.getElementById(
+            "monthlyCompleted"
+        );
+
+    const missedElement =
+        document.getElementById(
+            "monthlyMissed"
+        );
+
+    const activeDaysElement =
+        document.getElementById(
+            "monthlyActiveDays"
+        );
+
+    const pointsElement =
+        document.getElementById(
+            "monthlyImprovementPoints"
+        );
+
+
+    if (monthElement) {
+        monthElement.textContent =
+            monthName.toUpperCase();
+    }
+
+    if (consistencyElement) {
+        consistencyElement.textContent =
+            `${metrics.consistency}%`;
+    }
+
+    if (completedElement) {
+        completedElement.textContent =
+            metrics.completed;
+    }
+
+    if (missedElement) {
+        missedElement.textContent =
+            metrics.missed;
+    }
+
+    if (activeDaysElement) {
+        activeDaysElement.textContent =
+            metrics.activeDays;
+    }
+
+    if (pointsElement) {
+        pointsElement.textContent =
+            metrics.improvementPoints;
+    }
+
+    renderMonthlyActivityCalendar(
+        year,
+        month
+    );
+
+    renderMonthlyConsistencyChart(
+        year,
+        month
+    );
+
+    renderMonthlyMissionPerformance(
+        year,
+        month
+    );
+
+    renderMonthlyMomentum(
+        year,
+        month
+    );
+    renderMonthlyMomentumChart(
+        year,
+        month
+    );
+    renderMonthlyGoalsProgress(
+        year,
+        month
+    );
+    renderMonthlyInsights(
+        year,
+        month
+    );
+    renderMonthlySummary(
+        year,
+        month
+    );
+}
+
+function getMonthlyMomentumHistory(year, month) {
+
+    const history = Momentum.getHistory();
+
+    const prefix =
+        `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    return Object.entries(history)
+        .filter(([date]) =>
+            date.startsWith(prefix)
+        )
+        .map(([date, data]) => ({
+            date: date,
+            momentum: Number(data.momentum) || 0
+        }))
+        .sort((a, b) =>
+            a.date.localeCompare(b.date)
+        );
+}
+
+function generateMonthlyInsights(year, month) {
+
+    const metrics =
+        calculateMonthMetrics(year, month);
+
+    const performance =
+        calculateMissionPerformance(year, month);
+
+    const goals =
+        calculateMonthlyGoalMetrics(year, month);
+
+    const insights = [];
+
+
+    /* =========================
+       MISSION PERFORMANCE
+    ========================= */
+
+    if (performance.total > 0) {
+
+        if (performance.completionRate >= 80) {
+
+            insights.push({
+                type: "positive",
+                title: "Strong execution",
+                text:
+                    `You completed ${performance.completionRate}% of your recorded missions.`
+            });
+
+        } else if (
+            performance.completionRate >= 50
+        ) {
+
+            insights.push({
+                type: "neutral",
+                title: "Decent execution",
+                text:
+                    `You completed ${performance.completionRate}% of your recorded missions.`
+            });
+
+        } else {
+
+            insights.push({
+                type: "warning",
+                title: "Execution gap",
+                text:
+                    `You completed ${performance.completionRate}% of your recorded missions.`
+            });
+
+        }
+
+    }
+
+
+    /* =========================
+       CONSISTENCY
+    ========================= */
+
+    if (metrics.consistency >= 80) {
+
+        insights.push({
+            type: "positive",
+            title: "Highly consistent",
+            text:
+                `Your monthly consistency reached ${metrics.consistency}%.`
+        });
+
+    } else if (
+        metrics.consistency >= 50
+    ) {
+
+        insights.push({
+            type: "neutral",
+            title: "Room to improve consistency",
+            text:
+                `Your monthly consistency was ${metrics.consistency}%.`
+        });
+
+    } else {
+
+        insights.push({
+            type: "warning",
+            title: "Consistency needs attention",
+            text:
+                `Your monthly consistency was ${metrics.consistency}%.`
+        });
+
+    }
+
+
+    /* =========================
+       GOALS
+    ========================= */
+
+    if (goals.total > 0) {
+
+        if (goals.completionRate === 100) {
+
+            insights.push({
+                type: "positive",
+                title: "Goals completed",
+                text:
+                    `You completed all ${goals.total} of your monthly goals.`
+            });
+
+        } else {
+
+            insights.push({
+                type: "neutral",
+                title: "Goal progress",
+                text:
+                    `You completed ${goals.completed} of ${goals.total} goals.`
+            });
+
+        }
+
+    }
+
+
+    /* =========================
+       MOMENTUM
+    ========================= */
+
+    if (
+        metrics.activeDays > 0 &&
+        metrics.momentum !== undefined
+    ) {
+
+        insights.push({
+            type: "positive",
+            title: "Momentum built",
+            text:
+                `Your current Momentum is ${metrics.momentum}.`
+        });
+
+    }
+
+
+    return insights;
+}
+
+/* =========================================================
+   MONTHLY REPORT — MOMENTUM METRICS
+========================================================= */
+
+function calculateMonthlyMomentum(year, month) {
+
+    const prefix =
+        `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    const history =
+        Momentum.getHistory();
+
+    const entries =
+        Object.entries(history)
+            .filter(([date]) =>
+                date.startsWith(prefix)
+            )
+            .sort(
+                ([a], [b]) =>
+                    a.localeCompare(b)
+            );
+
+
+    const result = {
+        started: 0,
+        peak: 0,
+        ended: 0,
+        longest: 0,
+        history: []
+    };
+
+
+    if (entries.length === 0) {
+        return result;
+    }
+
+
+    /* =========================
+       HISTORY
+    ========================= */
+
+    result.history =
+        entries.map(
+            ([date, data]) => ({
+                date,
+                momentum:
+                    Number(data.momentum) || 0,
+                energy:
+                    Number(data.energy) || 0
+            })
+        );
+
+
+    /* =========================
+       STARTED
+    ========================= */
+
+    result.started =
+        result.history[0].momentum;
+
+
+    /* =========================
+       ENDED
+    ========================= */
+
+    result.ended =
+        result.history[
+            result.history.length - 1
+        ].momentum;
+
+
+    /* =========================
+       PEAK
+    ========================= */
+
+    result.peak =
+        Math.max(
+            ...result.history.map(
+                item => item.momentum
+            )
+        );
+
+
+    /* =========================
+       LONGEST
+    ========================= */
+
+    let currentStreak = 0;
+
+    result.history.forEach(
+        item => {
+
+            if (item.momentum > 0) {
+
+                currentStreak =
+                    item.momentum;
+
+                result.longest =
+                    Math.max(
+                        result.longest,
+                        currentStreak
+                    );
+
+            } else {
+
+                currentStreak = 0;
+
+            }
+
+        }
+    );
+
+
+    return result;
+}
+
+function generateMonthlySummary(year, month) {
+
+    const metrics =
+        calculateMonthMetrics(year, month);
+
+    const performance =
+        calculateMissionPerformance(year, month);
+
+    const goals =
+        calculateMonthlyGoalMetrics(year, month);
+
+    const monthName =
+        new Date(year, month, 1)
+            .toLocaleDateString([], {
+                month: "long"
+            });
+
+
+
+    let opening;
+
+    if (performance.total === 0) {
+
+        opening =
+            `${monthName} doesn't have enough recorded data for a meaningful summary.`;
+
+    } else if (performance.completionRate >= 80) {
+
+        opening =
+            `${monthName} was a strong execution month.`;
+
+    } else if (performance.completionRate >= 50) {
+
+        opening =
+            `${monthName} was a moderately productive month.`;
+
+    } else {
+
+        opening =
+            `${monthName} was a challenging month.`;
+    }
+
+
+    let consistencyInsight;
+
+    if (performance.total === 0) {
+
+        consistencyInsight =
+            `There isn't enough recorded activity to evaluate consistency.`;
+
+    } else if (metrics.consistency >= 80) {
+
+        consistencyInsight =
+            `You maintained strong consistency at ${metrics.consistency}%.`;
+
+    } else if (metrics.consistency >= 50) {
+
+        consistencyInsight =
+            `Your consistency was ${metrics.consistency}%, leaving room to build a stronger routine.`;
+
+    } else {
+
+        consistencyInsight =
+            `Your consistency was ${metrics.consistency}%, making consistency the biggest area to improve.`;
+    }
+
+    let goalInsight = "";
+
+    if (goals.total > 0) {
+
+        if (goals.completionRate === 100) {
+
+            goalInsight =
+                `You completed all ${goals.total} of your goals.`;
+
+        } else {
+
+            goalInsight =
+                `You completed ${goals.completed} of ${goals.total} goals.`;
+        }
+
+    }
+
+
+    return {
+        month: monthName,
+        opening,
+        completionRate:
+            performance.completionRate,
+        consistency:
+            metrics.consistency,
+        completedMissions:
+            performance.completed,
+        missedMissions:
+            performance.missed,
+        goalsCompleted:
+            goals.completed,
+        goalsTotal:
+            goals.total,
+        summary:
+            `${opening} You completed ${performance.completionRate}% of your recorded missions. ${consistencyInsight} ${goalInsight}`
+    };
+
+}
+/* =========================================================
+   MONTHLY REPORT — MISSION PERFORMANCE UI
+========================================================= */
+
+function renderMonthlyMissionPerformance(year, month) {
+
+    const performance =
+        calculateMissionPerformance(
+            year,
+            month
+        );
+
+    const rate =
+        document.getElementById(
+            "missionCompletionRate"
+        );
+
+    const completed =
+        document.getElementById(
+            "missionPerformanceCompleted"
+        );
+
+    const missed =
+        document.getElementById(
+            "missionPerformanceMissed"
+        );
+
+    const total =
+        document.getElementById(
+            "missionPerformanceTotal"
+        );
+
+
+    if (rate) {
+        rate.textContent =
+            `${performance.completionRate}%`;
+    }
+
+    if (completed) {
+        completed.textContent =
+            performance.completed;
+    }
+
+    if (missed) {
+        missed.textContent =
+            performance.missed;
+    }
+
+    if (total) {
+        total.textContent =
+            performance.total;
+    }
+
+    const types =
+        calculateMissionTypePerformance(
+            year,
+            month
+        );
+
+    const hardcore =
+        document.getElementById(
+            "missionHardcoreCount"
+        );
+
+    const recurring =
+        document.getElementById(
+            "missionRecurringCount"
+        );
+
+    const oneTime =
+        document.getElementById(
+            "missionOneTimeCount"
+        );
+
+    if (hardcore) {
+        hardcore.textContent =
+            types.hardcore;
+    }
+
+    if (recurring) {
+        recurring.textContent =
+            types.recurring;
+    }
+
+    if (oneTime) {
+        oneTime.textContent =
+            types.oneTime;
+    }
+}
+
+function renderMonthlyMomentumChart(year, month) {
+
+    const container =
+        document.getElementById(
+            "monthlyMomentumChart"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    const history =
+        getMonthlyMomentumHistory(
+            year,
+            month
+        );
+
+    container.innerHTML = "";
+
+
+    const yAxis =
+        document.getElementById(
+            "momentumGraphYAxis"
+        );
+
+    const xAxis =
+        document.getElementById(
+            "momentumGraphXAxis"
+        );
+
+    const peakLabel =
+        document.getElementById(
+            "monthlyMomentumPeakLabel"
+        );
+
+
+    if (yAxis) {
+        yAxis.innerHTML = "";
+    }
+
+    if (xAxis) {
+        xAxis.innerHTML = "";
+    }
+
+
+    /* =========================================
+       EMPTY STATE
+    ========================================= */
+
+    if (history.length === 0) {
+
+        container.innerHTML = `
+            <div class="momentum-graph-empty">
+                No Momentum data for this month.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /* =========================================
+       VALUES
+    ========================================= */
+
+    const values =
+        history.map(
+            item => Number(item.momentum) || 0
+        );
+
+
+    const maxMomentum =
+        Math.max(...values, 1);
+
+
+    const graphMax =
+        Math.max(
+            1,
+            Math.ceil(maxMomentum / 5) * 5
+        );
+
+
+    /* =========================================
+       PEAK LABEL
+    ========================================= */
+
+    if (peakLabel) {
+
+        peakLabel.textContent =
+            `Peak ${maxMomentum}`;
+
+    }
+
+
+    /* =========================================
+       Y AXIS
+    ========================================= */
+
+    if (yAxis) {
+
+        const steps = 4;
+
+        for (
+            let i = steps;
+            i >= 0;
+            i--
+        ) {
+
+            const value =
+                Math.round(
+                    (graphMax / steps) * i
+                );
+
+            const label =
+                document.createElement("span");
+
+            label.textContent = value;
+
+            yAxis.appendChild(label);
+        }
+    }
+
+
+    /* =========================================
+       SVG
+    ========================================= */
+
+    const width = 1000;
+    const height = 300;
+
+    const paddingTop = 18;
+    const paddingBottom = 18;
+    const paddingLeft = 8;
+    const paddingRight = 8;
+
+    const graphWidth =
+        width -
+        paddingLeft -
+        paddingRight;
+
+    const graphHeight =
+        height -
+        paddingTop -
+        paddingBottom;
+
+
+    const points =
+        history.map(
+            (item, index) => {
+
+                const x =
+                    history.length === 1
+                        ? width / 2
+                        : paddingLeft +
+                        (
+                            index /
+                            (history.length - 1)
+                        ) *
+                        graphWidth;
+
+
+                const y =
+                    paddingTop +
+                    graphHeight -
+                    (
+                        item.momentum /
+                        graphMax
+                    ) *
+                    graphHeight;
+
+
+                return {
+                    x,
+                    y,
+                    date: item.date,
+                    momentum: item.momentum
+                };
+
+            }
+        );
+
+
+    const svg =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg"
+        );
+
+
+    svg.setAttribute(
+        "viewBox",
+        `0 0 ${width} ${height}`
+    );
+
+    svg.setAttribute(
+        "preserveAspectRatio",
+        "none"
+    );
+
+
+    /* =========================================
+       GRID
+    ========================================= */
+
+    const gridSteps = 4;
+
+    for (
+        let i = 0;
+        i <= gridSteps;
+        i++
+    ) {
+
+        const y =
+            paddingTop +
+            (
+                graphHeight /
+                gridSteps
+            ) *
+            i;
+
+
+        const line =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+
+
+        line.setAttribute(
+            "x1",
+            0
+        );
+
+        line.setAttribute(
+            "x2",
+            width
+        );
+
+        line.setAttribute(
+            "y1",
+            y
+        );
+
+        line.setAttribute(
+            "y2",
+            y
+        );
+
+        line.setAttribute(
+            "class",
+            "momentum-grid-line"
+        );
+
+
+        svg.appendChild(line);
+    }
+
+
+    /* =========================================
+       AREA
+    ========================================= */
+
+    const areaPoints = [
+        `${points[0].x},${height}`,
+        ...points.map(
+            point =>
+                `${point.x},${point.y}`
+        ),
+        `${points[points.length - 1].x},${height}`
+    ];
+
+
+    const area =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "polygon"
+        );
+
+
+    area.setAttribute(
+        "points",
+        areaPoints.join(" ")
+    );
+
+    area.setAttribute(
+        "class",
+        "momentum-chart-area-fill"
+    );
+
+
+    svg.appendChild(area);
+
+
+    /* =========================================
+       LINE
+    ========================================= */
+
+    const line =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "polyline"
+        );
+
+
+    line.setAttribute(
+        "points",
+        points
+            .map(
+                point =>
+                    `${point.x},${point.y}`
+            )
+            .join(" ")
+    );
+
+
+    line.setAttribute(
+        "class",
+        "momentum-chart-line"
+    );
+
+
+    svg.appendChild(line);
+
+
+    /* =========================================
+       POINTS
+    ========================================= */
+
+    points.forEach(
+        point => {
+
+            const circle =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "circle"
+                );
+
+
+            circle.setAttribute(
+                "cx",
+                point.x
+            );
+
+            circle.setAttribute(
+                "cy",
+                point.y
+            );
+
+            circle.setAttribute(
+                "r",
+                "5"
+            );
+
+            circle.setAttribute(
+                "class",
+                "momentum-chart-point"
+            );
+
+
+            svg.appendChild(circle);
+
+        }
+    );
+
+
+    container.appendChild(svg);
+
+
+    /* =========================================
+       X AXIS
+    ========================================= */
+
+    if (xAxis) {
+
+        const labels = [];
+
+
+        if (history.length <= 5) {
+
+            history.forEach(
+                item => {
+
+                    labels.push(item);
+
+                }
+            );
+
+        } else {
+
+            labels.push(
+                history[0]
+            );
+
+            labels.push(
+                history[
+                Math.floor(
+                    history.length / 2
+                )
+                ]
+            );
+
+            labels.push(
+                history[
+                history.length - 1
+                ]
+            );
+
+        }
+
+
+        labels.forEach(
+            item => {
+
+                const label =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                const date =
+                    new Date(
+                        item.date + "T00:00:00"
+                    );
+
+
+                label.textContent =
+                    date.toLocaleDateString(
+                        [],
+                        {
+                            day: "numeric",
+                            month: "short"
+                        }
+                    );
+
+
+                xAxis.appendChild(
+                    label
+                );
+
+            }
+        );
+
+    }
+
+}
+
+function getMonthlyEnergyHistory(year, month) {
+
+    const history = Momentum.getHistory();
+
+    const prefix =
+        `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    return Object.entries(history)
+        .filter(([date]) =>
+            date.startsWith(prefix)
+        )
+        .map(([date, data]) => ({
+            date: date,
+            energy: Number(data.energy) || 0
+        }))
+        .sort((a, b) =>
+            a.date.localeCompare(b.date)
+        );
+}
+/* =========================================================
+   MONTHLY REPORT — MOMENTUM JOURNEY UI
+========================================================= */
+
+function renderMonthlyMomentum(year, month) {
+
+    const momentum =
+        calculateMonthlyMomentum(
+            year,
+            month
+        );
+
+
+    const ended =
+        document.getElementById(
+            "monthlyMomentumEnded"
+        );
+
+    const started =
+        document.getElementById(
+            "monthlyMomentumStarted"
+        );
+
+    const peak =
+        document.getElementById(
+            "monthlyMomentumPeak"
+        );
+
+    const endedStat =
+        document.getElementById(
+            "monthlyMomentumEndedStat"
+        );
+
+    const longest =
+        document.getElementById(
+            "monthlyMomentumLongest"
+        );
+
+
+    if (ended) {
+        ended.textContent =
+            momentum.ended;
+    }
+
+    if (started) {
+        started.textContent =
+            momentum.started;
+    }
+
+    if (peak) {
+        peak.textContent =
+            momentum.peak;
+    }
+
+    if (endedStat) {
+        endedStat.textContent =
+            momentum.ended;
+    }
+
+    if (longest) {
+        longest.textContent =
+            `${momentum.longest} ${momentum.longest === 1
+                ? "DAY"
+                : "DAYS"
+            }`;
+    }
+
+}
+
+function renderMonthlyInsights(year, month) {
+
+    const container =
+        document.getElementById(
+            "monthlyInsights"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    const insights =
+        generateMonthlyInsights(
+            year,
+            month
+        );
+
+    container.innerHTML = "";
+
+
+    if (insights.length === 0) {
+
+        container.innerHTML = `
+            <div class="monthly-insight-empty">
+                Not enough data to generate insights yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    insights.forEach(insight => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            `monthly-insight monthly-insight-${insight.type}`;
+
+
+        item.innerHTML = `
+            <div class="monthly-insight-indicator"></div>
+
+            <div class="monthly-insight-content">
+
+                <strong>
+                    ${insight.title}
+                </strong>
+
+                <span>
+                    ${insight.text}
+                </span>
+
+            </div>
+        `;
+
+
+        container.appendChild(item);
+
+    });
+
+}
+
+function renderMonthlySummary(year, month) {
+
+    const summary =
+        generateMonthlySummary(
+            year,
+            month
+        );
+
+    const title =
+        document.getElementById(
+            "monthlySummaryTitle"
+        );
+
+    const text =
+        document.getElementById(
+            "monthlySummaryText"
+        );
+
+    const completion =
+        document.getElementById(
+            "monthlySummaryCompletion"
+        );
+
+    const consistency =
+        document.getElementById(
+            "monthlySummaryConsistency"
+        );
+
+    const goals =
+        document.getElementById(
+            "monthlySummaryGoals"
+        );
+
+
+    if (title) {
+        title.textContent =
+            summary.month;
+    }
+
+
+    if (text) {
+        text.textContent =
+            summary.summary;
+    }
+
+
+    if (completion) {
+        completion.textContent =
+            `${summary.completionRate}%`;
+    }
+
+
+    if (consistency) {
+        consistency.textContent =
+            `${summary.consistency}%`;
+    }
+
+
+    if (goals) {
+        goals.textContent =
+            `${summary.goalsCompleted}/${summary.goalsTotal}`;
+    }
+
+}
+/* =========================================================
+   MONTHLY REPORT — ACTIVITY CALENDAR
+========================================================= */
+
+function renderMonthlyActivityCalendar(year, month) {
+
+    const container =
+        document.getElementById(
+            "monthlyActivityCalendar"
+        );
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+
+    /* =========================
+       MONTH INFORMATION
+    ========================= */
+
+    const firstDay =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+
+    /*
+     * JavaScript:
+     *
+     * Sunday = 0
+     * Monday = 1
+     * ...
+     *
+     * Our calendar starts Monday.
+     */
+    const firstWeekday =
+        (firstDay.getDay() + 6) % 7;
+
+
+    /* =========================
+       WEEKDAY HEADERS
+    ========================= */
+
+    const weekdays = [
+        "MON",
+        "TUE",
+        "WED",
+        "THU",
+        "FRI",
+        "SAT",
+        "SUN"
+    ];
+
+    weekdays.forEach(day => {
+
+        const header =
+            document.createElement("div");
+
+        header.className =
+            "calendar-weekday";
+
+        header.textContent =
+            day;
+
+        container.appendChild(header);
+
+    });
+
+
+    /* =========================
+       EMPTY CELLS
+    ========================= */
+
+    for (
+        let i = 0;
+        i < firstWeekday;
+        i++
+    ) {
+
+        const empty =
+            document.createElement("div");
+
+        empty.className =
+            "calendar-day calendar-empty";
+
+        container.appendChild(empty);
+
+    }
+
+
+    /* =========================
+       DAYS
+    ========================= */
+
+    const today =
+        getISTDate();
+
+    const todayKey =
+        today.toISOString()
+            .slice(0, 10);
+
+
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
+
+        const dateKey =
+            `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+        const dayData =
+            missionHistory[dateKey];
+
+
+        const cell =
+            document.createElement("div");
+
+        cell.className =
+            "calendar-day";
+
+
+        /* =========================
+           DAY NUMBER
+        ========================= */
+
+        const number =
+            document.createElement("span");
+
+        number.className =
+            "calendar-day-number";
+
+        number.textContent =
+            day;
+
+        cell.appendChild(number);
+
+
+        /* =========================
+           ACTIVITY STATE
+        ========================= */
+
+        const events =
+            dayData &&
+                Array.isArray(dayData.events)
+                ? dayData.events
+                : [];
+
+
+        const hasCompleted =
+            events.some(
+                event =>
+                    event.status === "completed"
+            );
+
+        const hasMissed =
+            events.some(
+                event =>
+                    event.status === "missed"
+            );
+
+
+        if (hasCompleted) {
+
+            cell.classList.add(
+                "calendar-active"
+            );
+
+        }
+
+        if (hasMissed) {
+
+            cell.classList.add(
+                "calendar-missed"
+            );
+
+        }
+
+        if (
+            !hasCompleted &&
+            !hasMissed
+        ) {
+
+            cell.classList.add(
+                "calendar-no-activity"
+            );
+
+        }
+
+
+        /* =========================
+           TODAY
+        ========================= */
+
+        if (dateKey === todayKey) {
+
+            cell.classList.add(
+                "calendar-today"
+            );
+
+        }
+
+
+        container.appendChild(cell);
+
+    }
+
+}
+
+function calculateMonthlyGoalMetrics(year, month) {
+
+    const start = new Date(year, month, 1);
+    const end = new Date(year, month + 1, 1);
+
+    const goals = goalsData.filter(goal => {
+
+        const deadline =
+            goal.deadline
+                ? new Date(goal.deadline)
+                : null;
+
+        const achievedAt =
+            goal.achievedAt
+                ? new Date(goal.achievedAt)
+                : null;
+
+        return (
+            (deadline && deadline >= start && deadline < end) ||
+            (achievedAt && achievedAt >= start && achievedAt < end)
+        );
+    });
+
+    const completed =
+        goals.filter(goal => goal.achieved).length;
+
+    const active =
+        goals.filter(goal =>
+            !goal.achieved &&
+            new Date(goal.deadline) >= new Date()
+        ).length;
+
+    const missed =
+        goals.filter(goal =>
+            !goal.achieved &&
+            goal.deadline &&
+            new Date(goal.deadline) < new Date()
+        ).length;
+
+    const total = goals.length;
+
+    const completionRate =
+        total > 0
+            ? Math.round((completed / total) * 100)
+            : 0;
+
+    return {
+        completed,
+        active,
+        missed,
+        total,
+        completionRate
+    };
+}
+/* =========================================================
+   MONTHLY REPORT — CONSISTENCY GRAPH
+========================================================= */
+
+function renderMonthlyConsistencyChart(year, month) {
+
+    const container =
+        document.getElementById(
+            "monthlyConsistencyChart"
+        );
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const data =
+        calculateDailyConsistency(
+            year,
+            month
+        );
+
+
+    /* =========================
+       CHART
+    ========================= */
+
+    const chart =
+        document.createElement("div");
+
+    chart.className =
+        "consistency-chart-inner";
+
+
+    /* =========================
+       Y AXIS
+    ========================= */
+
+    const yAxis =
+        document.createElement("div");
+
+    yAxis.className =
+        "consistency-y-axis";
+
+    [100, 75, 50, 25, 0]
+        .forEach(value => {
+
+            const label =
+                document.createElement("span");
+
+            label.textContent =
+                value + "%";
+
+            yAxis.appendChild(label);
+
+        });
+
+
+    chart.appendChild(yAxis);
+
+
+    /* =========================
+       GRAPH AREA
+    ========================= */
+
+    const graph =
+        document.createElement("div");
+
+    graph.className =
+        "consistency-graph-area";
+
+
+    /* =========================
+       GRID
+    ========================= */
+
+    [100, 75, 50, 25, 0]
+        .forEach(value => {
+
+            const line =
+                document.createElement("div");
+
+            line.className =
+                "consistency-grid-line";
+
+            line.style.bottom =
+                `${value}%`;
+
+            graph.appendChild(line);
+
+        });
+
+
+    /* =========================
+       SVG
+    ========================= */
+
+    const svg =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg"
+        );
+
+    svg.classList.add(
+        "consistency-svg"
+    );
+
+    svg.setAttribute(
+        "viewBox",
+        `0 0 ${data.length * 20} 100`
+    );
+
+    svg.setAttribute(
+        "preserveAspectRatio",
+        "none"
+    );
+
+
+    /* =========================
+       POINTS
+    ========================= */
+
+    const points = [];
+
+    data.forEach((item, index) => {
+
+        if (item.consistency === null) {
+            return;
+        }
+
+        const x =
+            index * 20 + 10;
+
+        const y =
+            100 - item.consistency;
+
+        points.push({
+            x,
+            y,
+            item
+        });
+
+    });
+
+
+    /* =========================
+       LINE
+    ========================= */
+
+    if (points.length > 1) {
+
+        const path =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "polyline"
+            );
+
+        path.setAttribute(
+            "points",
+            points
+                .map(point =>
+                    `${point.x},${point.y}`
+                )
+                .join(" ")
+        );
+
+        path.classList.add(
+            "consistency-line"
+        );
+
+        svg.appendChild(path);
+
+    }
+
+
+    /* =========================
+       POINT DOTS
+    ========================= */
+
+    points.forEach(point => {
+
+        const circle =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle"
+            );
+
+        circle.setAttribute(
+            "cx",
+            point.x
+        );
+
+        circle.setAttribute(
+            "cy",
+            point.y
+        );
+
+        circle.setAttribute(
+            "r",
+            "2"
+        );
+
+        circle.classList.add(
+            "consistency-point"
+        );
+
+        svg.appendChild(circle);
+
+    });
+
+
+    graph.appendChild(svg);
+
+
+    /* =========================
+       X AXIS
+    ========================= */
+
+    const xAxis =
+        document.createElement("div");
+
+    xAxis.className =
+        "consistency-x-axis";
+
+    data.forEach(item => {
+
+        const label =
+            document.createElement("span");
+
+        /*
+         * Only show useful labels.
+         */
+        if (
+            item.day === 1 ||
+            item.day % 7 === 0 ||
+            item.day === data.length
+        ) {
+            label.textContent =
+                item.day;
+        }
+
+        xAxis.appendChild(label);
+
+    });
+
+    graph.appendChild(xAxis);
+
+    chart.appendChild(graph);
+
+    container.appendChild(chart);
+}
+
+function getMonthlyGoalProgress(year, month) {
+
+    const metrics =
+        calculateMonthlyGoalMetrics(
+            year,
+            month
+        );
+
+    return {
+        ...metrics,
+        progress: metrics.completionRate
+    };
+}
+
+function renderMonthlyGoalsProgress(year, month) {
+
+    const metrics =
+        getMonthlyGoalProgress(
+            year,
+            month
+        );
+
+    const progressValue =
+        document.getElementById(
+            "monthlyGoalsProgressValue"
+        );
+
+    const completedText =
+        document.getElementById(
+            "monthlyGoalsCompletedText"
+        );
+
+    const progressBar =
+        document.getElementById(
+            "monthlyGoalsProgressBar"
+        );
+
+    const completed =
+        document.getElementById(
+            "monthlyGoalsCompleted"
+        );
+
+    const missed =
+        document.getElementById(
+            "monthlyGoalsMissed"
+        );
+
+    const active =
+        document.getElementById(
+            "monthlyGoalsActive"
+        );
+
+
+    if (progressValue) {
+        progressValue.textContent =
+            `${metrics.progress}%`;
+    }
+
+
+    if (completedText) {
+        completedText.textContent =
+            `${metrics.completed} of ${metrics.total}`;
+    }
+
+
+    if (progressBar) {
+        progressBar.style.width =
+            `${metrics.progress}%`;
+    }
+
+
+    if (completed) {
+        completed.textContent =
+            metrics.completed;
+    }
+
+
+    if (missed) {
+        missed.textContent =
+            metrics.missed;
+    }
+
+
+    if (active) {
+        active.textContent =
+            metrics.active;
+    }
+
+}
 
 document.getElementById("missionCounter").textContent = completedMissions;
 
@@ -1993,9 +4233,9 @@ function openModal(type, skillDiv = null) {
    ADD SKILL
 ===================================================== */
 
-if (type === "skill") {
+    if (type === "skill") {
 
-    content.innerHTML = `
+        content.innerHTML = `
         <h3>Add Skill</h3>
 
         <input
@@ -2021,17 +4261,17 @@ if (type === "skill") {
         </button>
     `;
 
-    /* Focus input automatically */
+        /* Focus input automatically */
 
-    setTimeout(() => {
+        setTimeout(() => {
 
-        document
-            .getElementById("skillInput")
-            ?.focus();
+            document
+                .getElementById("skillInput")
+                ?.focus();
 
-    }, 50);
+        }, 50);
 
-}
+    }
 
     // ---- Edit Mission ----
     if (type === "edit-mission" && skillDiv) {
@@ -2102,9 +4342,9 @@ if (type === "skill") {
     }
 
     // ---- Add Goal ----
-if (type === "goal") {
+    if (type === "goal") {
 
-    content.innerHTML = `
+        content.innerHTML = `
         <h3>Add Goal</h3>
 
         <input
@@ -2137,16 +4377,16 @@ if (type === "goal") {
         </button>
     `;
 
-    const now =
-        new Date()
-            .toISOString()
-            .slice(0, 16);
+        const now =
+            new Date()
+                .toISOString()
+                .slice(0, 16);
 
-    document.getElementById(
-        "goalDeadline"
-    ).min = now;
-}
-    
+        document.getElementById(
+            "goalDeadline"
+        ).min = now;
+    }
+
 
     // ---- Add Goal ----
     if (type === "goal") {
@@ -2294,6 +4534,8 @@ function addMission() {
 
     const li =
         document.createElement("li");
+
+    li.dataset.missionId = crypto.randomUUID();
 
 
     /* =====================================================
@@ -2681,11 +4923,33 @@ function checkMissedDeadlines() {
 
             // ❌ NORMAL MODE — DEDUCT 1 POINT (ONCE)
             if (!li.dataset.deducted) {
-                completedMissions = completedMissions - 1;
+
+                const pointsBefore =
+                    completedMissions;
+
+                completedMissions =
+                    completedMissions - 1;
+
                 li.dataset.deducted = "true";
 
-                document.getElementById("missionCounter").textContent = completedMissions;
-                localStorage.setItem("completedMissions", completedMissions);
+                const pointsDelta =
+                    completedMissions - pointsBefore;
+
+                recordMissionPerformance(
+                    li,
+                    "missed",
+                    pointsDelta
+                );
+
+                document.getElementById(
+                    "missionCounter"
+                ).textContent =
+                    completedMissions;
+
+                localStorage.setItem(
+                    "completedMissions",
+                    completedMissions
+                );
 
                 saveData();
             }
@@ -2770,77 +5034,77 @@ function completeMission(btn) {
        OVERDUE → NO REWARD
     ===================================================== */
 
-   if (
-    deadline &&
-    new Date(deadline).getTime() < Date.now()
-) {
+    if (
+        deadline &&
+        new Date(deadline).getTime() < Date.now()
+    ) {
 
-    /*
-     * Mission is already overdue.
-     * It gets NO Improvement Point.
-     */
+        /*
+         * Mission is already overdue.
+         * It gets NO Improvement Point.
+         */
 
-    const completeBtn =
-        li.querySelector(".complete-btn");
+        const completeBtn =
+            li.querySelector(".complete-btn");
 
-    /*
-     * Disable the button immediately.
-     * This occurrence is finished.
-     */
+        /*
+         * Disable the button immediately.
+         * This occurrence is finished.
+         */
 
-    if (completeBtn) {
+        if (completeBtn) {
 
-        completeBtn.disabled = true;
+            completeBtn.disabled = true;
 
-        completeBtn.style.opacity = "0.45";
+            completeBtn.style.opacity = "0.45";
 
-    }
-
-
-    /*
-     * Mark the occurrence visually.
-     */
-
-    li.classList.add("completed");
+        }
 
 
-    /*
-     * One-time missions disappear.
-     */
+        /*
+         * Mark the occurrence visually.
+         */
 
-    if (repeat === "none") {
+        li.classList.add("completed");
 
-        li.classList.add("remove");
 
-        setTimeout(() => {
+        /*
+         * One-time missions disappear.
+         */
 
-            li.remove();
+        if (repeat === "none") {
+
+            li.classList.add("remove");
+
+            setTimeout(() => {
+
+                li.remove();
+
+                saveData();
+
+            }, 400);
+
+        }
+
+
+        /*
+         * Recurring missions stay visible.
+         * The recurrence engine will reset them
+         * when the next occurrence begins.
+         */
+
+        else {
+
+            showPopup(
+                "Mission was overdue. No improvement points gained."
+            );
 
             saveData();
 
-        }, 400);
+        }
 
+        return;
     }
-
-
-    /*
-     * Recurring missions stay visible.
-     * The recurrence engine will reset them
-     * when the next occurrence begins.
-     */
-
-    else {
-
-        showPopup(
-            "Mission was overdue. No improvement points gained."
-        );
-
-        saveData();
-
-    }
-
-    return;
-}
 
 
     /* =====================================================
@@ -2872,6 +5136,12 @@ function completeMission(btn) {
 
     completedMissions++;
     playAppTone("mission");
+
+    recordMissionPerformance(
+        li,
+        "completed",
+        1
+    );
 
 
     localStorage.setItem(
@@ -3795,8 +6065,8 @@ function renderGoals() {
                 d.toLocaleDateString([], {
                     day: "numeric",
                     month: "short"
-                }) 
-            
+                })
+
         }
 
         const reward =
@@ -3841,14 +6111,13 @@ function renderGoals() {
 
 <div class="goal-actions">
 
-    ${
-        goal.achieved
-        ? `
+    ${goal.achieved
+                ? `
             <span class="achieved-badge">
                 ✓ Achieved
             </span>
         `
-        : `
+                : `
             <button
                 class="goal-achieve-btn"
                 onclick="event.stopPropagation();
@@ -3857,14 +6126,13 @@ function renderGoals() {
                 Achieve
             </button>
 
-            ${
-                goal.priority === "High"
-                ? `
+            ${goal.priority === "High"
+                    ? `
                     <span class="goal-locked">
                         🔒 Locked
                     </span>
                 `
-                : `
+                    : `
                     <button
                         class="goal-edit-btn"
                         onclick="event.stopPropagation();
@@ -3873,7 +6141,7 @@ function renderGoals() {
                         Edit
                     </button>
                 `
-            }
+                }
 
             <button
                 class="goal-remove-btn"
@@ -3883,7 +6151,7 @@ function renderGoals() {
                 Remove
             </button>
         `
-    }
+            }
 
 </div>
         `;
@@ -4282,7 +6550,7 @@ function removeGoal(goalId) {
     if (!goal) return;
 
     // Achieved = permanent
-    
+
 
     customConfirm(
         `Remove "${goal.title}"?`,
@@ -4382,6 +6650,16 @@ function removeCountdown(index) {
 
 function renderCountdowns() {
     const list = document.getElementById("countdown-list");
+    const counter = document.getElementById("countdownCounter");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    if (counter) {
+        counter.textContent = countdowns.length;
+    }
+
     list.innerHTML = "";
 
     document.getElementById("countdownCounter").textContent = countdowns.length;
@@ -4410,6 +6688,10 @@ function renderCountdowns() {
     });
 
     updateTimers();
+}
+
+function renderCountdowns() {
+
 }
 
 
@@ -5277,7 +7559,7 @@ function showMintedCard(card) {
         overlay.classList.add("show");
     });
 
-   
+
     playAppTone("mint");
 
 
@@ -5639,9 +7921,9 @@ async function createCustomCard() {
     ===================================================== */
 
     const imageData =
-    window.customCardImageData ||
-    customCardImageData ||
-    "";
+        window.customCardImageData ||
+        customCardImageData ||
+        "";
 
 
     /*
@@ -6114,3 +8396,4 @@ document.addEventListener(
 
     }
 );
+
