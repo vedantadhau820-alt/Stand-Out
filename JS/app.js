@@ -3,7 +3,7 @@ if (!window.cardCatalog) {
     console.error("❌ cardCatalog not loaded");
     window.cardCatalog = [];
 }
-
+ 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/service-worker.js").then(reg => {
 
