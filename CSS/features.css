@@ -268,18 +268,89 @@
 ========================================================= */
 
 .achievement-popup {
-  position: fixed;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #111827;
-  color: #3B82F6;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  z-index: 9999;
-  text-align: center;
-  font-weight: bold;
+    position: fixed;
+
+    top: 20px;
+    left: 50%;
+    right: auto;
+
+    width: min(420px, calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
+
+    box-sizing: border-box;
+
+    background: #111827;
+    color: #ffffff;
+
+    padding: 1.1rem 1.4rem;
+
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    border-radius: 14px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(59, 130, 246, 0.06);
+
+    z-index: 99999;
+
+    text-align: center;
+
+    font-weight: 600;
+    line-height: 1.45;
+
+    /* Don't use transform for positioning */
+    margin-left: 0;
+
+    animation: achievementPopupIn 0.3s ease-out;
+}
+
+.achievement-popup::before {
+    content: "🏆";
+
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 1.35rem;
+}
+
+.achievement-popup h3 {
+    margin: 0 0 0.3rem;
+    color: #3B82F6;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.achievement-popup p {
+    margin: 0;
+    color: #d1d5db;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+@keyframes achievementPopupIn {
+    from {
+        opacity: 0;
+        margin-top: -12px;
+    }
+
+    to {
+        opacity: 1;
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .achievement-popup {
+        top: 16px;
+        left: 16px;
+        right: 16px;
+
+        width: auto;
+        max-width: none;
+
+        padding: 1rem 1.1rem;
+        border-radius: 12px;
+    }
 }
 
 .achievements-grid {
