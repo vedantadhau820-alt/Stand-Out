@@ -504,6 +504,9 @@
     background: var(--report-blue);
 }
 
+.calendar-dot.partial {
+    background: var(--report-warning);
+}
 
 .calendar-dot.missed {
     border: 1px solid var(--report-danger);
