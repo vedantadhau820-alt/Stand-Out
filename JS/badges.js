@@ -1456,3 +1456,113 @@ function renderMonthlyBadgeArtwork(
 
 }
 
+// Temp
+
+/* =========================================================
+   TEMPORARY TEST
+   LONG-PRESS LOCKED GOAL → PLAY ACHIEVEMENT VIDEO
+========================================================= */
+
+document.addEventListener(
+    "pointerdown",
+    function (event) {
+
+        const button =
+            event.target.closest(
+                ".goal-achieve-btn"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        /*
+         * Only work on locked buttons.
+         */
+        if (!button.disabled) {
+            return;
+        }
+
+        let longPressTimer =
+            setTimeout(() => {
+
+                console.log(
+                    "TEMP TEST: Locked goal long-pressed"
+                );
+
+                playGoalAchievementVideo();
+
+            }, 800);
+
+
+        /*
+         * Store timer on the button
+         * so pointerup can cancel it.
+         */
+        button._longPressTimer =
+            longPressTimer;
+
+    }
+);
+
+
+/* ---------------------------------------------------------
+   CANCEL LONG PRESS
+--------------------------------------------------------- */
+
+document.addEventListener(
+    "pointerup",
+    function (event) {
+
+        const button =
+            event.target.closest(
+                ".goal-achieve-btn"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        if (button._longPressTimer) {
+
+            clearTimeout(
+                button._longPressTimer
+            );
+
+            button._longPressTimer =
+                null;
+        }
+
+    }
+);
+
+
+/* ---------------------------------------------------------
+   CANCEL IF POINTER LEAVES
+--------------------------------------------------------- */
+
+document.addEventListener(
+    "pointercancel",
+    function (event) {
+
+        const button =
+            event.target.closest(
+                ".goal-achieve-btn"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        if (button._longPressTimer) {
+
+            clearTimeout(
+                button._longPressTimer
+            );
+
+            button._longPressTimer =
+                null;
+        }
+
+    }
+);
