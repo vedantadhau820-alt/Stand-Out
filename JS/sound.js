@@ -298,9 +298,60 @@ function saveSoundSettings() {
 ========================================================= */
 
 let activeTone = null;
+let toneTimeout = null;
+let toneRequestId = 0;
+
+/* =========================================================
+   GLOBAL AUDIO CONTROLLER
+   Only one application audio source may play at a time.
+========================================================= */
+
+function stopAllAppAudio() {
+
+    /* Stop event tone */
+    if (typeof stopActiveTone === "function") {
+        stopActiveTone();
+    }
+
+    /* Stop Account preview */
+    if (typeof stopPreview === "function") {
+        stopPreview();
+    }
+
+    /* Stop timer music */
+    if (typeof stopAllMusic === "function") {
+        stopAllMusic();
+    }
+
+    /* Stop achievement / goal videos */
+    document
+        .querySelectorAll(
+            ".goal-achievement-video video, #mintReveal video"
+        )
+        .forEach(video => {
+            try {
+                video.pause();
+                video.currentTime = 0;
+            } catch (error) {
+                console.warn(
+                    "Could not stop application video:",
+                    error
+                );
+            }
+        });
+}
 
 
 function stopActiveTone() {
+
+    if (toneTimeout) {
+
+        clearTimeout(toneTimeout);
+
+        toneTimeout = null;
+
+    }
+
 
     if (!activeTone) {
         return;
@@ -351,9 +402,19 @@ async function playAppTone(type) {
     }
 
 
-    /* Stop previous event sound */
+    /*
+     * Every new tone request invalidates
+     * any older tone request that is still
+     * waiting for its audio to load.
+     */
 
-    stopActiveTone();
+    const requestId =
+        ++toneRequestId;
+
+
+    /* Stop everything currently playing */
+
+    stopAllAppAudio();
 
 
     let audio = null;
@@ -369,6 +430,18 @@ async function playAppTone(type) {
 
             const custom =
                 await getCustomTone(type);
+
+
+            /*
+             * Another tone was requested while
+             * this custom tone was loading.
+             *
+             * This request is now obsolete.
+             */
+
+            if (requestId !== toneRequestId) {
+                return null;
+            }
 
 
             if (
@@ -434,6 +507,25 @@ async function playAppTone(type) {
     }
 
 
+    /*
+     * Check again before allowing the audio
+     * to become active.
+     */
+
+    if (requestId !== toneRequestId) {
+
+        if (audio?._objectUrl) {
+
+            URL.revokeObjectURL(
+                audio._objectUrl
+            );
+
+        }
+
+        return null;
+    }
+
+
     audio.volume = 0.7;
 
     activeTone = audio;
@@ -465,6 +557,41 @@ async function playAppTone(type) {
     try {
 
         await audio.play();
+
+
+        /*
+         * Make sure another tone wasn't
+         * requested while play() was resolving.
+         */
+
+        if (requestId !== toneRequestId) {
+
+            if (activeTone === audio) {
+                stopActiveTone();
+            }
+
+            return null;
+        }
+
+
+        /*
+         * Maximum tone duration:
+         * 10 seconds.
+         */
+
+        toneTimeout =
+            setTimeout(() => {
+
+                if (
+                    activeTone === audio
+                ) {
+
+                    stopActiveTone();
+
+                }
+
+            }, 10000);
+
 
         return audio;
 
@@ -634,9 +761,10 @@ async function previewTone(type) {
 
 
     /* =====================================================
-       STOP ANY OTHER PREVIEW
-    ===================================================== */
+   STOP ALL OTHER APPLICATION AUDIO
+===================================================== */
 
+    stopAllAppAudio();
     stopPreview();
 
 
@@ -1101,7 +1229,7 @@ async function initializeSoundSettings() {
 
         select.value =
             soundSettings[
-                config.type
+            config.type
             ];
 
 
