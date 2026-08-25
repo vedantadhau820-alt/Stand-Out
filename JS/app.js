@@ -6093,38 +6093,85 @@ function checkMissedDeadlines() {
                 );
             }
 
-            // 🔥 HARDCORE MODE — RESET ALL POINTS (ONCE)
-            if (
-                li.dataset.hardcore === "true" &&
-                !li.dataset.hardcorePunished
-            ) {
-                li.dataset.hardcorePunished = "true";
+            // // 🔥 HARDCORE MODE — RESET ALL POINTS (ONCE)
+            // if (
+            //     li.dataset.hardcore === "true" &&
+            //     !li.dataset.hardcorePunished
+            // ) {
+            //     li.dataset.hardcorePunished = "true";
 
-                if (completedMissions < 0) {
+            //     if (completedMissions < 0) {
 
-                    completedMissions -= 4;
-                    localStorage.setItem("completedMissions", completedMissions);
-                    document.getElementById("missionCounter").textContent = completedMissions;
-                }
-                else {
+            //         completedMissions -= 4;
+            //         localStorage.setItem("completedMissions", completedMissions);
+            //         document.getElementById("missionCounter").textContent = completedMissions;
+            //     }
+            //     else {
 
-                    completedMissions = 0;
-                    localStorage.setItem("completedMissions", 0);
-                    document.getElementById("missionCounter").textContent = "0";
+            //         completedMissions = 0;
+            //         localStorage.setItem("completedMissions", 0);
+            //         document.getElementById("missionCounter").textContent = "0";
 
-                }
+            //     }
 
-                renderMarketplace();
-                renderMyCards();
+            //     renderMarketplace();
+            //     renderMyCards();
 
-                showSmartNotification(
-                    "🔥 Hardcore Failed",
-                    "Improvement Points reduce -5."
-                );
+            //     showSmartNotification(
+            //         "🔥 Hardcore Failed",
+            //         "Improvement Points reduce -5."
+            //     );
 
-                saveData();
-                return; // ⛔ stop further penalties
-            }
+            //     saveData();
+            //     return; // ⛔ stop further penalties
+            // }
+
+            // 🔥 HARDCORE MODE — DEDUCT 5 POINTS (ONCE)
+if (
+    li.dataset.hardcore === "true" &&
+    !li.dataset.hardcorePunished
+) {
+
+    li.dataset.hardcorePunished = "true";
+
+    const hardcorePenalty = 5;
+
+    const pointsBefore =
+        completedMissions;
+
+    completedMissions = Math.max(
+        0,
+        completedMissions - hardcorePenalty
+    );
+
+    const pointsLost =
+        pointsBefore - completedMissions;
+
+    localStorage.setItem(
+        "completedMissions",
+        completedMissions
+    );
+
+    document.getElementById(
+        "missionCounter"
+    ).textContent =
+        completedMissions;
+
+    renderMarketplace(
+        currentMarketplaceFilter
+    );
+
+    renderMyCards();
+
+    showSmartNotification(
+        "🔥 Hardcore Failed",
+        `-${pointsLost} Improvement Points`
+    );
+
+    saveData();
+
+    return;
+}
 
             // ❌ NORMAL MODE — DEDUCT 1 POINT (ONCE)
             if (!li.dataset.deducted) {
