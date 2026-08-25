@@ -3551,33 +3551,34 @@ function renderMonthlyActivityCalendar(year, month) {
             );
 
 
-        if (hasCompleted) {
+        if (hasCompleted && hasMissed) {
+
+            cell.classList.add(
+                "calendar-partial"
+            );
+
+        }
+        else if (hasCompleted) {
 
             cell.classList.add(
                 "calendar-active"
             );
 
         }
-
-        if (hasMissed) {
+        else if (hasMissed) {
 
             cell.classList.add(
                 "calendar-missed"
             );
 
         }
-
-        if (
-            !hasCompleted &&
-            !hasMissed
-        ) {
+        else {
 
             cell.classList.add(
                 "calendar-no-activity"
             );
 
         }
-
 
         /* =========================
            TODAY
