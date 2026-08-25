@@ -1489,6 +1489,9 @@ function resumeMusicOnUserGesture() {
 
 
 function playCurrentTrack() {
+
+    stopAllAppAudio();
+
     if (musicMode !== "playlist") return;
     if (!playlist[currentTrackIndex]) return;
 
@@ -1525,9 +1528,9 @@ async function setSelectedMusic() {
         document.getElementById("musicSelect").value;
 
     /*
-     * Stop whatever is currently playing.
-     */
-    stopAllMusic();
+  * Stop every other application audio source.
+  */
+    stopAllAppAudio();
 
     /*
      * "None" selected.
@@ -4241,6 +4244,7 @@ document.getElementById("timerCloseBtn").onclick = () => {
 
     clearInterval(timerInterval);
 
+    stopAllAppAudio();
     music.pause();
     music.currentTime = 0;
 };
@@ -4293,7 +4297,7 @@ function startStaticTimer(h, m, s) {
     timerInterval = setInterval(() => {
         if (total <= 0) {
             clearInterval(timerInterval);
-            if (currentMusic) music.pause();
+            stopAllAppAudio();
             return;
         }
 
@@ -5289,7 +5293,12 @@ function completeMission(btn) {
     dailyImprovementCount++;
 
     completedMissions++;
-    playAppTone("mission");
+    const isMissionAchievement =
+        missionMilestones.includes(completedMissions);
+
+    if (!isMissionAchievement) {
+        playAppTone("mission");
+    }
 
     recordMissionPerformance(
         li,
@@ -7539,9 +7548,9 @@ window.addEventListener("load", () => {
 
     setTimeout(() => {
 
-    cacheAllMusic();
+        cacheAllMusic();
 
-}, 1000);
+    }, 1000);
 
 
     const activePage = document.querySelector("section.active")
