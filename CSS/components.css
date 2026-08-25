@@ -1155,3 +1155,7 @@ ul li.remove {
         gap: 10px;
     }
 }
+
+#mission-list {
+    margin-top: -12px;
+}
