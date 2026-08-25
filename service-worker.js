@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.1.126";
+const CACHE_NAME = "standout-v2.1.127";
 //const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
