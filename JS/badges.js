@@ -17,9 +17,9 @@ const MONTHLY_BADGES = {
         artwork: "badges/aug-2026.png",
 
         requirements: {
-            missions: 20,
+            missions: 1,
             goals: 1,
-            activeDays: 5
+            activeDays: 1
         }
 
     },
@@ -35,7 +35,7 @@ const MONTHLY_BADGES = {
 
         title: "The Disciplined",
 
-        artwork: "disciplined",
+        artwork: "sep-2026.png",
 
         requirements: {
 
@@ -61,21 +61,16 @@ function getCurrentBadgeKey() {
     const date =
         new Date();
 
-
     const year =
         date.getFullYear();
-
 
     const month =
         String(
             date.getMonth() + 1
         ).padStart(2, "0");
 
-
     return `${year}-${month}`;
-
 }
-
 
 /* =========================================================
    GET CURRENT MONTHLY BADGE
@@ -795,8 +790,24 @@ function renderMonthlyBadgePage() {
        MONTH
     ----------------------------------------- */
 
+    /* -----------------------------------------
+   MONTH
+----------------------------------------- */
+
+    const badgeKey =
+        getCurrentBadgeKey();
+
+    const [
+        badgeYear,
+        badgeMonth
+    ] = badgeKey.split("-");
+
     const date =
-        new Date();
+        new Date(
+            Number(badgeYear),
+            Number(badgeMonth) - 1,
+            1
+        );
 
     const monthName =
         date.toLocaleDateString(
@@ -806,12 +817,8 @@ function renderMonthlyBadgePage() {
             }
         );
 
-    const year =
-        date.getFullYear();
-
-
     monthElement.textContent =
-        `${monthName} ${year}`;
+        `${monthName} ${badgeYear}`;
 
 
     /* -----------------------------------------
