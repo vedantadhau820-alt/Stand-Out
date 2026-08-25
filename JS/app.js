@@ -4175,7 +4175,7 @@ function showAchievementPopup(title, desc) {
         popup.style.opacity = 0;
         popup.style.transform = "translateY(-50px)";
         setTimeout(() => popup.remove(), 500);
-    }, 3000);
+    }, 1500);
 }
 
 
