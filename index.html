@@ -17,12 +17,13 @@
     <!-- Stylesheet will be injected in Message 2 -->
     <link rel="stylesheet" href="CSS/base.css">
     <link rel="stylesheet" href="CSS/buttons.css">
-<link rel="stylesheet" href="CSS/components.css">
+    <link rel="stylesheet" href="CSS/components.css">
     <link rel="stylesheet" href="CSS/account.css">
     <link rel="stylesheet" href="CSS/timer.css">
-<link rel="stylesheet" href="CSS/features.css">
-<link rel="stylesheet" href="CSS/effects.css">
-<link rel="stylesheet" href="CSS/momentum.css">
+    <link rel="stylesheet" href="CSS/features.css">
+    <link rel="stylesheet" href="CSS/effects.css">
+    <link rel="stylesheet" href="CSS/momentum.css">
+    <link rel="stylesheet" href="CSS/monthly-report.css">
     
 </head>
 
@@ -36,6 +37,9 @@
             <!-- 🃏 Marketplace Icon -->
             <div id="marketplaceIcon" style="position: relative; margin-right: 1.4rem; cursor:pointer;">
                 <i class="fas fa-layer-group" style="font-size:22px; color:#3B82F6;"></i>
+            </div>
+            <div id="monthlyReportIcon" style="position: relative; margin-right: 1.4rem; cursor:pointer;">
+                <i class="fas fa-chart-line" style="font-size:22px; color:#3B82F6;"></i>
             </div>
             <!-- ⏱ Fullscreen Timer Icon -->
             <div id="timerIcon" style="position: relative; margin-right: 1.4rem; cursor:pointer;">
@@ -109,26 +113,26 @@
   ============================ -->
     <section id="missions" class="active">
 
-    <div class="missions-header">
+        <div class="missions-header">
 
-        <div class="missions-title">
-            <h2>Missions</h2>
+            <div class="missions-title">
+                <h2>Missions</h2>
 
-            <p>
-                Improvement Points:
-                <span id="missionCounter">0</span>
-            </p>
+                <p>
+                    Improvement Points:
+                    <span id="missionCounter">0</span>
+                </p>
+            </div>
+
+            <div id="momentum-slot"></div>
+
         </div>
 
-        <div id="momentum-slot"></div>
+        <div id="momentum-panel-slot"></div>
 
-    </div>
+        <ul id="mission-list"></ul>
 
-    <div id="momentum-panel-slot"></div>
-
-    <ul id="mission-list"></ul>
-
-</section>
+    </section>
 
     <!-- Floating Add Button -->
     <button class="plus-btn" id="globalAddBtn" onclick="openModal('mission')">+ Add</button>
@@ -149,7 +153,7 @@
             Spend Improvement Points to mint proof of discipline.
         </p>
 
-      <!-- Filter Tabs -->
+        <!-- Filter Tabs -->
         <div class="card-filters">
             <button class="active">All</button>
             <button>w</button>
@@ -181,31 +185,26 @@
     </div>
 </div> -->
     <div id="cheatModal" class="cheat-modal">
-  <div class="cheat-box">
-    <div class="cheat-header">
-      🧪 Developer Access
-    </div>
+        <div class="cheat-box">
+            <div class="cheat-header">
+                🧪 Developer Access
+            </div>
 
-    <p class="cheat-subtext">
-      Long-press detected. Enter authorization code.
-    </p>
+            <p class="cheat-subtext">
+                Long-press detected. Enter authorization code.
+            </p>
 
-    <input 
-      id="cheatInput" 
-      class="cheat-input"
-      placeholder="Enter cheat code"
-      autocomplete="off"
-    >
+            <input id="cheatInput" class="cheat-input" placeholder="Enter cheat code" autocomplete="off">
 
-    <div class="cheat-actions">
-      <button class="cheat-confirm" onclick="confirmCheat()">Unlock</button>
-      <button class="cheat-cancel" onclick="closeCheatModal()">Cancel</button>
-    </div>
+            <div class="cheat-actions">
+                <button class="cheat-confirm" onclick="confirmCheat()">Unlock</button>
+                <button class="cheat-cancel" onclick="closeCheatModal()">Cancel</button>
+            </div>
 
-      <button onclick="skipDayCheat()" class="cheat-btn">
-  ⏭ Skip Day
-      </button>
-  </div>
+            <button onclick="skipDayCheat()" class="cheat-btn">
+                ⏭ Skip Day
+            </button>
+        </div>
     </div>
 
     <!-- ===========================
@@ -220,13 +219,633 @@
     <!-- ===========================
        Time / Countdown Section
   ============================ -->
-    <section id="time">
-        <h2>Time</h2>
-        <p>Countdowns: <span id="countdownCounter">0</span></p>
-        <div id="countdown-list"></div>
+    <!-- =================================================
+     MONTHLY REPORT
+================================================== -->
+
+    <section id="monthlyReport" class="monthly-report-section">
+
+        <div class="monthly-summary-card">
+
+            <div class="monthly-summary-header">
+
+                <div>
+                    <span class="monthly-report-eyebrow">
+                        MONTHLY SUMMARY
+                    </span>
+
+                    <h3 id="monthlySummaryTitle">
+                        August
+                    </h3>
+                </div>
+
+            </div>
+
+
+            <p id="monthlySummaryText" class="monthly-summary-text">
+                No summary available yet.
+            </p>
+
+
+            <div class="monthly-summary-metrics">
+
+                <div class="monthly-summary-metric">
+
+                    <strong id="monthlySummaryCompletion">
+                        0%
+                    </strong>
+
+                    <span>
+                        Mission Completion
+                    </span>
+
+                </div>
+
+
+                <div class="monthly-summary-metric">
+
+                    <strong id="monthlySummaryConsistency">
+                        0%
+                    </strong>
+
+                    <span>
+                        Consistency
+                    </span>
+
+                </div>
+
+
+                <div class="monthly-summary-metric">
+
+                    <strong id="monthlySummaryGoals">
+                        0/0
+                    </strong>
+
+                    <span>
+                        Goals
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="monthly-report-shell">
+
+            <!-- =================================================
+             MONTH OVERVIEW
+        ================================================== -->
+
+            <div class="monthly-overview">
+
+                <div class="monthly-consistency">
+
+                    <span id="monthlyConsistency" class="monthly-consistency-value">
+                        0%
+                    </span>
+
+                    <span class="monthly-consistency-label">
+                        CONSISTENCY
+                    </span>
+
+                </div>
+
+
+
+
+                <div class="monthly-overview-stats">
+
+                    <div class="monthly-stat">
+                        <strong id="monthlyCompleted">
+                            0
+                        </strong>
+
+                        <span>
+                            Missions Completed
+                        </span>
+                    </div>
+
+
+                    <div class="monthly-stat">
+                        <strong id="monthlyMissed">
+                            0
+                        </strong>
+
+                        <span>
+                            Missions Missed
+                        </span>
+                    </div>
+
+
+                    <div class="monthly-stat">
+                        <strong id="monthlyActiveDays">
+                            0
+                        </strong>
+
+                        <span>
+                            Active Days
+                        </span>
+                    </div>
+
+
+                    <div class="monthly-stat">
+                        <strong id="monthlyImprovementPoints">
+                            0
+                        </strong>
+
+                        <span>
+                            Improvement Points
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             ACTIVITY CALENDAR
+        ================================================== -->
+
+            <div class="monthly-report-section">
+
+                <div class="monthly-section-header">
+
+                    <span class="monthly-report-eyebrow">
+                        ACTIVITY
+                    </span>
+
+                    <h3>
+                        Activity Calendar
+                    </h3>
+
+                    <p>
+                        The days you showed up.
+                    </p>
+
+                </div>
+
+
+                <div id="monthlyActivityCalendar" class="monthly-activity-calendar"></div>
+
+
+                <div class="monthly-calendar-legend">
+
+                    <span>
+                        <i class="calendar-dot active"></i>
+                        Active
+                    </span>
+
+                    <span>
+                        <i class="calendar-dot missed"></i>
+                        Missed
+                    </span>
+
+                    <span>
+                        <i class="calendar-dot empty"></i>
+                        No activity
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             CONSISTENCY GRAPH
+        ================================================== -->
+
+            <div class="monthly-report-section">
+
+                <div class="monthly-section-header">
+
+                    <span class="monthly-report-eyebrow">
+                        CONSISTENCY
+                    </span>
+
+                    <h3>
+                        Performance Trend
+                    </h3>
+
+                    <p>
+                        Your daily mission consistency.
+                    </p>
+
+                </div>
+
+
+                <div class="monthly-consistency-chart">
+
+                    <div id="monthlyConsistencyChart" class="consistency-chart"></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             MISSION PERFORMANCE
+        ================================================== -->
+
+            <div class="monthly-report-section">
+
+                <div class="monthly-section-header">
+
+                    <span class="monthly-report-eyebrow">
+                        MISSIONS
+                    </span>
+
+                    <h3>
+                        Mission Performance
+                    </h3>
+
+                    <p>
+                        How you performed across your missions.
+                    </p>
+
+                </div>
+
+
+                <div class="mission-performance-card">
+
+                    <div class="mission-performance-main">
+
+                        <span id="missionCompletionRate" class="mission-completion-rate">
+                            0%
+                        </span>
+
+                        <span class="mission-completion-label">
+                            COMPLETION RATE
+                        </span>
+
+                    </div>
+
+
+                    <div class="mission-performance-stats">
+
+                        <div class="mission-performance-stat">
+
+                            <strong id="missionPerformanceCompleted">
+                                0
+                            </strong>
+
+                            <span>
+                                Completed
+                            </span>
+
+                        </div>
+
+
+                        <div class="mission-performance-stat">
+
+                            <strong id="missionPerformanceMissed">
+                                0
+                            </strong>
+
+                            <span>
+                                Missed
+                            </span>
+
+                        </div>
+
+
+                        <div class="mission-performance-stat">
+
+                            <strong id="missionPerformanceTotal">
+                                0
+                            </strong>
+
+                            <span>
+                                Total
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mission-type-stats">
+
+                        <div class="mission-type-stat">
+
+                            <strong id="missionHardcoreCount">
+                                0
+                            </strong>
+
+                            <span>
+                                Hardcore
+                            </span>
+
+                        </div>
+
+
+                        <div class="mission-type-stat">
+
+                            <strong id="missionRecurringCount">
+                                0
+                            </strong>
+
+                            <span>
+                                Recurring
+                            </span>
+
+                        </div>
+
+
+                        <div class="mission-type-stat">
+
+                            <strong id="missionOneTimeCount">
+                                0
+                            </strong>
+
+                            <span>
+                                One-Time
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="monthly-report-section">
+
+                    <div class="monthly-section-header">
+
+                        <span class="monthly-report-eyebrow">
+                            GOALS
+                        </span>
+
+                        <h3>
+                            Goals Progress
+                        </h3>
+
+                        <p>
+                            The goals you completed this month.
+                        </p>
+
+                    </div>
+
+
+                    <div class="monthly-goals-progress">
+
+                        <div class="monthly-goals-header">
+
+                            <div></div>
+
+                            <strong id="monthlyGoalsProgressValue">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="monthly-goals-summary">
+
+                            <strong id="monthlyGoalsCompletedText">
+                                0 of 0
+                            </strong>
+
+                            <span>
+                                goals completed
+                            </span>
+
+                        </div>
+
+
+                        <div class="monthly-goals-progress-track">
+
+                            <div id="monthlyGoalsProgressBar" class="monthly-goals-progress-fill">
+                            </div>
+
+                        </div>
+
+
+                        <div class="monthly-goals-stats">
+
+                            <div class="monthly-goal-stat">
+
+                                <strong id="monthlyGoalsCompleted">
+                                    0
+                                </strong>
+
+                                <span>
+                                    Completed
+                                </span>
+
+                            </div>
+
+
+                            <div class="monthly-goal-stat">
+
+                                <strong id="monthlyGoalsMissed">
+                                    0
+                                </strong>
+
+                                <span>
+                                    Missed
+                                </span>
+
+                            </div>
+
+
+                            <div class="monthly-goal-stat">
+
+                                <strong id="monthlyGoalsActive">
+                                    0
+                                </strong>
+
+                                <span>
+                                    Active
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            <!-- =================================================
+             MOMENTUM JOURNEY
+        ================================================== -->
+
+            <div class="monthly-report-section">
+
+
+
+                <div class="monthly-section-header">
+
+                    <span class="monthly-report-eyebrow">
+                        MOMENTUM
+                    </span>
+
+                    <h3>
+                        Momentum Journey
+                    </h3>
+
+                    <p>
+                        Your Momentum journey across the month.
+                    </p>
+
+                </div>
+
+
+                <div class="momentum-journey-card">
+
+                    <div class="momentum-journey-main">
+
+                        <span id="monthlyMomentumEnded" class="momentum-journey-value">
+                            0
+                        </span>
+
+                        <span class="momentum-journey-label">
+                            THIS MONTH MOMENTUM
+                        </span>
+
+                    </div>
+
+
+                    <div class="momentum-journey-stats">
+
+                        <div class="momentum-journey-stat">
+
+                            <strong id="monthlyMomentumStarted">
+                                0
+                            </strong>
+
+                            <span>
+                                Started
+                            </span>
+
+                        </div>
+
+
+                        <div class="momentum-journey-stat">
+
+                            <strong id="monthlyMomentumPeak">
+                                0
+                            </strong>
+
+                            <span>
+                                Peak
+                            </span>
+
+                        </div>
+
+
+                        <div class="momentum-journey-stat">
+
+                            <strong id="monthlyMomentumEndedStat">
+                                0
+                            </strong>
+
+                            <span>
+                                Ended
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="momentum-longest">
+
+                        <span>
+                            Longest Momentum
+                        </span>
+
+                        <strong id="monthlyMomentumLongest">
+                            0 DAYS
+                        </strong>
+
+                    </div>
+
+                </div>
+                <div class="monthly-report-section">
+
+                    <div class="monthly-section-header">
+
+                        <span class="monthly-report-eyebrow">
+                            MOMENTUM
+                        </span>
+
+                        <h3>
+                            Momentum Trend
+                        </h3>
+
+                        <p>
+                            See how Momentum moved day by day.
+                        </p>
+
+                    </div>
+
+
+                    <div class="momentum-graph">
+
+                        <div class="momentum-graph-header">
+
+                            <div></div>
+
+                            <span id="monthlyMomentumPeakLabel" class="momentum-graph-peak">
+                                Peak 0
+                            </span>
+
+                        </div>
+
+                        <div class="momentum-graph-body">
+
+                            <div id="momentumGraphYAxis" class="momentum-graph-y-axis"></div>
+
+
+                            <div class="momentum-graph-area">
+
+                                <div id="monthlyMomentumChart" class="momentum-chart"></div>
+
+                                <div id="momentumGraphXAxis" class="momentum-graph-x-axis"></div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="monthly-report-section">
+
+                    <div class="monthly-section-header">
+
+                        <span class="monthly-report-eyebrow">
+                            INSIGHTS
+                        </span>
+
+                        <h3>
+                            Monthly Insights
+                        </h3>
+
+                        <p>
+                            What your performance tells you this month.
+                        </p>
+
+                    </div>
+
+
+                    <div id="monthlyInsights" class="monthly-insights"></div>
+
+                </div>
+
+            </div>
+
     </section>
-
-
     <!-- ===========================
        Account Section
   ============================ -->
@@ -239,7 +858,7 @@
         <h3>Achievements</h3>
         <div id="achievementsViewer" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
 
-    <!-- ===========================
+        <!-- ===========================
      SOUND & TONES
 =========================== -->
 
@@ -274,7 +893,7 @@
 
                 </div>
 
-            
+
             </div>
 
             <div class="sound-setting-row">
@@ -336,69 +955,61 @@
      CUSTOM CARDS
 ===================================================== -->
 
-<div class="account-group">
+        <div class="account-group">
 
-    <div class="account-group-title">
-        Custom Cards
-    </div>
+            <div class="account-group-title">
+                Custom Cards
+            </div>
 
-    <div class="custom-cards-account">
-        <br>
-        <p class="custom-card-description">Create your own collectible cards for the marketplace.
-        </p>
-
-
-        <!-- CREATE -->
-
-        <button
-            type="button"
-            class="custom-card-add-btn"
-            onclick="openCustomCardCreator()"
-        >
-
-            <span class="custom-card-add-icon">
-                ＋
-            </span>
-
-            <span>
-                Create Custom Card
-            </span>
-
-        </button>
+            <div class="custom-cards-account">
+                <br>
+                <p class="custom-card-description">Create your own collectible cards for the marketplace.
+                </p>
 
 
-        <!-- MANAGED CUSTOM CARDS -->
+                <!-- CREATE -->
 
-        <div
-            id="customCardsManager"
-            class="custom-cards-manager"
-        ></div>
+                <button type="button" class="custom-card-add-btn" onclick="openCustomCardCreator()">
 
-    </div>
+                    <span class="custom-card-add-icon">
+                        ＋
+                    </span>
 
-</div>
-        
+                    <span>
+                        Create Custom Card
+                    </span>
+
+                </button>
+
+
+                <!-- MANAGED CUSTOM CARDS -->
+
+                <div id="customCardsManager" class="custom-cards-manager"></div>
+
+            </div>
+
+        </div>
+
         <h3>Backup & Restore</h3>
 
-<button class="danger-btn" style="background:#2563EB; margin-bottom:10px;"
-    onclick="saveProgressToFile()">
-    💾 Save Progress
-</button>
+        <button class="danger-btn" style="background:#2563EB; margin-bottom:10px;" onclick="saveProgressToFile()">
+            💾 Save Progress
+        </button>
 
-<button class="danger-btn" style="background:#16a34a;"
-    onclick="loadProgressFromFile()">
-    📂 Restore Progress
-</button>
+        <button class="danger-btn" style="background:#16a34a;" onclick="loadProgressFromFile()">
+            📂 Restore Progress
+        </button>
 
-<input type="file" id="importProgressFile" accept=".json" hidden>
+        <input type="file" id="importProgressFile" accept=".json" hidden>
 
         <h3>Reset Data</h3>
-        <button id="resetDataBtn" onclick="customConfirm('Are you sure you want to reset all data?', resetData)" class="danger-btn">
+        <button id="resetDataBtn" onclick="customConfirm('Are you sure you want to reset all data?', resetData)"
+            class="danger-btn">
             Reset My Data
         </button>
     </section>
 
-  
+
     <!-- ===========================
        Modals (Add/Edit + Alert + Confirm)
   ============================ -->
@@ -551,246 +1162,199 @@
      CUSTOM CARD MODAL
 ========================================================= -->
 
-<div
-    id="customCardModal"
-    class="custom-card-modal"
->
+    <div id="customCardModal" class="custom-card-modal">
 
-    <div class="custom-card-modal-content">
+        <div class="custom-card-modal-content">
 
-        <!-- CLOSE -->
+            <!-- CLOSE -->
 
-        <button
-            type="button"
-            class="custom-card-modal-close"
-            onclick="closeCustomCardModal()"
-        >
-            ×
-        </button>
+            <button type="button" class="custom-card-modal-close" onclick="closeCustomCardModal()">
+                ×
+            </button>
 
 
-        <!-- =================================================
+            <!-- =================================================
              HEADER
         ================================================= -->
 
-        <div class="custom-card-modal-header">
+            <div class="custom-card-modal-header">
 
-            <span class="custom-card-modal-eyebrow">
-                MARKETPLACE
-            </span>
+                <span class="custom-card-modal-eyebrow">
+                    MARKETPLACE
+                </span>
 
-            <h2>
-                Create Custom Card
-            </h2>
+                <h2>
+                    Create Custom Card
+                </h2>
 
-            <p>
-                Create a card that represents you.
-            </p>
+                <p>
+                    Create a card that represents you.
+                </p>
 
-        </div>
+            </div>
 
 
-        <!-- =================================================
+            <!-- =================================================
              CARD ARTWORK
         ================================================= -->
 
-        <div class="custom-card-field">
+            <div class="custom-card-field">
 
-            <label>
-                Card Artwork
-            </label>
+                <label>
+                    Card Artwork
+                </label>
 
-            <div
-                class="custom-card-image-picker"
-                id="customCardImagePicker"
-            >
+                <div class="custom-card-image-picker" id="customCardImagePicker">
 
-                <img
-                    id="customCardImagePreview"
-                    alt="Card artwork preview"
-                >
+                    <img id="customCardImagePreview" alt="Card artwork preview">
 
-                <div
-                    id="customCardImagePlaceholder"
-                    class="custom-card-image-placeholder"
-                >
+                    <div id="customCardImagePlaceholder" class="custom-card-image-placeholder">
 
-                    <span>＋</span>
+                        <span>＋</span>
 
-                    <strong>
-                        Choose Artwork
-                    </strong>
+                        <strong>
+                            Choose Artwork
+                        </strong>
 
-                    <small>
-                        JPG, PNG or WebP
-                    </small>
+                        <small>
+                            JPG, PNG or WebP
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <input type="file" id="customCardImage" accept="image/png,image/jpeg,image/webp" hidden>
+
+            </div>
+
+
+            <!-- =================================================
+             TITLE
+        ================================================= -->
+
+            <div class="custom-card-field">
+
+                <label for="customCardTitle">
+                    Card Title
+                </label>
+
+                <input id="customCardTitle" type="text" maxlength="40" placeholder="Enter card title">
+
+            </div>
+
+
+            <!-- =================================================
+             QUOTE
+        ================================================= -->
+
+            <div class="custom-card-field">
+
+                <label for="customCardQuote">
+                    Quote
+                </label>
+
+                <textarea id="customCardQuote" maxlength="160" rows="3" placeholder="Enter a quote..."></textarea>
+
+            </div>
+
+
+            <!-- =================================================
+             GRADE + COST
+        ================================================= -->
+
+            <div class="custom-card-two-column">
+
+
+                <!-- GRADE -->
+
+                <div class="custom-card-field">
+
+                    <label for="customCardGrade">
+                        Grade
+                    </label>
+
+                    <select id="customCardGrade">
+
+                        <option value="A">
+                            A
+                        </option>
+
+                        <option value="B">
+                            B
+                        </option>
+
+                        <option value="C">
+                            C
+                        </option>
+
+                        <option value="D">
+                            D
+                        </option>
+
+                        <option value="E">
+                            E
+                        </option>
+
+                        <option value="S">
+                            S
+                        </option>
+
+
+                    </select>
+
+                </div>
+
+
+                <!-- COST -->
+
+                <div class="custom-card-field">
+
+                    <label for="customCardCost">
+                        Cost
+                    </label>
+
+                    <input id="customCardCost" type="number" min="0" step="1" placeholder="100">
 
                 </div>
 
             </div>
 
 
-            <input
-                type="file"
-                id="customCardImage"
-                accept="image/png,image/jpeg,image/webp"
-                hidden
-            >
-
-        </div>
 
 
-        <!-- =================================================
-             TITLE
-        ================================================= -->
-
-        <div class="custom-card-field">
-
-            <label for="customCardTitle">
-                Card Title
-            </label>
-
-            <input
-                id="customCardTitle"
-                type="text"
-                maxlength="40"
-                placeholder="Enter card title"
-            >
-
-        </div>
-
-
-        <!-- =================================================
-             QUOTE
-        ================================================= -->
-
-        <div class="custom-card-field">
-
-            <label for="customCardQuote">
-                Quote
-            </label>
-
-            <textarea
-                id="customCardQuote"
-                maxlength="160"
-                rows="3"
-                placeholder="Enter a quote..."
-            ></textarea>
-
-        </div>
-
-
-        <!-- =================================================
-             GRADE + COST
-        ================================================= -->
-
-        <div class="custom-card-two-column">
-
-
-            <!-- GRADE -->
-
-            <div class="custom-card-field">
-
-                <label for="customCardGrade">
-                    Grade
-                </label>
-
-                <select
-                    id="customCardGrade"
-                >
-
-                    <option value="A">
-                        A
-                    </option>
-
-                    <option value="B">
-                        B
-                    </option>
-
-                    <option value="C">
-                        C
-                    </option>
-
-                    <option value="D">
-                        D
-                    </option>
-
-                    <option value="E">
-                        E
-                    </option>
-
-                    <option value="S">
-                        S
-                    </option>
-
-
-                </select>
-
-            </div>
-
-
-            <!-- COST -->
-
-            <div class="custom-card-field">
-
-                <label for="customCardCost">
-                    Cost
-                </label>
-
-                <input
-                    id="customCardCost"
-                    type="number"
-                    min="0"
-                    step="1"
-                    placeholder="100"
-                >
-
-            </div>
-
-        </div>
-
-
-    
-
-        <!-- =================================================
+            <!-- =================================================
              ACTIONS
         ================================================= -->
 
-        <div class="custom-card-actions">
+            <div class="custom-card-actions">
 
-            <button
-                type="button"
-                class="custom-card-cancel"
-                onclick="closeCustomCardModal()"
-            >
-                Cancel
-            </button>
+                <button type="button" class="custom-card-cancel" onclick="closeCustomCardModal()">
+                    Cancel
+                </button>
 
 
-            <button
-                type="button"
-                class="custom-card-create"
-                onclick="createCustomCard()"
-            >
-                Create Card
-            </button>
+                <button type="button" class="custom-card-create" onclick="createCustomCard()">
+                    Create Card
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-    
     <script>
         if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      const reg = await navigator.serviceWorker.register("./service-worker.js");
-      console.log("✅ SW registered with scope:", reg.scope);
-    } catch (err) {
-      console.error("❌ SW registration failed:", err);
-    }
-  });
+            window.addEventListener("load", async () => {
+                try {
+                    const reg = await navigator.serviceWorker.register("./service-worker.js");
+                    console.log("✅ SW registered with scope:", reg.scope);
+                } catch (err) {
+                    console.error("❌ SW registration failed:", err);
+                }
+            });
         }
     </script>
     <script src="JS/cards.js"></script>
@@ -798,6 +1362,6 @@
     <script src="JS/app.js"></script>
     <script src="JS/momentum.js"></script>
     <script src="JS/custom-cards.js"></script>
-    </body>
+</body>
 
 </html>
