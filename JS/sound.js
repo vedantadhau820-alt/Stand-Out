@@ -590,7 +590,7 @@ async function playAppTone(type) {
 
                 }
 
-            }, 10000);
+            }, 5000);
 
 
         return audio;
