@@ -210,3 +210,360 @@ section {
 section.active {
     display: block !important;
 }
+
+/* =========================================================
+   CUSTOM APP BACKGROUND
+========================================================= */
+
+body {
+    position: relative;
+    background: #0a0a0a;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        var(--custom-background);
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    z-index: -2;
+    pointer-events: none;
+}
+
+html,
+body {
+    position: relative;
+    min-height: 100%;
+}
+
+/* body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        var(--custom-background);
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    z-index: -1;
+    pointer-events: none;
+} */
+
+/* =========================================================
+   CUSTOM BACKGROUND
+========================================================= */
+
+#customBackgroundLayer {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    opacity: var(--background-opacity, 1);
+
+    filter: blur(var(--background-blur, 0px));
+
+    transform: scale(1.02);
+
+    transition:
+        opacity 0.25s ease,
+        filter 0.25s ease;
+}
+
+
+#customBackgroundOverlay {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: #000000;
+
+    opacity: var(--background-overlay, 0.35);
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    transition:
+        opacity 0.25s ease;
+}
+
+/* =========================================================
+   CUSTOM BACKGROUND
+========================================================= */
+
+.account-setting-card {
+    width: 100%;
+    margin-top: 16px;
+
+    padding: 18px;
+
+    background: #111827;
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.account-setting-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+
+.account-setting-header h3 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    line-height: 1.3;
+}
+
+
+.account-setting-header p {
+    margin: 5px 0 0;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.background-actions {
+    display: flex;
+    gap: 8px;
+
+    margin-top: 16px;
+}
+
+
+.background-action-btn {
+    min-height: 38px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #2d3748;
+    border-radius: 9px;
+
+    background: #1f2937;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.1s ease;
+}
+
+
+.background-action-btn:hover {
+    background: #273449;
+    border-color: #3b82f6;
+}
+
+
+.background-action-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* Remove button */
+
+.background-action-btn.secondary {
+    background: transparent;
+    color: #9ca3af;
+    border-color: #2d3748;
+}
+
+
+.background-action-btn.secondary:hover {
+    background: #1f2937;
+    color: #ffffff;
+    border-color: #4b5563;
+}
+
+
+/* =========================================================
+   BACKGROUND CONTROLS
+========================================================= */
+
+.background-controls {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 18px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.background-control {
+    padding: 14px 0;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.background-control:last-child {
+    border-bottom: none;
+    padding-bottom: 2px;
+}
+
+
+/* =========================================================
+   CONTROL HEADER
+========================================================= */
+
+.background-control-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+
+.background-control-header span:first-child {
+    color: #d1d5db;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
+.background-control-header span:last-child {
+    color: #3b82f6;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   RANGE SLIDER
+========================================================= */
+
+.background-control input[type="range"] {
+    width: 100%;
+    height: 4px;
+
+    margin: 0;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: #374151;
+
+    border-radius: 999px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+/* Chrome / Edge / Safari */
+
+.background-control input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: #3b82f6;
+
+    border: 2px solid #111827;
+
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+
+    cursor: pointer;
+}
+
+
+/* Firefox */
+
+.background-control input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: #3b82f6;
+
+    border: 2px solid #111827;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .account-setting-card {
+        padding: 16px;
+        border-radius: 13px;
+    }
+
+
+    .background-actions {
+        flex-direction: column;
+    }
+
+
+    .background-action-btn {
+        width: 100%;
+    }
+
+}
