@@ -6481,6 +6481,7 @@ function playGoalAchievementVideo() {
         }
 
         video.pause();
+        stopAllAppAudio();
 
         overlay.classList.add(
             "closing"
