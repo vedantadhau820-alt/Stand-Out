@@ -21,6 +21,9 @@
     const STORAGE_KEY =
         "standout_momentum_state";
 
+    const MOMENTUM_HISTORY_KEY =
+        "standout_momentum_history";
+
 
     const LEVELS = [
 
@@ -207,6 +210,96 @@
 
     }
 
+    /* =========================================================
+   MOMENTUM HISTORY
+========================================================= */
+
+    function loadMomentumHistory() {
+
+        try {
+
+            const raw =
+                localStorage.getItem(
+                    MOMENTUM_HISTORY_KEY
+                );
+
+            if (!raw) {
+                return {};
+            }
+
+            const saved =
+                JSON.parse(raw);
+
+            return (
+                saved &&
+                typeof saved === "object"
+            )
+                ? saved
+                : {};
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Momentum history load error:",
+                error
+            );
+
+            return {};
+
+        }
+
+    }
+
+
+    let momentumHistory =
+        loadMomentumHistory();
+
+
+    function saveMomentumHistory() {
+
+        try {
+
+            localStorage.setItem(
+                MOMENTUM_HISTORY_KEY,
+                JSON.stringify(
+                    momentumHistory
+                )
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Momentum history save error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    function recordMomentumHistory() {
+
+        const date =
+            today();
+
+        momentumHistory[date] = {
+
+            momentum:
+                state.momentum,
+
+            energy:
+                state.energy
+
+        };
+
+        saveMomentumHistory();
+
+    }
 
     function saveState() {
 
@@ -268,7 +361,7 @@
 
         }
 
-        catch (_) {}
+        catch (_) { }
 
 
         /*
@@ -861,7 +954,7 @@
                 ? "extinguished"
 
                 : missedToday &&
-                  state.lastProofDate
+                    state.lastProofDate
 
                     ? "fading"
 
@@ -1169,10 +1262,9 @@
                 </div>
 
 
-                ${
-                    proof
+                ${proof
 
-                        ? `
+                ? `
 
                             <b
                                 class="
@@ -1184,7 +1276,7 @@
 
                         `
 
-                        : `
+                : `
 
                             <b
                                 class="
@@ -1195,7 +1287,7 @@
                             </b>
 
                         `
-                }
+            }
 
             </div>
 
@@ -1204,10 +1296,9 @@
                 class="momentum-next"
             >
 
-                ${
-                    next
+                ${next
 
-                        ? `
+                ? `
 
                             <div
                                 class="
@@ -1241,16 +1332,15 @@
 
 
                             <small>
-                                ${
-                                    next.min -
-                                    state.momentum
-                                }
+                                ${next.min -
+                state.momentum
+                }
                                 days remaining
                             </small>
 
                         `
 
-                        : `
+                : `
 
                             <div
                                 class="
@@ -1270,7 +1360,7 @@
                             </div>
 
                         `
-                }
+            }
 
             </div>
 
@@ -1281,11 +1371,10 @@
 
                 <span>
                     🛡 ${state.shields}
-                    shield${
-                        state.shields === 1
-                            ? ""
-                            : "s"
-                    }
+                    shield${state.shields === 1
+                ? ""
+                : "s"
+            }
                 </span>
 
 
@@ -1384,6 +1473,8 @@
 
         state.totalProofDays += 1;
 
+        recordMomentumHistory();
+
 
         /*
          * Milestone shields.
@@ -1457,7 +1548,6 @@
 
             state.lastCheckDate =
                 currentDay;
-
 
             saveState();
 
@@ -1617,6 +1707,7 @@
         state.lastCheckDate =
             currentDay;
 
+        recordMomentumHistory();
 
         saveState();
 
@@ -2036,6 +2127,11 @@
         getState:
             () => ({
                 ...state
+            }),
+
+        getHistory:
+            () => ({
+                ...momentumHistory
             }),
 
 
