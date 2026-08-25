@@ -181,7 +181,7 @@ async function saveProgressToFile() {
     try {
 
         /* =====================================================
-           1. COLLECT LOCAL STORAGE
+           1. COLLECT ALL LOCAL STORAGE
         ===================================================== */
 
         const localStorageData = {};
@@ -206,10 +206,302 @@ async function saveProgressToFile() {
 
 
         /* =====================================================
-           2. GET CUSTOM CARDS
+           2. COLLECT RUNTIME APPLICATION STATE
+        ===================================================== */
+
+        const runtimeState = {};
+
+
+        /* -----------------------------------------------------
+           MISSIONS
+        ----------------------------------------------------- */
+
+        if (
+            typeof missions !==
+            "undefined"
+        ) {
+
+            runtimeState.missions =
+                JSON.parse(
+                    JSON.stringify(
+                        missions || []
+                    )
+                );
+
+        }
+
+
+        /* -----------------------------------------------------
+           GOALS
+        ----------------------------------------------------- */
+
+        if (
+            typeof goalsData !==
+            "undefined"
+        ) {
+
+            runtimeState.goalsData =
+                JSON.parse(
+                    JSON.stringify(
+                        goalsData || []
+                    )
+                );
+
+        }
+
+
+        /* -----------------------------------------------------
+           COUNTDOWNS
+        ----------------------------------------------------- */
+
+        if (
+            typeof countdowns !==
+            "undefined"
+        ) {
+
+            runtimeState.countdowns =
+                JSON.parse(
+                    JSON.stringify(
+                        countdowns || []
+                    )
+                );
+
+        }
+
+
+        /* -----------------------------------------------------
+           COMPLETED MISSIONS
+        ----------------------------------------------------- */
+
+        if (
+            typeof completedMissions !==
+            "undefined"
+        ) {
+
+            runtimeState.completedMissions =
+                Number(
+                    completedMissions
+                ) || 0;
+
+        }
+
+
+        /* -----------------------------------------------------
+           DAILY IMPROVEMENT
+        ----------------------------------------------------- */
+
+        if (
+            typeof dailyImprovementCount !==
+            "undefined"
+        ) {
+
+            runtimeState.dailyImprovementCount =
+                Number(
+                    dailyImprovementCount
+                ) || 0;
+
+        }
+
+
+        if (
+            typeof lastImprovementDate !==
+            "undefined"
+        ) {
+
+            runtimeState.lastImprovementDate =
+                lastImprovementDate;
+
+        }
+
+
+        /* -----------------------------------------------------
+           OWNED CARDS
+        ----------------------------------------------------- */
+
+        if (
+            typeof ownedCards !==
+            "undefined"
+        ) {
+
+            runtimeState.ownedCards =
+                JSON.parse(
+                    JSON.stringify(
+                        ownedCards || {}
+                    )
+                );
+
+        }
+
+
+        /* -----------------------------------------------------
+           ACHIEVEMENTS / BADGES
+        ----------------------------------------------------- */
+
+        if (
+            typeof achievementsData !==
+            "undefined"
+        ) {
+
+            runtimeState.achievementsData =
+                JSON.parse(
+                    JSON.stringify(
+                        achievementsData || []
+                    )
+                );
+
+        }
+
+
+        /* -----------------------------------------------------
+           NOTIFICATIONS
+        ----------------------------------------------------- */
+
+        if (
+            typeof appNotifications !==
+            "undefined"
+        ) {
+
+            runtimeState.appNotifications =
+                JSON.parse(
+                    JSON.stringify(
+                        appNotifications || []
+                    )
+                );
+
+        }
+
+
+        /* -----------------------------------------------------
+           SOUND SETTINGS
+        ----------------------------------------------------- */
+
+        if (
+            typeof soundSettings !==
+            "undefined"
+        ) {
+
+            runtimeState.soundSettings =
+                JSON.parse(
+                    JSON.stringify(
+                        soundSettings || {}
+                    )
+                );
+
+        }
+
+
+        /* =====================================================
+           3. MONTHLY REPORT
+        ===================================================== */
+
+        const monthlyReport = {};
+
+
+        /* -----------------------------------------------------
+           MONTHLY REPORT RUNTIME DATA
+        ----------------------------------------------------- */
+
+        if (
+            typeof monthlyReportData !==
+            "undefined"
+        ) {
+
+            monthlyReport.monthlyReportData =
+                JSON.parse(
+                    JSON.stringify(
+                        monthlyReportData
+                    )
+                );
+
+        }
+
+
+        if (
+            typeof monthlySummaryData !==
+            "undefined"
+        ) {
+
+            monthlyReport.monthlySummaryData =
+                JSON.parse(
+                    JSON.stringify(
+                        monthlySummaryData
+                    )
+                );
+
+        }
+
+
+        if (
+            typeof monthlyStats !==
+            "undefined"
+        ) {
+
+            monthlyReport.monthlyStats =
+                JSON.parse(
+                    JSON.stringify(
+                        monthlyStats || {}
+                    )
+                );
+
+        }
+
+
+        /* =====================================================
+           4. COLLECT MONTHLY-RELATED LOCAL STORAGE
+        ===================================================== */
+
+        monthlyReport.storage = {};
+
+
+        for (
+            let i = 0;
+            i < localStorage.length;
+            i++
+        ) {
+
+            const key =
+                localStorage.key(i);
+
+            if (!key) {
+                continue;
+            }
+
+
+            /*
+             * Anything related to the monthly report
+             * is preserved separately as well.
+             */
+
+            const lowerKey =
+                key.toLowerCase();
+
+
+            if (
+                lowerKey.includes(
+                    "monthly"
+                ) ||
+                lowerKey.includes(
+                    "momentum"
+                ) ||
+                lowerKey.includes(
+                    "consistency"
+                )
+            ) {
+
+                monthlyReport.storage[key] =
+                    localStorage.getItem(key);
+
+            }
+
+        }
+
+
+        /* =====================================================
+           5. GET CUSTOM CARDS
         ===================================================== */
 
         let customCards = [];
+
 
         try {
 
@@ -234,12 +526,160 @@ async function saveProgressToFile() {
 
 
         /* =====================================================
-           3. CREATE BACKUP
+           6. GET CUSTOM AUDIO
+        ===================================================== */
+
+        let customAudio = [];
+
+
+        try {
+
+            /*
+             * If your app exposes a function for retrieving
+             * custom audio, use it.
+             */
+
+            if (
+                typeof getCustomAudio ===
+                "function"
+            ) {
+
+                customAudio =
+                    await getCustomAudio();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to backup custom audio:",
+                error
+            );
+
+        }
+
+
+        /* =====================================================
+           7. BACKGROUND STATE
+        ===================================================== */
+
+        const backgroundState = {};
+
+
+        /*
+         * First capture known runtime variables.
+         */
+
+        if (
+            typeof customBackground !==
+            "undefined"
+        ) {
+
+            backgroundState.customBackground =
+                customBackground;
+
+        }
+
+
+        if (
+            typeof customBackgroundImage !==
+            "undefined"
+        ) {
+
+            backgroundState.customBackgroundImage =
+                customBackgroundImage;
+
+        }
+
+
+        if (
+            typeof backgroundImage !==
+            "undefined"
+        ) {
+
+            backgroundState.backgroundImage =
+                backgroundImage;
+
+        }
+
+
+        /*
+         * Capture background-related localStorage
+         * independently so nothing gets lost.
+         */
+
+        backgroundState.storage = {};
+
+
+        for (
+            let i = 0;
+            i < localStorage.length;
+            i++
+        ) {
+
+            const key =
+                localStorage.key(i);
+
+            if (!key) {
+                continue;
+            }
+
+
+            const lowerKey =
+                key.toLowerCase();
+
+
+            if (
+                lowerKey.includes(
+                    "background"
+                ) ||
+                lowerKey.includes(
+                    "custombg"
+                )
+            ) {
+
+                backgroundState.storage[key] =
+                    localStorage.getItem(key);
+
+            }
+
+        }
+
+
+        /* =====================================================
+           8. CARD CATALOG
+        ===================================================== */
+
+        let cardCatalog = [];
+
+
+        if (
+            Array.isArray(
+                window.cardCatalog
+            )
+        ) {
+
+            cardCatalog =
+                JSON.parse(
+                    JSON.stringify(
+                        window.cardCatalog
+                    )
+                );
+
+        }
+
+
+        /* =====================================================
+           9. CREATE COMPLETE BACKUP
         ===================================================== */
 
         const backup = {
 
-            backupVersion: 3,
+            /* -------------------------------------------------
+               BACKUP INFORMATION
+            ------------------------------------------------- */
+
+            backupVersion: 4,
 
             backupType:
                 "STANDOUT_COMPLETE",
@@ -248,28 +688,66 @@ async function saveProgressToFile() {
                 new Date().toISOString(),
 
 
-            /* ---------------------------------------------
+            /* -------------------------------------------------
                LOCAL STORAGE
-            --------------------------------------------- */
+            ------------------------------------------------- */
 
             localStorage:
                 localStorageData,
 
 
-            /* ---------------------------------------------
+            /* -------------------------------------------------
+               RUNTIME STATE
+            ------------------------------------------------- */
+
+            runtimeState:
+                runtimeState,
+
+
+            /* -------------------------------------------------
+               MONTHLY REPORT
+            ------------------------------------------------- */
+
+            monthlyReport:
+                monthlyReport,
+
+
+            /* -------------------------------------------------
+               BACKGROUND
+            ------------------------------------------------- */
+
+            background:
+                backgroundState,
+
+
+            /* -------------------------------------------------
                CUSTOM CARDS
-               Artwork is already stored inside the card
-               object as image data.
-            --------------------------------------------- */
+            ------------------------------------------------- */
 
             customCards:
-                customCards
+                customCards,
+
+
+            /* -------------------------------------------------
+               CUSTOM AUDIO
+            ------------------------------------------------- */
+
+            customAudio:
+                customAudio,
+
+
+            /* -------------------------------------------------
+               CARD CATALOG
+            ------------------------------------------------- */
+
+            cardCatalog:
+                cardCatalog
 
         };
 
 
         /* =====================================================
-           4. CONVERT TO JSON
+           10. CONVERT TO JSON
         ===================================================== */
 
         const json =
@@ -279,6 +757,10 @@ async function saveProgressToFile() {
                 2
             );
 
+
+        /* =====================================================
+           11. CREATE FILE
+        ===================================================== */
 
         const blob =
             new Blob(
@@ -291,7 +773,7 @@ async function saveProgressToFile() {
 
 
         /* =====================================================
-           5. DOWNLOAD
+           12. DOWNLOAD
         ===================================================== */
 
         const url =
@@ -299,24 +781,31 @@ async function saveProgressToFile() {
                 blob
             );
 
+
         const link =
             document.createElement(
                 "a"
             );
 
+
         link.href =
             url;
 
+
         link.download =
             `standout-backup-${getBackupDate()}.json`;
+
 
         document.body.appendChild(
             link
         );
 
+
         link.click();
 
+
         link.remove();
+
 
         URL.revokeObjectURL(
             url
@@ -324,16 +813,16 @@ async function saveProgressToFile() {
 
 
         /* =====================================================
-           6. SUCCESS
+           13. SUCCESS
         ===================================================== */
 
         customAlert(
-            "Backup created successfully."
+            "Complete backup created successfully."
         );
 
 
         console.log(
-            "✓ Standout backup created",
+            "✓ Complete Standout backup created",
             backup
         );
 
@@ -345,14 +834,14 @@ async function saveProgressToFile() {
             error
         );
 
+
         customAlert(
-            "Could not create backup."
+            "Could not create complete backup."
         );
 
     }
 
 }
-
 
 /* =========================================================
    BACKUP DATE
@@ -422,7 +911,9 @@ async function loadProgressFromFile() {
 
 
         if (!file) {
+
             return;
+
         }
 
 
@@ -434,6 +925,7 @@ async function loadProgressFromFile() {
             await file.text();
 
         let backup;
+
 
         try {
 
@@ -485,52 +977,82 @@ async function loadProgressFromFile() {
         }
 
 
-        /* =========================================================
-   CUSTOM CONFIRM
-========================================================= */
+        /* =====================================================
+           5. CONFIRM RESTORE
+        ===================================================== */
 
-        function customConfirm(message, title = "Are you sure?") {
+        function customConfirm(
+            message,
+            title = "Are you sure?"
+        ) {
 
             return new Promise(resolve => {
 
                 const overlay =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
+
 
                 overlay.className =
                     "custom-confirm-overlay";
 
+
                 overlay.innerHTML = `
 
-            <div class="custom-confirm-card">
-
-                <div class="custom-confirm-title">
-                    ${escapeHTML(title)}
-                </div>
-
-                <div class="custom-confirm-message">
-                    ${escapeHTML(message)}
-                </div>
-
-                <div class="custom-confirm-actions">
-
-                    <button
-                        type="button"
-                        class="custom-confirm-cancel"
+                    <div
+                        class="custom-confirm-card"
                     >
-                        Cancel
-                    </button>
 
-                    <button
-                        type="button"
-                        class="custom-confirm-ok"
-                    >
-                        Continue
-                    </button>
+                        <div
+                            class="
+                                custom-confirm-title
+                            "
+                        >
+                            ${escapeHTML(title)}
+                        </div>
 
-                </div>
 
-            </div>
-        `;
+                        <div
+                            class="
+                                custom-confirm-message
+                            "
+                        >
+                            ${escapeHTML(message)}
+                        </div>
+
+
+                        <div
+                            class="
+                                custom-confirm-actions
+                            "
+                        >
+
+                            <button
+                                type="button"
+                                class="
+                                    custom-confirm-cancel
+                                "
+                            >
+                                Cancel
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="
+                                    custom-confirm-ok
+                                "
+                            >
+                                Continue
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
 
                 document.body.appendChild(
                     overlay
@@ -541,6 +1063,7 @@ async function loadProgressFromFile() {
                     overlay.querySelector(
                         ".custom-confirm-cancel"
                     );
+
 
                 const ok =
                     overlay.querySelector(
@@ -554,6 +1077,7 @@ async function loadProgressFromFile() {
                         "active"
                     );
 
+
                     setTimeout(() => {
 
                         overlay.remove();
@@ -565,14 +1089,12 @@ async function loadProgressFromFile() {
                 }
 
 
-                cancel.onclick = () => {
-                    close(false);
-                };
+                cancel.onclick =
+                    () => close(false);
 
 
-                ok.onclick = () => {
-                    close(true);
-                };
+                ok.onclick =
+                    () => close(true);
 
 
                 overlay.addEventListener(
@@ -608,14 +1130,18 @@ async function loadProgressFromFile() {
 
         }
 
+
         const confirmed =
             await customConfirm(
                 "Your current progress will be replaced by the backup.",
                 "Restore Backup?"
             );
 
+
         if (!confirmed) {
+
             return;
+
         }
 
 
@@ -632,6 +1158,7 @@ async function loadProgressFromFile() {
 
         }
 
+
         if (
             typeof stopPreview ===
             "function"
@@ -643,10 +1170,15 @@ async function loadProgressFromFile() {
 
 
         /* =====================================================
-           7. RESTORE LOCAL STORAGE
+           7. CLEAR CURRENT LOCAL STORAGE
         ===================================================== */
 
         localStorage.clear();
+
+
+        /* =====================================================
+           8. RESTORE LOCAL STORAGE
+        ===================================================== */
 
         Object.entries(
             backup.localStorage
@@ -673,84 +1205,380 @@ async function loadProgressFromFile() {
             }
         );
 
-        /* =====================================================
-   RELOAD RUNTIME DATA AFTER RESTORE
-===================================================== */
-
-        goalsData =
-            JSON.parse(
-                localStorage.getItem("goalsData")
-            ) || [];
-
-        countdowns =
-            JSON.parse(
-                localStorage.getItem("countdowns")
-            ) || [];
-
-        completedMissions =
-            Number(
-                localStorage.getItem("completedMissions")
-            ) || 0;
-
-        dailyImprovementCount =
-            Number(
-                localStorage.getItem("dailyImprovementCount")
-            ) || 0;
-
-        lastImprovementDate =
-            localStorage.getItem("lastImprovementDate") ||
-            getISTDate().toISOString().slice(0, 10);
 
         /* =====================================================
-       RELOAD MUSIC / SOUND RUNTIME STATE
-    ===================================================== */
-
-        try {
-
-            if (
-                typeof loadSoundSettings ===
-                "function"
-            ) {
-
-                await loadSoundSettings();
-
-            }
-
-        } catch (error) {
-
-            console.warn(
-                "Could not reload sound settings:",
-                error
-            );
-
-        }
-
-
-        /* =====================================================
-           REFRESH MUSIC UI
+           9. RESTORE RUNTIME STATE
         ===================================================== */
 
-        try {
+        const runtime =
+            backup.runtimeState || {};
+
+
+        if (
+            Array.isArray(
+                runtime.missions
+            )
+        ) {
+
+            missions =
+                JSON.parse(
+                    JSON.stringify(
+                        runtime.missions
+                    )
+                );
+
+        }
+
+
+        if (
+            Array.isArray(
+                runtime.goalsData
+            )
+        ) {
+
+            goalsData =
+                JSON.parse(
+                    JSON.stringify(
+                        runtime.goalsData
+                    )
+                );
+
+        }
+
+
+        if (
+            Array.isArray(
+                runtime.countdowns
+            )
+        ) {
+
+            countdowns =
+                JSON.parse(
+                    JSON.stringify(
+                        runtime.countdowns
+                    )
+                );
+
+        }
+
+
+        if (
+            runtime.completedMissions !==
+            undefined
+        ) {
+
+            completedMissions =
+                Number(
+                    runtime.completedMissions
+                ) || 0;
+
+        }
+
+
+        if (
+            runtime.dailyImprovementCount !==
+            undefined
+        ) {
+
+            dailyImprovementCount =
+                Number(
+                    runtime.dailyImprovementCount
+                ) || 0;
+
+        }
+
+
+        if (
+            runtime.lastImprovementDate !==
+            undefined
+        ) {
+
+            lastImprovementDate =
+                runtime.lastImprovementDate;
+
+        }
+
+
+        if (
+            runtime.ownedCards
+        ) {
+
+            ownedCards =
+                JSON.parse(
+                    JSON.stringify(
+                        runtime.ownedCards
+                    )
+                );
+
+        }
+
+
+        if (
+            Array.isArray(
+                runtime.achievementsData
+            )
+        ) {
+
+            achievementsData =
+                JSON.parse(
+                    JSON.stringify(
+                        runtime.achievementsData
+                    )
+                );
+
+        }
+
+
+        if (
+            Array.isArray(
+                runtime.appNotifications
+            )
+        ) {
+
+            appNotifications =
+                JSON.parse(
+                    JSON.stringify(
+                        runtime.appNotifications
+                    )
+                );
+
+        }
+
+
+        if (
+            runtime.soundSettings
+        ) {
+
+            soundSettings =
+                JSON.parse(
+                    JSON.stringify(
+                        runtime.soundSettings
+                    )
+                );
+
+        }
+
+
+        /* =====================================================
+           10. RESTORE MONTHLY REPORT
+        ===================================================== */
+
+        const monthlyReport =
+            backup.monthlyReport || {};
+
+
+        if (
+            monthlyReport.monthlyReportData !==
+            undefined
+        ) {
 
             if (
-                typeof renderSoundSettings ===
-                "function"
+                typeof monthlyReportData !==
+                "undefined"
             ) {
 
-                renderSoundSettings();
+                monthlyReportData =
+                    JSON.parse(
+                        JSON.stringify(
+                            monthlyReport.monthlyReportData
+                        )
+                    );
 
             }
 
-        } catch (error) {
+        }
 
-            console.warn(
-                "Could not refresh sound settings UI:",
-                error
+
+        if (
+            monthlyReport.monthlySummaryData !==
+            undefined
+        ) {
+
+            if (
+                typeof monthlySummaryData !==
+                "undefined"
+            ) {
+
+                monthlySummaryData =
+                    JSON.parse(
+                        JSON.stringify(
+                            monthlyReport.monthlySummaryData
+                        )
+                    );
+
+            }
+
+        }
+
+
+        if (
+            monthlyReport.monthlyStats !==
+            undefined
+        ) {
+
+            if (
+                typeof monthlyStats !==
+                "undefined"
+            ) {
+
+                monthlyStats =
+                    JSON.parse(
+                        JSON.stringify(
+                            monthlyReport.monthlyStats
+                        )
+                    );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           11. RESTORE MONTHLY STORAGE
+        ===================================================== */
+
+        if (
+            monthlyReport.storage &&
+            typeof monthlyReport.storage ===
+            "object"
+        ) {
+
+            Object.entries(
+                monthlyReport.storage
+            ).forEach(
+                ([key, value]) => {
+
+                    try {
+
+                        localStorage.setItem(
+                            key,
+                            value
+                        );
+
+                    } catch (error) {
+
+                        console.warn(
+                            "Could not restore monthly data:",
+                            key,
+                            error
+                        );
+
+                    }
+
+                }
             );
 
         }
+
+
         /* =====================================================
-           8. RESTORE CUSTOM CARDS
+           12. RESTORE BACKGROUND
+        ===================================================== */
+
+        const background =
+            backup.background || {};
+
+
+        /*
+         * Restore background-related
+         * localStorage values.
+         */
+
+        if (
+            background.storage &&
+            typeof background.storage ===
+            "object"
+        ) {
+
+            Object.entries(
+                background.storage
+            ).forEach(
+                ([key, value]) => {
+
+                    try {
+
+                        localStorage.setItem(
+                            key,
+                            value
+                        );
+
+                    } catch (error) {
+
+                        console.warn(
+                            "Could not restore background setting:",
+                            key,
+                            error
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+         * Restore runtime background variables
+         * if they exist in this version of the app.
+         */
+
+        if (
+            background.customBackground !==
+            undefined
+        ) {
+
+            if (
+                typeof customBackground !==
+                "undefined"
+            ) {
+
+                customBackground =
+                    background.customBackground;
+
+            }
+
+        }
+
+
+        if (
+            background.customBackgroundImage !==
+            undefined
+        ) {
+
+            if (
+                typeof customBackgroundImage !==
+                "undefined"
+            ) {
+
+                customBackgroundImage =
+                    background.customBackgroundImage;
+
+            }
+
+        }
+
+
+        if (
+            background.backgroundImage !==
+            undefined
+        ) {
+
+            if (
+                typeof backgroundImage !==
+                "undefined"
+            ) {
+
+                backgroundImage =
+                    background.backgroundImage;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           13. RESTORE CUSTOM CARDS
         ===================================================== */
 
         if (
@@ -761,20 +1589,13 @@ async function loadProgressFromFile() {
 
             try {
 
-                /* ---------------------------------------------
-                   Open custom card database
-                --------------------------------------------- */
-
                 await openCustomCardDB();
 
-
-                /* ---------------------------------------------
-                   Clear existing custom cards
-                --------------------------------------------- */
 
                 const db =
                     customCardDB ||
                     await openCustomCardDB();
+
 
                 await new Promise(
                     (resolve, reject) => {
@@ -785,15 +1606,19 @@ async function loadProgressFromFile() {
                                 "readwrite"
                             );
 
+
                         const store =
                             transaction.objectStore(
                                 "cards"
                             );
 
+
                         store.clear();
+
 
                         transaction.oncomplete =
                             () => resolve();
+
 
                         transaction.onerror =
                             () => reject(
@@ -804,10 +1629,6 @@ async function loadProgressFromFile() {
                 );
 
 
-                /* ---------------------------------------------
-                   Restore cards
-                --------------------------------------------- */
-
                 for (
                     const card
                     of backup.customCards
@@ -817,8 +1638,11 @@ async function loadProgressFromFile() {
                         !card ||
                         !card.id
                     ) {
+
                         continue;
+
                     }
+
 
                     await saveCustomCard(
                         card
@@ -845,20 +1669,94 @@ async function loadProgressFromFile() {
 
 
         /* =====================================================
-           9. IMPORTANT:
-              DO NOT RESTORE CUSTOM AUDIO
+           14. RESTORE CUSTOM AUDIO
         ===================================================== */
 
-        /*
-         * The backup intentionally contains
-         * no custom audio.
-         *
-         * Existing custom audio remains untouched.
-         */
+        if (
+            Array.isArray(
+                backup.customAudio
+            ) &&
+            backup.customAudio.length > 0
+        ) {
+
+            try {
+
+                if (
+                    typeof restoreCustomAudio ===
+                    "function"
+                ) {
+
+                    await restoreCustomAudio(
+                        backup.customAudio
+                    );
+
+                } else {
+
+                    console.warn(
+                        "Backup contains custom audio, but restoreCustomAudio() is not available."
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to restore custom audio:",
+                    error
+                );
+
+            }
+
+        }
 
 
         /* =====================================================
-           10. RELOAD RUNTIME STATE
+           15. RESTORE CARD CATALOG
+        ===================================================== */
+
+        if (
+            Array.isArray(
+                backup.cardCatalog
+            )
+        ) {
+
+            window.cardCatalog =
+                JSON.parse(
+                    JSON.stringify(
+                        backup.cardCatalog
+                    )
+                );
+
+        }
+
+
+        /* =====================================================
+           16. RELOAD SOUND SETTINGS
+        ===================================================== */
+
+        try {
+
+            if (
+                typeof loadSoundSettings ===
+                "function"
+            ) {
+
+                await loadSoundSettings();
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "Could not reload sound settings:",
+                error
+            );
+
+        }
+
+
+        /* =====================================================
+           17. RELOAD MAIN DATA
         ===================================================== */
 
         if (
@@ -872,7 +1770,7 @@ async function loadProgressFromFile() {
 
 
         /* =====================================================
-           11. RESTORE CUSTOM CARDS INTO CATALOG
+           18. LOAD CUSTOM CARDS
         ===================================================== */
 
         if (
@@ -886,7 +1784,53 @@ async function loadProgressFromFile() {
 
 
         /* =====================================================
-           12. REFRESH UI
+           19. REAPPLY BACKGROUND
+        ===================================================== */
+
+        try {
+
+            if (
+                typeof loadCustomBackground ===
+                "function"
+            ) {
+
+                loadCustomBackground();
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "Could not restore custom background:",
+                error
+            );
+
+        }
+
+
+        try {
+
+            if (
+                typeof renderCustomBackground ===
+                "function"
+            ) {
+
+                renderCustomBackground();
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "Could not render custom background:",
+                error
+            );
+
+        }
+
+
+        /* =====================================================
+           20. REFRESH UI
         ===================================================== */
 
         if (
@@ -898,6 +1842,7 @@ async function loadProgressFromFile() {
 
         }
 
+
         if (
             typeof renderGoals ===
             "function"
@@ -906,6 +1851,7 @@ async function loadProgressFromFile() {
             renderGoals();
 
         }
+
 
         if (
             typeof renderSkills ===
@@ -916,6 +1862,7 @@ async function loadProgressFromFile() {
 
         }
 
+
         if (
             typeof renderCountdowns ===
             "function"
@@ -925,6 +1872,7 @@ async function loadProgressFromFile() {
 
         }
 
+
         if (
             typeof renderAchievements ===
             "function"
@@ -933,6 +1881,7 @@ async function loadProgressFromFile() {
             renderAchievements();
 
         }
+
 
         if (
             typeof renderMarketplace ===
@@ -946,6 +1895,7 @@ async function loadProgressFromFile() {
 
         }
 
+
         if (
             typeof renderMyCards ===
             "function"
@@ -954,6 +1904,7 @@ async function loadProgressFromFile() {
             renderMyCards();
 
         }
+
 
         if (
             typeof renderCustomCardsManager ===
@@ -966,12 +1917,106 @@ async function loadProgressFromFile() {
 
 
         /* =====================================================
-           13. SUCCESS
+           21. REFRESH MONTHLY REPORT
+        ===================================================== */
+
+        if (
+            typeof renderMonthlyReport ===
+            "function"
+        ) {
+
+            renderMonthlyReport();
+
+        }
+
+
+        if (
+            typeof renderMonthlySummary ===
+            "function"
+        ) {
+
+            renderMonthlySummary();
+
+        }
+
+
+        if (
+            typeof renderMonthlyGoals ===
+            "function"
+        ) {
+
+            renderMonthlyGoals();
+
+        }
+
+
+        if (
+            typeof renderMonthlyMomentum ===
+            "function"
+        ) {
+
+            renderMonthlyMomentum();
+
+        }
+
+
+        /* =====================================================
+           22. REFRESH MONTHLY BADGES
+        ===================================================== */
+
+        if (
+            typeof renderMonthlyBadgePage ===
+            "function"
+        ) {
+
+            renderMonthlyBadgePage();
+
+        }
+
+
+        if (
+            typeof renderBadgeCollection ===
+            "function"
+        ) {
+
+            renderBadgeCollection();
+
+        }
+
+
+        /* =====================================================
+           23. REFRESH SOUND UI
+        ===================================================== */
+
+        if (
+            typeof renderSoundSettings ===
+            "function"
+        ) {
+
+            try {
+
+                renderSoundSettings();
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not refresh sound UI:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           24. SUCCESS
         ===================================================== */
 
         customAlert(
             "Backup restored successfully."
         );
+
 
         console.log(
             "✓ Complete Standout backup restored."
@@ -984,6 +2029,7 @@ async function loadProgressFromFile() {
             "Restore failed:",
             error
         );
+
 
         customAlert(
             "Could not restore backup."
@@ -1344,10 +2390,10 @@ async function cacheAllMusic() {
 
                 await cache.add(file);
 
-                // console.log(
-                //     "Music cached:",
-                //     file
-                // );
+                console.log(
+                    "Music cached:",
+                    file
+                );
 
             } catch (error) {
 
@@ -6103,15 +7149,15 @@ function addGoal() {
     const deadlineTime =
         new Date(deadline).getTime();
 
-    // console.log("GOAL DEADLINE TEST");
-    // console.log("Created:", new Date(createdAt));
-    // console.log("Eligible:", new Date(eligibleAt));
-    // console.log("Deadline:", new Date(deadlineTime));
-    // console.log("Difference:", deadlineTime - createdAt);
-    // console.log(
-    //     "Required:",
-    //     commitmentDays * 24 * 60 * 60 * 1000
-    // );
+    console.log("GOAL DEADLINE TEST");
+    console.log("Created:", new Date(createdAt));
+    console.log("Eligible:", new Date(eligibleAt));
+    console.log("Deadline:", new Date(deadlineTime));
+    console.log("Difference:", deadlineTime - createdAt);
+    console.log(
+        "Required:",
+        commitmentDays * 24 * 60 * 60 * 1000
+    );
 
 
     if (deadlineTime < eligibleAt) {
@@ -7351,6 +8397,11 @@ function loadData() {
    EVERYTHING → FACTORY STATE
 ========================================================= */
 
+/* =========================================================
+   COMPLETE APP RESET
+   EVERYTHING → FACTORY STATE
+========================================================= */
+
 async function resetData() {
 
     try {
@@ -7363,14 +8414,19 @@ async function resetData() {
             typeof stopActiveTone ===
             "function"
         ) {
+
             stopActiveTone();
+
         }
+
 
         if (
             typeof stopPreview ===
             "function"
         ) {
+
             stopPreview();
+
         }
 
 
@@ -7396,29 +8452,41 @@ async function resetData() {
             typeof missions !==
             "undefined"
         ) {
+
             missions = [];
+
         }
+
 
         if (
             typeof goalsData !==
             "undefined"
         ) {
+
             goalsData = [];
+
         }
+
 
         if (
             typeof countdowns !==
             "undefined"
         ) {
+
             countdowns = [];
+
         }
+
 
         if (
             typeof ownedCards !==
             "undefined"
         ) {
+
             ownedCards = {};
+
         }
+
 
         if (
             typeof achievementsData !==
@@ -7448,11 +8516,14 @@ async function resetData() {
         window.customCardImageData =
             "";
 
+
         if (
             typeof customCardImageData !==
             "undefined"
         ) {
+
             customCardImageData = "";
+
         }
 
 
@@ -7474,6 +8545,7 @@ async function resetData() {
 
             }
 
+
             await new Promise(
                 (resolve, reject) => {
 
@@ -7482,13 +8554,16 @@ async function resetData() {
                             "standout-custom-cards"
                         );
 
+
                     request.onsuccess =
                         () => resolve();
+
 
                     request.onerror =
                         () => reject(
                             request.error
                         );
+
 
                     request.onblocked =
                         () => {
@@ -7532,6 +8607,7 @@ async function resetData() {
 
             }
 
+
             await new Promise(
                 (resolve, reject) => {
 
@@ -7540,13 +8616,16 @@ async function resetData() {
                             "standout-sounds"
                         );
 
+
                     request.onsuccess =
                         () => resolve();
+
 
                     request.onerror =
                         () => reject(
                             request.error
                         );
+
 
                     request.onblocked =
                         () => {
@@ -7580,6 +8659,7 @@ async function resetData() {
             "standout_sound_settings"
         );
 
+
         if (
             typeof DEFAULT_SOUND_SETTINGS !==
             "undefined"
@@ -7600,7 +8680,187 @@ async function resetData() {
 
 
         /* =====================================================
-           9. RESET CARD CATALOG
+           9. RESET CUSTOM BACKGROUND
+        ===================================================== */
+
+        /*
+         * Remove every known background-related
+         * localStorage value.
+         *
+         * localStorage.clear() already removes these,
+         * but explicitly removing them protects against
+         * background systems using different keys.
+         */
+
+        const backgroundStorageKeys = [
+
+            "customBackground",
+
+            "customBackgroundImage",
+
+            "backgroundImage",
+
+            "backgroundImageData",
+
+            "background",
+
+            "appBackground",
+
+            "customBg",
+
+            "customBgImage",
+
+            "backgroundSettings",
+
+            "backgroundOpacity",
+
+            "backgroundBlur"
+
+        ];
+
+
+        backgroundStorageKeys.forEach(
+            key => {
+
+                try {
+
+                    localStorage.removeItem(
+                        key
+                    );
+
+                } catch (error) {
+
+                    console.warn(
+                        "Could not remove background key:",
+                        key,
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        /*
+         * Remove CSS variables that may have
+         * been applied directly to :root.
+         */
+
+        document.documentElement.style.removeProperty(
+            "--custom-background"
+        );
+
+        document.documentElement.style.removeProperty(
+            "--background-image"
+        );
+
+        document.documentElement.style.removeProperty(
+            "--background-opacity"
+        );
+
+        document.documentElement.style.removeProperty(
+            "--background-blur"
+        );
+
+        document.documentElement.style.removeProperty(
+            "--bg-image"
+        );
+
+        document.documentElement.style.removeProperty(
+            "--app-background"
+        );
+
+
+        /*
+         * Remove inline background from body.
+         */
+
+        document.body.style.backgroundImage =
+            "";
+
+        document.body.style.backgroundSize =
+            "";
+
+        document.body.style.backgroundPosition =
+            "";
+
+        document.body.style.backgroundRepeat =
+            "";
+
+        document.body.style.backgroundAttachment =
+            "";
+
+        document.body.style.backgroundColor =
+            "";
+
+
+        /*
+         * Remove possible custom background
+         * elements/layers.
+         */
+
+        const backgroundLayer =
+            document.getElementById(
+                "customBackgroundLayer"
+            );
+
+        if (backgroundLayer) {
+
+            backgroundLayer.style.backgroundImage =
+                "";
+
+            backgroundLayer.style.opacity =
+                "";
+
+            backgroundLayer.style.filter =
+                "";
+
+        }
+
+
+        const backgroundOverlay =
+            document.getElementById(
+                "customBackgroundOverlay"
+            );
+
+        if (backgroundOverlay) {
+
+            backgroundOverlay.style.opacity =
+                "";
+
+            backgroundOverlay.style.background =
+                "";
+
+            backgroundOverlay.style.filter =
+                "";
+
+            backgroundOverlay.style.backdropFilter =
+                "";
+
+        }
+
+
+        /*
+         * Remove common dynamically-created
+         * background elements.
+         */
+
+        document
+            .querySelectorAll(
+                ".custom-background, .background-layer, .app-background, .background-image-layer"
+            )
+            .forEach(
+                element => {
+
+                    element.remove();
+
+                }
+            );
+
+
+        /* =====================================================
+           10. RESET CARD CATALOG
            Keep only built-in cards.
         ===================================================== */
 
@@ -7612,14 +8872,15 @@ async function resetData() {
 
             window.cardCatalog =
                 window.cardCatalog.filter(
-                    card => !card.custom
+                    card =>
+                        !card.custom
                 );
 
         }
 
 
         /* =====================================================
-           10. RESET TIMER
+           11. RESET TIMER
         ===================================================== */
 
         if (
@@ -7637,33 +8898,41 @@ async function resetData() {
 
 
         /* =====================================================
-           11. RESET PREVIEW / AUDIO REFERENCES
+           12. RESET PREVIEW / AUDIO REFERENCES
         ===================================================== */
 
         if (
             typeof activeTone !==
             "undefined"
         ) {
+
             activeTone = null;
+
         }
+
 
         if (
             typeof previewAudio !==
             "undefined"
         ) {
+
             previewAudio = null;
+
         }
+
 
         if (
             typeof previewType !==
             "undefined"
         ) {
+
             previewType = null;
+
         }
 
 
         /* =====================================================
-           12. RESET UI
+           13. RESET UI LISTS
         ===================================================== */
 
         const missionList =
@@ -7671,36 +8940,59 @@ async function resetData() {
                 "mission-list"
             );
 
+
         const skillList =
             document.getElementById(
                 "skill-list"
             );
+
 
         const goalList =
             document.getElementById(
                 "goal-list"
             );
 
+
         const countdownList =
             document.getElementById(
                 "countdown-list"
             );
 
-        if (missionList)
-            missionList.innerHTML = "";
 
-        if (skillList)
-            skillList.innerHTML = "";
+        if (missionList) {
 
-        if (goalList)
-            goalList.innerHTML = "";
+            missionList.innerHTML =
+                "";
 
-        if (countdownList)
-            countdownList.innerHTML = "";
+        }
+
+
+        if (skillList) {
+
+            skillList.innerHTML =
+                "";
+
+        }
+
+
+        if (goalList) {
+
+            goalList.innerHTML =
+                "";
+
+        }
+
+
+        if (countdownList) {
+
+            countdownList.innerHTML =
+                "";
+
+        }
 
 
         /* =====================================================
-           13. RESET COUNTERS
+           14. RESET COUNTERS
         ===================================================== */
 
         const missionCounter =
@@ -7708,26 +9000,38 @@ async function resetData() {
                 "missionCounter"
             );
 
+
         const countdownCounter =
             document.getElementById(
                 "countdownCounter"
             );
 
-        if (missionCounter)
-            missionCounter.textContent = "0";
 
-        if (countdownCounter)
-            countdownCounter.textContent = "0";
+        if (missionCounter) {
+
+            missionCounter.textContent =
+                "0";
+
+        }
+
+
+        if (countdownCounter) {
+
+            countdownCounter.textContent =
+                "0";
+
+        }
 
 
         /* =====================================================
-           14. RESET NOTIFICATIONS UI
+           15. RESET NOTIFICATIONS UI
         ===================================================== */
 
         const notificationList =
             document.getElementById(
                 "notificationList"
             );
+
 
         if (notificationList) {
 
@@ -7744,6 +9048,7 @@ async function resetData() {
                 "notifyBadge"
             );
 
+
         if (notificationBadge) {
 
             notificationBadge.style.display =
@@ -7756,13 +9061,14 @@ async function resetData() {
 
 
         /* =====================================================
-           15. RESET CUSTOM CARD MANAGER
+           16. RESET CUSTOM CARD MANAGER
         ===================================================== */
 
         const customCardsManager =
             document.getElementById(
                 "customCardsManager"
             );
+
 
         if (customCardsManager) {
 
@@ -7778,7 +9084,219 @@ async function resetData() {
 
 
         /* =====================================================
-           16. RESET MARKETPLACE
+           17. RESET MONTHLY SUMMARY
+        ===================================================== */
+
+        const monthlySummaryTitle =
+            document.getElementById(
+                "monthlySummaryTitle"
+            );
+
+
+        const monthlySummaryText =
+            document.getElementById(
+                "monthlySummaryText"
+            );
+
+
+        const monthlySummaryCompletion =
+            document.getElementById(
+                "monthlySummaryCompletion"
+            );
+
+
+        const monthlySummaryConsistency =
+            document.getElementById(
+                "monthlySummaryConsistency"
+            );
+
+
+        const monthlySummaryGoals =
+            document.getElementById(
+                "monthlySummaryGoals"
+            );
+
+
+        const monthlyConsistency =
+            document.getElementById(
+                "monthlyConsistency"
+            );
+
+
+        const monthlyCompleted =
+            document.getElementById(
+                "monthlyCompleted"
+            );
+
+
+        const monthlyMissed =
+            document.getElementById(
+                "monthlyMissed"
+            );
+
+
+        const monthlyActiveDays =
+            document.getElementById(
+                "monthlyActiveDays"
+            );
+
+
+        const monthlyImprovementPoints =
+            document.getElementById(
+                "monthlyImprovementPoints"
+            );
+
+
+        if (monthlySummaryTitle) {
+
+            monthlySummaryTitle.textContent =
+                "August";
+
+        }
+
+
+        if (monthlySummaryText) {
+
+            monthlySummaryText.textContent =
+                "No summary available yet.";
+
+        }
+
+
+        if (monthlySummaryCompletion) {
+
+            monthlySummaryCompletion.textContent =
+                "0%";
+
+        }
+
+
+        if (monthlySummaryConsistency) {
+
+            monthlySummaryConsistency.textContent =
+                "0%";
+
+        }
+
+
+        if (monthlySummaryGoals) {
+
+            monthlySummaryGoals.textContent =
+                "0/0";
+
+        }
+
+
+        if (monthlyConsistency) {
+
+            monthlyConsistency.textContent =
+                "0%";
+
+        }
+
+
+        if (monthlyCompleted) {
+
+            monthlyCompleted.textContent =
+                "0";
+
+        }
+
+
+        if (monthlyMissed) {
+
+            monthlyMissed.textContent =
+                "0";
+
+        }
+
+
+        if (monthlyActiveDays) {
+
+            monthlyActiveDays.textContent =
+                "0";
+
+        }
+
+
+        if (monthlyImprovementPoints) {
+
+            monthlyImprovementPoints.textContent =
+                "0";
+
+        }
+
+
+        /* =====================================================
+           18. RESET MONTHLY ACTIVITY CALENDAR
+        ===================================================== */
+
+        const monthlyActivityCalendar =
+            document.getElementById(
+                "monthlyActivityCalendar"
+            );
+
+
+        if (monthlyActivityCalendar) {
+
+            monthlyActivityCalendar.innerHTML =
+                "";
+
+        }
+
+
+        /* =====================================================
+           19. RESET MONTHLY GRAPH
+        ===================================================== */
+
+        const monthlyConsistencyGraph =
+            document.getElementById(
+                "monthlyConsistencyGraph"
+            );
+
+
+        if (monthlyConsistencyGraph) {
+
+            monthlyConsistencyGraph.innerHTML =
+                "";
+
+        }
+
+
+        /* =====================================================
+           20. RESET MONTHLY GOALS / MOMENTUM
+        ===================================================== */
+
+        const monthlyGoals =
+            document.getElementById(
+                "monthlyGoals"
+            );
+
+
+        if (monthlyGoals) {
+
+            monthlyGoals.innerHTML =
+                "";
+
+        }
+
+
+        const monthlyMomentum =
+            document.getElementById(
+                "monthlyMomentum"
+            );
+
+
+        if (monthlyMomentum) {
+
+            monthlyMomentum.innerHTML =
+                "";
+
+        }
+
+
+        /* =====================================================
+           21. RESET MARKETPLACE
         ===================================================== */
 
         if (
@@ -7792,6 +9310,7 @@ async function resetData() {
 
         }
 
+
         if (
             typeof renderMyCards ===
             "function"
@@ -7803,7 +9322,7 @@ async function resetData() {
 
 
         /* =====================================================
-           17. RESET ACHIEVEMENTS
+           22. RESET ACHIEVEMENTS
         ===================================================== */
 
         if (
@@ -7817,7 +9336,7 @@ async function resetData() {
 
 
         /* =====================================================
-           18. RESET CUSTOM CARD CONTROLS
+           23. RESET CUSTOM CARD CONTROLS
         ===================================================== */
 
         if (
@@ -7831,15 +9350,175 @@ async function resetData() {
 
 
         /* =====================================================
-           19. SUCCESS
+           24. RESET SOUND UI
+        ===================================================== */
+
+        if (
+            typeof renderSoundSettings ===
+            "function"
+        ) {
+
+            try {
+
+                renderSoundSettings();
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not reset sound UI:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           25. RESET MONTHLY REPORT STORAGE
+        ===================================================== */
+
+        const monthlyStorageKeys = [
+
+            "monthlyReport",
+
+            "monthlyReports",
+
+            "monthlySummary",
+
+            "monthlySummaryData",
+
+            "monthlyReportData",
+
+            "monthlyGoals",
+
+            "monthlyMomentum",
+
+            "monthlyStats",
+
+            "monthlyHistory"
+
+        ];
+
+
+        monthlyStorageKeys.forEach(
+            key => {
+
+                try {
+
+                    localStorage.removeItem(
+                        key
+                    );
+
+                } catch (error) {
+
+                    console.warn(
+                        "Could not remove monthly key:",
+                        key,
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           26. RESET MONTHLY RUNTIME VARIABLES
+        ===================================================== */
+
+        if (
+            typeof monthlyReportData !==
+            "undefined"
+        ) {
+
+            monthlyReportData = null;
+
+        }
+
+
+        if (
+            typeof monthlySummaryData !==
+            "undefined"
+        ) {
+
+            monthlySummaryData = null;
+
+        }
+
+
+        if (
+            typeof monthlyStats !==
+            "undefined"
+        ) {
+
+            monthlyStats = {};
+
+        }
+
+
+        /* =====================================================
+           27. RESET NOTIFICATION BADGE
+        ===================================================== */
+
+        if (
+            typeof updateNotificationBadge ===
+            "function"
+        ) {
+
+            updateNotificationBadge();
+
+        }
+
+
+        /* =====================================================
+           28. RELOAD CLEAN APPLICATION STATE
+        ===================================================== */
+
+        if (
+            typeof loadData ===
+            "function"
+        ) {
+
+            loadData();
+
+        }
+
+
+        /*
+         * Do not rely only on manually resetting the DOM.
+         * Reloading guarantees that the background, summary,
+         * mission history and every other initialization
+         * path starts from the cleared storage.
+         */
+
+        console.log(
+            "✓ COMPLETE APP RESET"
+        );
+
+
+        /* =====================================================
+           29. SUCCESS
         ===================================================== */
 
         customAlert(
             "Everything has been reset to factory state."
         );
 
-        console.log(
-            "✓ COMPLETE APP RESET"
+
+        /*
+         * Give the success notification a moment to render,
+         * then reload the application.
+         */
+
+        setTimeout(
+            () => {
+
+                location.reload();
+
+            },
+            500
         );
 
 
@@ -7850,6 +9529,7 @@ async function resetData() {
             error
         );
 
+
         customAlert(
             "Reset failed. Check the console."
         );
@@ -7857,6 +9537,7 @@ async function resetData() {
     }
 
 }
+
 function isPastDateTime(dateTimeValue) {
     if (!dateTimeValue) return false; // allow empty deadlines
     return new Date(dateTimeValue).getTime() < Date.now();
@@ -8891,4 +10572,3 @@ document.addEventListener(
 
     }
 );
-
