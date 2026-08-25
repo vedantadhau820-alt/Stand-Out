@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="CSS/effects.css">
     <link rel="stylesheet" href="CSS/momentum.css">
     <link rel="stylesheet" href="CSS/monthly-report.css">
+    <link rel="stylesheet" href="CSS/badges.css">
 
 </head>
 
@@ -65,7 +66,7 @@
                 </span>
             </div>
 
-            <img src="icon.jpeg" alt="Profile" class="nav-img">
+            <img src="icon.jpeg" alt="Profile" class="nav-img" id="monthlyBadgeNavBtn">
             <input type="file" id="importProgressFile" accept=".json" hidden>
         </div>
     </nav>
@@ -859,6 +860,115 @@
             </div>
 
     </section>
+
+    <section id="monthlyBadgePage">
+
+        <div class="monthly-badge-page">
+
+            <!-- PAGE HEADER -->
+            <div class="monthly-badge-page-header">
+
+                <div>
+                    <span class="monthly-badge-page-eyebrow">
+                        MONTHLY CHALLENGE
+                    </span>
+
+                    <h2 id="monthlyBadgeMonth">
+                        August 2026
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <!-- BADGE HERO -->
+            <div class="monthly-badge-hero">
+
+                <div id="monthlyBadgeArtwork" class="monthly-badge-artwork">
+                    <div id="monthlyBadgeArtworkInner" class="monthly-badge-artwork-inner">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <span id="monthlyBadgeStatus" class="monthly-badge-status">
+                LOCKED
+            </span>
+
+
+            <h1 id="monthlyBadgeTitle">
+                The Relentless
+            </h1>
+
+
+            <p id="monthlyBadgeDescription">
+                Complete this month's challenges
+                to earn this badge.
+            </p>
+
+        </div>
+
+
+        <!-- REQUIREMENTS -->
+        <div class="monthly-badge-section">
+
+            <div class="monthly-badge-section-header">
+
+                <h3>
+                    Requirements
+                </h3>
+
+                <span id="monthlyBadgeRequirementCount">
+                    0 / 3
+                </span>
+
+            </div>
+
+
+            <div id="monthlyBadgeRequirements" class="monthly-badge-requirements"></div>
+
+        </div>
+
+        <div class="monthly-badge-collection-section">
+
+            <div class="monthly-badge-section-header">
+
+                <h3>
+                    Badge Collection
+                </h3>
+
+            </div>
+
+            <div id="monthlyBadgeCollection" class="monthly-badge-collection"></div>
+
+        </div>
+
+
+        <!-- EARNED MESSAGE -->
+        <div id="monthlyBadgeEarnedMessage" class="monthly-badge-earned-message">
+
+            <span class="monthly-badge-earned-icon">
+                ✓
+            </span>
+
+            <div>
+
+                <strong>
+                    Badge Earned
+                </strong>
+
+                <span>
+                    You completed this month's challenge.
+                </span>
+
+            </div>
+
+        </div>
+
+        </div>
+
+    </section>
     <!-- ===========================
        Account Section
   ============================ -->
@@ -1439,6 +1549,7 @@
     <script src="JS/momentum.js"></script>
     <script src="JS/custom-cards.js"></script>
     <script src="JS/background.js"></script>
+    <script src="JS/badges.js"></script>
 </body>
 
 </html>
