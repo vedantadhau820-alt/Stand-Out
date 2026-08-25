@@ -443,6 +443,10 @@
     color: var(--report-danger);
 }
 
+#monthlyReport .calendar-partial {
+    border-color: var(--report-warning);
+    color: var(--report-warning);
+}
 
 .calendar-no-activity {
     opacity: .32;
