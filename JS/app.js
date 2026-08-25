@@ -5976,6 +5976,33 @@ function deleteSkill(skillName) {
 
 let goalsData = JSON.parse(localStorage.getItem("goalsData")) || [];
 
+goalsData.forEach(goal => {
+
+    if (
+        !goal.createdAt ||
+        !goal.eligibleAt
+    ) {
+
+        goal.createdAt = null;
+        goal.eligibleAt = Date.now();
+
+    }
+
+});
+
+saveGoals();
+
+let goalTestDate = null;
+
+function getGoalNow() {
+
+    if (goalTestDate) {
+        return goalTestDate;
+    }
+
+    return Date.now();
+}
+
 function saveGoals() {
     localStorage.setItem("goalsData", JSON.stringify(goalsData));
 }
@@ -5985,9 +6012,36 @@ function saveGoals() {
 --------------------------------------------------------- */
 
 function getGoalReward(priority) {
-    if (priority === "Low") return 5;
-    if (priority === "Medium") return 10;
-    if (priority === "High") return 15;
+
+    if (priority === "Low") {
+        return 3;
+    }
+
+    if (priority === "Medium") {
+        return 7;
+    }
+
+    if (priority === "High") {
+        return 15;
+    }
+
+    return 0;
+}
+
+function getGoalCommitmentDays(priority) {
+
+    if (priority === "Low") {
+        return 3;
+    }
+
+    if (priority === "Medium") {
+        return 7;
+    }
+
+    if (priority === "High") {
+        return 30;
+    }
+
     return 0;
 }
 
@@ -6017,11 +6071,60 @@ function addGoal() {
     }
 
     if (isPastDateTime(deadline)) {
-        customAlert("Deadline cannot be in the past.");
+
+        customAlert(
+            "Deadline cannot be in the past."
+        );
+
         return;
     }
 
+
+    /* -----------------------------------------
+       MINIMUM DEADLINE
+    ----------------------------------------- */
+
+    const createdAt =
+        getGoalNow();
+
+    const commitmentDays =
+        getGoalCommitmentDays(priority);
+
+    const eligibleAt =
+        createdAt +
+        (
+            commitmentDays *
+            24 *
+            60 *
+            60 *
+            1000
+        );
+
+    const deadlineTime =
+        new Date(deadline).getTime();
+
+    console.log("GOAL DEADLINE TEST");
+    console.log("Created:", new Date(createdAt));
+    console.log("Eligible:", new Date(eligibleAt));
+    console.log("Deadline:", new Date(deadlineTime));
+    console.log("Difference:", deadlineTime - createdAt);
+    console.log(
+        "Required:",
+        commitmentDays * 24 * 60 * 60 * 1000
+    );
+
+
+    if (deadlineTime < eligibleAt) {
+
+        customAlert(
+            `Your ${priority.toLowerCase()} priority goal must have a deadline at least ${commitmentDays} days from now.`
+        );
+        return;
+    }
+
+
     const newGoal = {
+
         id: Date.now().toString(),
 
         title,
@@ -6030,15 +6133,18 @@ function addGoal() {
 
         deadline,
 
+        createdAt,
+
+        eligibleAt,
+
         achieved: false,
 
         achievedAt: null,
 
-        // Prevent duplicate overdue penalties
         overduePenaltyApplied: false,
 
-        // Prevent duplicate warnings
         warned: false
+
     };
 
     goalsData.push(newGoal);
@@ -6172,13 +6278,73 @@ function updateGoal(goalId) {
         return;
     }
 
+    /* -----------------------------------------
+   MINIMUM DEADLINE
+----------------------------------------- */
+
+    const editedAt =
+        getGoalNow();
+
+    const commitmentDays =
+        getGoalCommitmentDays(
+            newPriority
+        );
+
+    const eligibleAt =
+        editedAt +
+        (
+            commitmentDays *
+            24 *
+            60 *
+            60 *
+            1000
+        );
+
+    const deadlineTime =
+        new Date(newDeadline).getTime();
+
+
+    if (deadlineTime < eligibleAt) {
+
+        customAlert(
+            `This ${newPriority.toLowerCase()} priority goal requires at least ${commitmentDays} days before its deadline.`
+        );
+
+        return;
+    }
+
     goal.title = newTitle;
 
     goal.priority = newPriority;
-
     goal.deadline = newDeadline;
 
-    // Editing resets deadline-related state
+
+    /* -----------------------------------------
+       RESET COMMITMENT PERIOD
+    ----------------------------------------- */
+
+    const editableAt = getGoalNow();
+
+
+
+    goal.createdAt =
+        editedAt;
+
+    goal.eligibleAt =
+        editedAt +
+        (
+            commitmentDays *
+            24 *
+            60 *
+            60 *
+            1000
+        );
+
+
+    /* -----------------------------------------
+       RESET DEADLINE STATE
+    ----------------------------------------- */
+
     goal.warned = false;
 
     goal.overduePenaltyApplied = false;
@@ -6194,6 +6360,32 @@ function updateGoal(goalId) {
 /* ---------------------------------------------------------
    RENDER GOALS
 --------------------------------------------------------- */
+function getGoalCompletionDate() {
+
+    const date = new Date(getGoalNow());
+
+    return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+
+function canCompleteGoalToday() {
+
+    const today =
+        getGoalCompletionDate();
+
+    const lastGoalCompletionDate =
+        localStorage.getItem(
+            "lastGoalCompletionDate"
+        );
+
+    return (
+        lastGoalCompletionDate !== today
+    );
+}
 
 function renderGoals() {
 
@@ -6267,7 +6459,6 @@ function renderGoals() {
             <div class="goal-status-row">
 
                 <span class="goal-timer"></span>
-
                 <span class="goal-overdue"></span>
 
             </div>
@@ -6283,12 +6474,19 @@ function renderGoals() {
         `
                 : `
             <button
-                class="goal-achieve-btn"
-                onclick="event.stopPropagation();
-                markGoalAchieved('${goal.id}')"
-            >
-                Achieve
-            </button>
+    class="goal-achieve-btn"
+    ${goal.eligibleAt && getGoalNow() < goal.eligibleAt
+                    ? "disabled"
+                    : ""
+                }
+    onclick="event.stopPropagation();
+    markGoalAchieved('${goal.id}')"
+>
+    ${goal.eligibleAt && getGoalNow() < goal.eligibleAt
+                    ? "Locked"
+                    : "Achieve"
+                }
+</button>
 
             ${goal.priority === "High"
                     ? `
@@ -6330,6 +6528,22 @@ function renderGoals() {
 /* ---------------------------------------------------------
    ACHIEVE GOAL
 --------------------------------------------------------- */
+// function canCompleteGoalToday() {
+
+//     const today =
+//         getISTDate()
+//             .toISOString()
+//             .slice(0, 10);
+
+//     const lastGoalCompletionDate =
+//         localStorage.getItem(
+//             "lastGoalCompletionDate"
+//         );
+
+//     return (
+//         lastGoalCompletionDate !== today
+//     );
+// }
 
 function markGoalAchieved(goalId) {
 
@@ -6338,10 +6552,48 @@ function markGoalAchieved(goalId) {
 
     if (!goal || goal.achieved) return;
 
+    /* -----------------------------------------
+   COMMITMENT CHECK
+----------------------------------------- */
+
+    const now = getGoalNow();
+
+    if (goal.eligibleAt && now < goal.eligibleAt) {
+
+        const remaining =
+            goal.eligibleAt - now;
+
+        const days =
+            Math.ceil(
+                remaining /
+                (1000 * 60 * 60 * 24)
+            );
+
+        customAlert(
+            `This ${goal.priority.toLowerCase()} priority goal requires a ${getGoalCommitmentDays(goal.priority)}-day commitment.\n\n${days} day${days !== 1 ? "s" : ""} remaining.`
+        );
+
+        return;
+    }
+
+
+    /* -----------------------------------------
+   DAILY GOAL COMPLETION LIMIT
+----------------------------------------- */
+
+    if (!canCompleteGoalToday()) {
+
+        customAlert(
+            "You can only complete one goal per day."
+        );
+
+        return;
+    }
+
     // Safety: cannot complete overdue goals
     if (
         goal.deadline &&
-        new Date(goal.deadline).getTime() <= Date.now()
+        new Date(goal.deadline).getTime() <= now
     ) {
         customAlert(
             "This goal is overdue and can no longer be achieved."
@@ -6358,6 +6610,11 @@ function markGoalAchieved(goalId) {
             month: "short",
             year: "numeric"
         });
+
+    localStorage.setItem(
+        "lastGoalCompletionDate",
+        getGoalCompletionDate()
+    );
 
     const reward =
         getGoalReward(goal.priority);
@@ -6570,17 +6827,88 @@ function updateGoalTimers() {
 
         if (!goal.deadline) return;
 
+
+        const commitment =
+            el.querySelector(".goal-commitment");
+
+        const overdueBadge =
+            el.querySelector(".goal-overdue");
+
+        const achieveButton =
+            el.querySelector(".goal-achieve-btn");
+
+        /* -------------------------
+   COMMITMENT PERIOD
+------------------------- */
+
+        if (
+            commitment &&
+            goal.eligibleAt
+        ) {
+
+            const commitmentDiff =
+                goal.eligibleAt - getGoalNow();
+
+
+            if (commitmentDiff > 0) {
+
+
+                if (achieveButton) {
+                    achieveButton.disabled = true;
+                    achieveButton.textContent = "Locked";
+                }
+
+                const days =
+                    Math.floor(
+                        commitmentDiff /
+                        (1000 * 60 * 60 * 24)
+                    );
+
+                const hours =
+                    Math.floor(
+                        (
+                            commitmentDiff %
+                            (1000 * 60 * 60 * 24)
+                        ) /
+                        (1000 * 60 * 60)
+                    );
+
+                if (days > 0) {
+
+                    commitment.textContent =
+                        `🔒 Commitment: ${days}d ${hours}h remaining`;
+
+                } else {
+
+                    commitment.textContent =
+                        `🔒 Commitment: ${hours}h remaining`;
+
+                }
+
+            } else {
+
+                commitment.textContent =
+                    "✓ Ready to achieve";
+
+                if (achieveButton) {
+                    achieveButton.disabled = false;
+                    achieveButton.textContent = "Achieve";
+                }
+
+            }
+
+        }
+
         const deadline =
             new Date(goal.deadline).getTime();
 
         const diff =
-            deadline - Date.now();
+            deadline - getGoalNow();
 
         const timer =
             el.querySelector(".goal-timer");
 
-        const overdueBadge =
-            el.querySelector(".goal-overdue");
+
 
 
         /* -------------------------
