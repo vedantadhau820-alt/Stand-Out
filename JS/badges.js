@@ -17,9 +17,9 @@ const MONTHLY_BADGES = {
         artwork: "badges/aug-2026.png",
 
         requirements: {
-            missions: 1,
+            missions: 20,
             goals: 1,
-            activeDays: 1
+            activeDays: 5
         }
 
     },
