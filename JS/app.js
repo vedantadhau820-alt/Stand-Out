@@ -1309,12 +1309,132 @@ let timerInterval = null;
 let currentMusic = null;
 let music = new Audio();
 
-function stopAllMusic() {
-    if (music) {
-        music.pause();
-        music.currentTime = 0;
-        music.onended = null;
+/* =========================================================
+   PRESET MUSIC CACHE
+========================================================= */
+
+const MUSIC_CACHE_NAME = "mission-app-music-v1";
+
+const MUSIC_FILES = [
+    "Music/m1.mp3",
+    "Music/m2.mp3",
+    "Music/m3.mp3",
+    "Music/m4.mp3",
+    "Music/m5.mp3",
+    "Music/m6.mp3"
+];
+
+async function cacheAllMusic() {
+
+    try {
+
+        const cache =
+            await caches.open(MUSIC_CACHE_NAME);
+
+        for (const file of MUSIC_FILES) {
+
+            try {
+
+                const existing =
+                    await cache.match(file);
+
+                if (existing) {
+                    continue;
+                }
+
+                await cache.add(file);
+
+                console.log(
+                    "Music cached:",
+                    file
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not cache music:",
+                    file,
+                    error
+                );
+            }
+        }
+
+        console.log("Preset music cache ready.");
+
+    } catch (error) {
+
+        console.warn(
+            "Music cache unavailable:",
+            error
+        );
     }
+}
+
+async function getCachedMusicURL(file) {
+
+    try {
+
+        const cache =
+            await caches.open(MUSIC_CACHE_NAME);
+
+        let response =
+            await cache.match(file);
+
+        /*
+         * If the background cache has not finished yet,
+         * download this specific track now.
+         */
+        if (!response) {
+
+            console.log(
+                "Music not cached yet. Downloading:",
+                file
+            );
+
+            response =
+                await fetch(file);
+
+            if (!response.ok) {
+                throw new Error(
+                    `Failed to load music: ${response.status}`
+                );
+            }
+
+            await cache.put(
+                file,
+                response.clone()
+            );
+        }
+
+        const blob =
+            await response.blob();
+
+        return URL.createObjectURL(blob);
+
+    } catch (error) {
+
+        console.warn(
+            "Cached music failed, using normal URL:",
+            error
+        );
+
+        /*
+         * Final fallback.
+         * The music can still play even if
+         * Cache Storage isn't available.
+         */
+        return file;
+    }
+}
+
+function stopAllMusic() {
+    if (!music) return;
+
+    music.pause();
+    music.onended = null;
+    music.onerror = null;
+    music.removeAttribute("src");
+    music.load();
 }
 
 
@@ -1399,23 +1519,65 @@ function playCurrentTrack() {
 
 
 
-function setSelectedMusic() {
+async function setSelectedMusic() {
+
+    const file =
+        document.getElementById("musicSelect").value;
+
+    /*
+     * Stop whatever is currently playing.
+     */
     stopAllMusic();
 
-    const file = document.getElementById("musicSelect").value;
-    if (!file) return;
+    /*
+     * "None" selected.
+     */
+    if (!file) {
+
+        musicMode = "none";
+        playlist = [];
+        currentTrackIndex = 0;
+
+        closeMusicModal();
+
+        return;
+    }
 
     musicMode = "preset";
+
     playlist = [];
+
     currentTrackIndex = 0;
 
-    showPresetUI(); // ✅ RESTORE HERE
+    /*
+     * Get the cached audio.
+     * If it isn't cached yet, it will be
+     * downloaded and cached now.
+     */
+    const audioURL =
+        await getCachedMusicURL(file);
 
-    music.src = file;
+    music.src = audioURL;
+
     music.loop = true;
-    music.volume = document.getElementById("musicVolume").value;
 
-    music.play().catch(() => { });
+    music.volume =
+        document.getElementById("musicVolume").value;
+
+    music.load();
+
+    try {
+
+        await music.play();
+
+    } catch (error) {
+
+        console.warn(
+            "Music playback waiting for user gesture:",
+            error
+        );
+    }
+
     closeMusicModal();
 }
 
@@ -4096,15 +4258,7 @@ document.getElementById("timerMusicBtn").onclick = () => {
 function closeMusicModal() {
     document.getElementById("musicModal").classList.remove("active");
 }
-// function setSelectedMusic() {
-//     let file = document.getElementById("musicSelect").value;
-//     currentMusic = file;
-//     music.src = file;
-//     music.loop = true;
-//     music.volume = document.getElementById("musicVolume").value;
-//     music.play();
-//     closeMusicModal();
-// }
+
 
 // SETTINGS MODAL
 document.getElementById("timerSettingsBtn").onclick = () => {
@@ -6690,10 +6844,6 @@ function renderCountdowns() {
     updateTimers();
 }
 
-function renderCountdowns() {
-
-}
-
 
 function updateTimers() {
     clearInterval(window.timerInterval);
@@ -7386,6 +7536,12 @@ window.addEventListener("load", () => {
     renderAchievements();
     renderCountdowns();
     renderGoals();
+
+    setTimeout(() => {
+
+    cacheAllMusic();
+
+}, 1000);
 
 
     const activePage = document.querySelector("section.active")
