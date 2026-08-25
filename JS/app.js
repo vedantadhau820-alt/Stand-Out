@@ -1344,10 +1344,10 @@ async function cacheAllMusic() {
 
                 await cache.add(file);
 
-                console.log(
-                    "Music cached:",
-                    file
-                );
+                // console.log(
+                //     "Music cached:",
+                //     file
+                // );
 
             } catch (error) {
 
@@ -6103,15 +6103,15 @@ function addGoal() {
     const deadlineTime =
         new Date(deadline).getTime();
 
-    console.log("GOAL DEADLINE TEST");
-    console.log("Created:", new Date(createdAt));
-    console.log("Eligible:", new Date(eligibleAt));
-    console.log("Deadline:", new Date(deadlineTime));
-    console.log("Difference:", deadlineTime - createdAt);
-    console.log(
-        "Required:",
-        commitmentDays * 24 * 60 * 60 * 1000
-    );
+    // console.log("GOAL DEADLINE TEST");
+    // console.log("Created:", new Date(createdAt));
+    // console.log("Eligible:", new Date(eligibleAt));
+    // console.log("Deadline:", new Date(deadlineTime));
+    // console.log("Difference:", deadlineTime - createdAt);
+    // console.log(
+    //     "Required:",
+    //     commitmentDays * 24 * 60 * 60 * 1000
+    // );
 
 
     if (deadlineTime < eligibleAt) {
