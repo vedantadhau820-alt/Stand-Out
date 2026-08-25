@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="CSS/effects.css">
     <link rel="stylesheet" href="CSS/momentum.css">
     <link rel="stylesheet" href="CSS/monthly-report.css">
-    
+
 </head>
 
 <body>
@@ -220,13 +220,13 @@
        Time / Countdown Section
   ============================ -->
 
-   <section id="time">
+    <section id="time">
         <h2>Time</h2>
         <p>Countdowns: <span id="countdownCounter">0</span></p>
         <div id="countdown-list"></div>
     </section>
 
-    
+
     <!-- =================================================
      MONTHLY REPORT
 ================================================== -->
@@ -587,102 +587,102 @@
 
             <div class="monthly-report-section">
 
-                    <div class="monthly-section-header">
+                <div class="monthly-section-header">
 
-                        <span class="monthly-report-eyebrow">
-                            GOALS
-                        </span>
+                    <span class="monthly-report-eyebrow">
+                        GOALS
+                    </span>
 
-                        <h3>
-                            Goals Progress
-                        </h3>
+                    <h3>
+                        Goals Progress
+                    </h3>
 
-                        <p>
-                            The goals you completed this month.
-                        </p>
+                    <p>
+                        The goals you completed this month.
+                    </p>
+
+                </div>
+
+
+                <div class="monthly-goals-progress">
+
+                    <div class="monthly-goals-header">
+
+                        <div></div>
+
+                        <strong id="monthlyGoalsProgressValue">
+                            0%
+                        </strong>
 
                     </div>
 
 
-                    <div class="monthly-goals-progress">
+                    <div class="monthly-goals-summary">
 
-                        <div class="monthly-goals-header">
+                        <strong id="monthlyGoalsCompletedText">
+                            0 of 0
+                        </strong>
 
-                            <div></div>
+                        <span>
+                            goals completed
+                        </span>
 
-                            <strong id="monthlyGoalsProgressValue">
-                                0%
-                            </strong>
+                    </div>
 
+
+                    <div class="monthly-goals-progress-track">
+
+                        <div id="monthlyGoalsProgressBar" class="monthly-goals-progress-fill">
                         </div>
 
+                    </div>
 
-                        <div class="monthly-goals-summary">
 
-                            <strong id="monthlyGoalsCompletedText">
-                                0 of 0
+                    <div class="monthly-goals-stats">
+
+                        <div class="monthly-goal-stat">
+
+                            <strong id="monthlyGoalsCompleted">
+                                0
                             </strong>
 
                             <span>
-                                goals completed
+                                Completed
                             </span>
 
                         </div>
 
 
-                        <div class="monthly-goals-progress-track">
+                        <div class="monthly-goal-stat">
 
-                            <div id="monthlyGoalsProgressBar" class="monthly-goals-progress-fill">
-                            </div>
+                            <strong id="monthlyGoalsMissed">
+                                0
+                            </strong>
+
+                            <span>
+                                Missed
+                            </span>
 
                         </div>
 
 
-                        <div class="monthly-goals-stats">
+                        <div class="monthly-goal-stat">
 
-                            <div class="monthly-goal-stat">
+                            <strong id="monthlyGoalsActive">
+                                0
+                            </strong>
 
-                                <strong id="monthlyGoalsCompleted">
-                                    0
-                                </strong>
-
-                                <span>
-                                    Completed
-                                </span>
-
-                            </div>
-
-
-                            <div class="monthly-goal-stat">
-
-                                <strong id="monthlyGoalsMissed">
-                                    0
-                                </strong>
-
-                                <span>
-                                    Missed
-                                </span>
-
-                            </div>
-
-
-                            <div class="monthly-goal-stat">
-
-                                <strong id="monthlyGoalsActive">
-                                    0
-                                </strong>
-
-                                <span>
-                                    Active
-                                </span>
-
-                            </div>
+                            <span>
+                                Active
+                            </span>
 
                         </div>
 
                     </div>
 
                 </div>
+
+            </div>
 
 
             <!-- =================================================
@@ -998,6 +998,69 @@
                 <!-- MANAGED CUSTOM CARDS -->
 
                 <div id="customCardsManager" class="custom-cards-manager"></div>
+
+            </div>
+
+        </div>
+
+        <div class="account-setting-card">
+
+            <div class="account-setting-header">
+                <div>
+                    <h3>Custom Background</h3>
+                    <p>Choose an image for your app background.</p>
+                </div>
+            </div>
+
+            <div class="background-actions">
+
+                <label for="backgroundFileInput" class="background-action-btn">
+                    Choose Image
+                </label>
+
+                <input type="file" id="backgroundFileInput" accept="image/*" hidden>
+
+                <button type="button" id="removeBackgroundBtn" class="background-action-btn secondary">
+                    Remove Background
+                </button>
+
+            </div>
+            <div class="background-controls">
+
+                <div class="background-control">
+
+                    <div class="background-control-header">
+                        <span>Background Opacity</span>
+                        <span id="backgroundOpacityValue">100%</span>
+                    </div>
+
+                    <input type="range" id="backgroundOpacity" min="20" max="100" value="100" step="5">
+
+                </div>
+
+
+                <div class="background-control">
+
+                    <div class="background-control-header">
+                        <span>Dark Overlay</span>
+                        <span id="backgroundOverlayValue">35%</span>
+                    </div>
+
+                    <input type="range" id="backgroundOverlay" min="0" max="80" value="35" step="5">
+
+                </div>
+
+
+                <div class="background-control">
+
+                    <div class="background-control-header">
+                        <span>Background Blur</span>
+                        <span id="backgroundBlurValue">0px</span>
+                    </div>
+
+                    <input type="range" id="backgroundBlur" min="0" max="12" value="0" step="1">
+
+                </div>
 
             </div>
 
@@ -1375,6 +1438,7 @@
     <script src="JS/app.js"></script>
     <script src="JS/momentum.js"></script>
     <script src="JS/custom-cards.js"></script>
+    <script src="JS/background.js"></script>
 </body>
 
 </html>
