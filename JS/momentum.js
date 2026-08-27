@@ -281,6 +281,17 @@
 
     }
 
+   function reloadFromStorage() {
+
+    state = loadState();
+
+    momentumHistory =
+        loadMomentumHistory();
+
+    render();
+
+   }
+
 
     function recordMomentumHistory() {
 
@@ -2133,6 +2144,9 @@
             () => ({
                 ...momentumHistory
             }),
+
+       reload:
+    reloadFromStorage,
 
 
         getLevel:
