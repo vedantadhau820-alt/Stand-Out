@@ -1456,14 +1456,15 @@ function renderMonthlyBadgeArtwork(
 
 }
 
+
 // Temp
 
 /* =========================================================
    TEMPORARY TEST
    LONG-PRESS LOCKED GOAL → PLAY ACHIEVEMENT VIDEO
-========================================================= */
+========================================================= 
 
-document.addEventListener(
+/* document.addEventListener(
     "pointerdown",
     function (event) {
 
@@ -1478,7 +1479,7 @@ document.addEventListener(
 
         /*
          * Only work on locked buttons.
-         */
+         
         if (!button.disabled) {
             return;
         }
@@ -1498,7 +1499,7 @@ document.addEventListener(
         /*
          * Store timer on the button
          * so pointerup can cancel it.
-         */
+         *
         button._longPressTimer =
             longPressTimer;
 
@@ -1508,7 +1509,7 @@ document.addEventListener(
 
 /* ---------------------------------------------------------
    CANCEL LONG PRESS
---------------------------------------------------------- */
+--------------------------------------------------------- *
 
 document.addEventListener(
     "pointerup",
@@ -1539,7 +1540,7 @@ document.addEventListener(
 
 /* ---------------------------------------------------------
    CANCEL IF POINTER LEAVES
---------------------------------------------------------- */
+--------------------------------------------------------- *
 
 document.addEventListener(
     "pointercancel",
