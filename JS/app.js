@@ -1288,16 +1288,19 @@ try {
 
 
         if (
-            runtime.completedMissions !==
-            undefined
-        ) {
+    runtime.completedMissions !==
+    undefined
+) {
 
-            completedMissions =
-                Number(
-                    runtime.completedMissions
-                ) || 0;
+    completedMissions =
+        Math.max(
+            0,
+            Number(
+                runtime.completedMissions
+            ) || 0
+        );
 
-        }
+}
 
 
         if (
@@ -8400,6 +8403,21 @@ function saveData() {
 }
 
 function loadData() {
+
+    /* =====================================================
+       SYNC IMPROVEMENT POINTS FROM STORAGE
+    ===================================================== */
+
+    completedMissions = Math.max(
+        0,
+        Number(
+            localStorage.getItem(
+                "completedMissions"
+            )
+        ) || 0
+    );
+
+    
     document.getElementById("mission-list").innerHTML =
         localStorage.getItem("missions") || "";
     document.getElementById("skill-list").innerHTML =
