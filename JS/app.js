@@ -6146,7 +6146,7 @@ if (
 ) {
 
     li.dataset.hardcorePunished = "true";
-
+    li.dataset.deducted = "true";
     const hardcorePenalty = 5;
 
     const pointsBefore =
@@ -6192,9 +6192,11 @@ if (
                 const pointsBefore =
                     completedMissions;
 
-                completedMissions =
-                    completedMissions - 1;
 
+                completedMissions = Math.max(
+    0,
+    completedMissions - 1
+);
                 li.dataset.deducted = "true";
 
                 const pointsDelta =
@@ -8102,8 +8104,10 @@ function updateGoalTimers() {
             const penalty =
                 getGoalReward(goal.priority);
 
-            completedMissions -= penalty;
-
+            completedMissions = Math.max(
+    0,
+    completedMissions - penalty
+);
             localStorage.setItem(
                 "completedMissions",
                 completedMissions
