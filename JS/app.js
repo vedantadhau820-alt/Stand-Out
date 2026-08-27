@@ -1768,6 +1768,19 @@ async function loadProgressFromFile() {
 
         }
 
+        /* =====================================================
+   RELOAD MOMENTUM
+===================================================== */
+
+if (
+    typeof Momentum !== "undefined" &&
+    typeof Momentum.reload === "function"
+) {
+
+    Momentum.reload();
+
+}
+
 
         /* =====================================================
            18. LOAD CUSTOM CARDS
