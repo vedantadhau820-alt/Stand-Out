@@ -1205,6 +1205,31 @@ async function loadProgressFromFile() {
             }
         );
 
+        /* =====================================================
+   RELOAD IMPROVEMENT POINTS
+===================================================== */
+
+try {
+
+    const storedPoints =
+        localStorage.getItem(
+            "completedMissions"
+        );
+
+    completedMissions =
+        Math.max(
+            0,
+            Number(storedPoints) || 0
+        );
+
+} catch (error) {
+
+    console.warn(
+        "Could not reload Improvement Points:",
+        error
+    );
+
+}
 
         /* =====================================================
            9. RESTORE RUNTIME STATE
