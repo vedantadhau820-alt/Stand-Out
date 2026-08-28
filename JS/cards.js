@@ -60,6 +60,8 @@ window.cardCatalog = [
             { id: "momo_ayase", title: "Momo Ayase", grade: "w", quote: "Come On, Someone Comfort Me !", cost: 48, image: "Images/w1.jpg", limited: true, expiresAt: "2026-01-31T23:29:30Z" },
             { id: "okarun", title: "Okarun", grade: "w", cost: 11,  image: "Images/w3.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
             { id: "chainsaw_man", title: "Chainsaw Man", grade: "w", cost: 11, image: "Images/w2.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
+            { id: "jjk_sukuna", title: "Ryomen Sukuna", grade: "w", cost: 70, image: "Images/jjk.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
+
 
             { id: "ayanokoji_kiyotaka", title: "Kiyotaka Ayanokoji", grade: "w", quote: "Winning Is Everything.", cost: 211, image: "Images/w4.jpg", limited: true, expiresAt: "2026-08-30T23:29:30Z" },
         ];
