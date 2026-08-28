@@ -10757,196 +10757,108 @@ document.addEventListener(
     }
 );
 
+   
+const intro = document.getElementById("app-intro");
+const welcome = document.getElementById("intro-welcome");
+const videoScreen = document.getElementById("intro-video-screen");
+const video = document.getElementById("intro-video");
+const readyBtn = document.getElementById("intro-ready");
+
+let finished = false;
+
+
 /* =====================================================
-   APP INTRO
+   START INTRO
 ===================================================== */
 
-function startAppIntro() {
+function startIntro() {
 
-    const intro =
-        document.getElementById(
-            "app-intro"
-        );
+    if (finished) return;
 
-    const welcome =
-        document.getElementById(
-            "intro-welcome"
-        );
+    welcome.classList.add("intro-hidden");
 
-    const readyButton =
-        document.getElementById(
-            "intro-ready"
-        );
+    videoScreen.classList.add("intro-video-active");
 
-    const videoScreen =
-        document.getElementById(
-            "intro-video-screen"
-        );
+    video.currentTime = 0;
 
-    const video =
-        document.getElementById(
-            "intro-video"
-        );
+    const playPromise = video.play();
 
-    if (
-        !intro ||
-        !welcome ||
-        !readyButton ||
-        !videoScreen ||
-        !video
-    ) {
-        return;
+    if (playPromise !== undefined) {
+
+        playPromise.catch(error => {
+
+            console.warn(
+                "Intro video could not play:",
+                error
+            );
+
+        });
+
     }
 
+}
 
-    let finished = false;
+
+/* =====================================================
+   READY BUTTON
+===================================================== */
+
+readyBtn?.addEventListener(
+    "click",
+    startIntro
+);
 
 
-    /* =====================================================
-       FINISH INTRO
-    ===================================================== */
-    let videoHasStarted = false;
+/* =====================================================
+   VIDEO FINISHED
+===================================================== */
 
-video.addEventListener(
-    "playing",
+video?.addEventListener(
+    "ended",
+    finishIntro
+);
+
+
+/* =====================================================
+   SKIP VIDEO
+===================================================== */
+
+videoScreen?.addEventListener(
+    "click",
     () => {
 
-        videoHasStarted = true;
+        if (!video.paused) {
+            finishIntro();
+        }
 
     }
 );
 
-   function finishIntro() {
 
-    if (finished) {
-        return;
-    }
+/* =====================================================
+   FINISH INTRO
+===================================================== */
+
+function finishIntro() {
+
+    if (finished) return;
 
     finished = true;
 
-    if (videoHasStarted) {
+    video.pause();
 
-        video.pause();
-
-    }
+    videoScreen.classList.remove(
+        "intro-video-active"
+    );
 
     intro.classList.add(
         "intro-exit"
     );
 
-}
+    setTimeout(() => {
 
+        intro.remove();
 
-    /* =====================================================
-       READY
-    ===================================================== */
-
-   readyButton.addEventListener(
-    "click",
-    () => {
-
-        intro.classList.add(
-            "video-mode"
-        );
-
-        video.currentTime = 0;
-
-        const playPromise =
-            video.play();
-
-        if (
-            playPromise !== undefined
-        ) {
-
-            playPromise.catch(error => {
-
-                /*
-                 * Ignore the harmless race that can
-                 * happen if the video is skipped while
-                 * playback is starting.
-                 */
-
-                if (
-                    error.name !==
-                    "AbortError"
-                ) {
-
-                    console.warn(
-                        "Intro video could not play:",
-                        error
-                    );
-
-                    finishIntro();
-
-                }
-
-            });
-
-        }
-
-    }
-);
-
-    /* =====================================================
-       VIDEO COMPLETE
-    ===================================================== */
-
-    video.addEventListener(
-        "ended",
-        finishIntro
-    );
-
-
-    /* =====================================================
-       VIDEO CLICK = SKIP
-    ===================================================== */
-
-    videoScreen.addEventListener(
-        "click",
-        event => {
-
-            /*
-             * Don't let a click on the video
-             * behave like a normal video control.
-             */
-
-            event.preventDefault();
-
-            finishIntro();
-
-        }
-    );
-
-
-    /* =====================================================
-       VIDEO ERROR
-    ===================================================== */
-
-    video.addEventListener(
-        "error",
-        () => {
-
-            console.warn(
-                "Intro video failed to load."
-            );
-
-            finishIntro();
-
-        }
-    );
+    }, 800);
 
 }
-
-
-/* =====================================================
-   START AFTER DOM IS READY
-===================================================== */
-
-window.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        startAppIntro();
-
-    }
-);
