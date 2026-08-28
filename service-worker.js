@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 12";
+const CACHE_NAME = "standout-v2.3 beta 13";
 //const MEDIA_CACHE = "standout-media";
 // NEVER versioned
 
@@ -6,7 +6,7 @@ const FONT_AWESOME_CACHE =
   "standout-fontawesome-v1";
 
 const BACKGROUND_CACHE =
-  "standout-background-v2";
+  "standout-background-v3";
 
 const WELCOME_CACHE =
   "standout-welcome-v1";
@@ -44,6 +44,7 @@ const APP_SHELL = [
   "/CSS/badges.css",
   "/CSS/momentum.css",
   "/CSS/monthly-report.css",
+  "/CSS/welcome.css",
 
   // JS
   "/JS/cards.js",
@@ -53,6 +54,7 @@ const APP_SHELL = [
   "/JS/custom-cards.js",
   "/JS/momentum.js",
   "/JS/sound.js",
+  "/JS/welcome.js",
 
   "/icon.jpeg"
 ];
@@ -98,6 +100,8 @@ const BACKGROUND_ASSETS = [
   "/Images/e8.jpg",
 
   "/Images/w4.jpg",
+  "/Images/Endgame_Cap.gif",
+  "/Images/Endgame_Thor.gif",
 
   // Sounds
   "/Music/Complete.mp3",
