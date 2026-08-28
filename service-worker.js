@@ -1,12 +1,10 @@
-const CACHE_NAME = "standout-v2.3 beta 12";
+const CACHE_NAME = "standout-v2.3 beta 13";
 //const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
   "/",                  // IMPORTANT
   "/index.html",
   "/manifest.json",
-  "/JS/cards.js",
-  "/JS/app.js",
   "/widget.js",
   "/widget.html",
 
@@ -18,6 +16,25 @@ const APP_SHELL = [
   "/CSS/effects.css",
   "/CSS/timer.css",
   "/CSS/account.css",
+  "/CSS/badges.css",
+  "/CSS/momentum.css",
+  "/CSS/monthly-report.css",
+
+  //JS
+  "/JS/cards.js",
+  "/JS/app.js",
+  "/JS/background.js",
+  "/JS/badges.js",
+  "/JS/custom-cards.js",
+  "/JS/momentum.js",
+  "/JS/sound.js",
+
+  //Assets
+  "/Music/Achievement.mp3",
+  "/Music/Completion.mp3", 
+  "/Music/CardMint.mp3", 
+  "/icon.jpeg",
+  "/AchievedGoal.mp4",
 
   
 
