@@ -6,7 +6,7 @@ const FONT_AWESOME_CACHE =
   "standout-fontawesome-v1";
 
 const BACKGROUND_CACHE =
-  "standout-background-v3";
+  "standout-background-v4";
 
 const WELCOME_CACHE =
   "standout-welcome-v3";
