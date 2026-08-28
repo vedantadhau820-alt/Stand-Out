@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 18";
+const CACHE_NAME = "standout-v2.3 beta 19";
 //const MEDIA_CACHE = "standout-media";
 // NEVER versioned
 
@@ -6,7 +6,7 @@ const FONT_AWESOME_CACHE =
   "standout-fontawesome-v1";
 
 const BACKGROUND_CACHE =
-  "standout-background-v6";
+  "standout-background-v7";
 
 const WELCOME_CACHE =
   "standout-welcome-v3";
