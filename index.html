@@ -25,10 +25,81 @@
     <link rel="stylesheet" href="CSS/momentum.css">
     <link rel="stylesheet" href="CSS/monthly-report.css">
     <link rel="stylesheet" href="CSS/badges.css">
+    <link rel="stylesheet" href="CSS/welcome.css">
 
 </head>
 
 <body>
+    <!-- =========================================
+     WELCOME INTRO
+========================================= -->
+
+<div id="welcomeIntro" class="welcome-intro">
+
+    <!-- Welcome State -->
+    <div id="welcomePanel" class="welcome-panel">
+
+        <div class="welcome-eyebrow">
+            STAND OUT
+        </div>
+
+        <h1>
+            Welcome Mate !
+        </h1>
+
+        <p>
+            Ready To Conquer ?
+        </p>
+
+        <button
+            id="welcomeReadyBtn"
+            class="welcome-ready-btn"
+            type="button"
+            disabled
+        >
+            <span class="welcome-btn-text">
+                Preparing...
+            </span>
+
+            <span
+                class="welcome-loader"
+                aria-hidden="true"
+            ></span>
+        </button>
+
+    </div>
+
+
+    <!-- Video State -->
+    <div
+        id="welcomeVideoStage"
+        class="welcome-video-stage"
+        aria-hidden="true"
+    >
+
+        <video
+            id="welcomeVideo"
+            class="welcome-video"
+            playsinline
+            preload="auto"
+           
+        >
+            <source
+                src="/welcome.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+        <div class="welcome-video-vignette"></div>
+
+        <div class="welcome-skip-hint">
+            Tap anywhere to skip
+        </div>
+
+    </div>
+
+</div>
+
     <!-- ===========================
        Top Navbar
 =========================== -->
@@ -1543,6 +1614,7 @@
             });
         }
     </script>
+    <script src="JS/welcome.js"></script>
     <script src="JS/cards.js"></script>
     <script src="JS/sound.js"></script>
     <script src="JS/app.js"></script>
