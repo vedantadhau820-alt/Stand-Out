@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 19";
+const CACHE_NAME = "standout-v2.3 beta 20";
 
 // const MEDIA_CACHE = "standout-media";
 // NEVER versioned
@@ -913,6 +913,251 @@ async function handleIntroVideo(
       error
     );
 
+
+    throw error;
+
+  }
+
+}
+
+/* =====================================================
+   INTRO VIDEO HANDLER
+   Supports HTTP RANGE requests.
+===================================================== */
+
+async function handleIntroVideo(request) {
+
+  const cache =
+    await caches.open(
+      BACKGROUND_CACHE
+    );
+
+
+  /* =====================================================
+     CHECK CACHE
+  ===================================================== */
+
+  const cached =
+    await cache.match(
+      "/Intro.mp4"
+    );
+
+
+  const range =
+    request.headers.get(
+      "range"
+    );
+
+
+  /* =====================================================
+     RANGE REQUEST
+  ===================================================== */
+
+  if (
+    range &&
+    cached
+  ) {
+
+    const buffer =
+      await cached.arrayBuffer();
+
+    const total =
+      buffer.byteLength;
+
+
+    /* ===============================================
+       PARSE RANGE
+
+       Examples:
+
+       bytes=0-
+       bytes=1000-
+       bytes=1000-5000
+    =============================================== */
+
+    const match =
+      range.match(
+        /bytes=(\d+)-(\d*)/
+      );
+
+
+    /* ===============================================
+       INVALID RANGE
+    =============================================== */
+
+    if (!match) {
+
+      return new Response(
+        null,
+        {
+          status: 416,
+
+          statusText:
+            "Range Not Satisfiable",
+
+          headers: {
+
+            "Content-Range":
+              `bytes */${total}`
+
+          }
+
+        }
+      );
+
+    }
+
+
+    const start =
+      Number(
+        match[1]
+      );
+
+
+    const requestedEnd =
+      match[2]
+        ? Number(
+            match[2]
+          )
+        : total - 1;
+
+
+    /* ===============================================
+       RANGE OUT OF BOUNDS
+    =============================================== */
+
+    if (
+      start >= total ||
+      start > requestedEnd
+    ) {
+
+      return new Response(
+        null,
+        {
+          status: 416,
+
+          statusText:
+            "Range Not Satisfiable",
+
+          headers: {
+
+            "Content-Range":
+              `bytes */${total}`
+
+          }
+
+        }
+      );
+
+    }
+
+
+    /* ===============================================
+       CALCULATE END
+    =============================================== */
+
+    const end =
+      Math.min(
+        requestedEnd,
+        total - 1
+      );
+
+
+    /* ===============================================
+       EXTRACT CHUNK
+    =============================================== */
+
+    const chunk =
+      buffer.slice(
+        start,
+        end + 1
+      );
+
+
+    /* ===============================================
+       RETURN PARTIAL CONTENT
+    =============================================== */
+
+    return new Response(
+      chunk,
+      {
+
+        status: 206,
+
+        statusText:
+          "Partial Content",
+
+        headers: {
+
+          "Content-Type":
+            cached.headers.get(
+              "Content-Type"
+            ) ||
+            "video/mp4",
+
+          "Content-Length":
+            String(
+              chunk.byteLength
+            ),
+
+          "Content-Range":
+            `bytes ${start}-${end}/${total}`,
+
+          "Accept-Ranges":
+            "bytes"
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     NORMAL CACHED REQUEST
+  ===================================================== */
+
+  if (cached) {
+
+    return cached;
+
+  }
+
+
+  /* =====================================================
+     FIRST REQUEST
+     FETCH + CACHE
+  ===================================================== */
+
+  try {
+
+    const response =
+      await fetch(
+        request
+      );
+
+
+    if (
+      response.ok
+    ) {
+
+      await cache.put(
+        "/Intro.mp4",
+        response.clone()
+      );
+
+    }
+
+
+    return response;
+
+  } catch (error) {
+
+    console.error(
+      "Intro video unavailable:",
+      error
+    );
 
     throw error;
 
