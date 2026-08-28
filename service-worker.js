@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 13";
+const CACHE_NAME = "standout-v2.3 beta 14";
 //const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
@@ -30,11 +30,11 @@ const APP_SHELL = [
   "/JS/sound.js",
 
   //Assets
-  "/Music/Achievement.mp3",
-  "/Music/Completion.mp3", 
-  "/Music/CardMint.mp3", 
+  // "/Music/Achievement.mp3",
+  // "/Music/Completion.mp3", 
+  // "/Music/CardMint.mp3", 
   "/icon.jpeg",
-  "/AchievedGoal.mp4",
+  // "/AchievedGoal.mp4",
 
   
 
