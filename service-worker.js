@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 9";
+const CACHE_NAME = "standout-v2.3 beta 10";
 //const MEDIA_CACHE = "standout-media";  
 // NEVER versioned
 
@@ -6,7 +6,7 @@ const FONT_AWESOME_CACHE =
   "standout-fontawesome-v1";
 
 const BACKGROUND_CACHE =
-  "standout-background-v1";
+  "standout-background-v2";
 
 const FONT_AWESOME_FILES = [
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
