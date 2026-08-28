@@ -10805,63 +10805,87 @@ function startAppIntro() {
     /* =====================================================
        FINISH INTRO
     ===================================================== */
+    let videoHasStarted = false;
 
-    function finishIntro() {
+video.addEventListener(
+    "playing",
+    () => {
 
-        if (finished) {
-            return;
-        }
+        videoHasStarted = true;
 
-        finished = true;
+    }
+);
+
+   function finishIntro() {
+
+    if (finished) {
+        return;
+    }
+
+    finished = true;
+
+    if (videoHasStarted) {
 
         video.pause();
 
-        intro.classList.add(
-            "intro-exit"
-        );
-
     }
+
+    intro.classList.add(
+        "intro-exit"
+    );
+
+}
 
 
     /* =====================================================
        READY
     ===================================================== */
 
-    readyButton.addEventListener(
-        "click",
-        () => {
+   readyButton.addEventListener(
+    "click",
+    () => {
 
-            intro.classList.add(
-                "video-mode"
-            );
+        intro.classList.add(
+            "video-mode"
+        );
 
-            /*
-             * Wait for the fade/transition to begin
-             * before starting the video.
-             */
+        video.currentTime = 0;
 
-            setTimeout(() => {
+        const playPromise =
+            video.play();
 
-                video.currentTime = 0;
+        if (
+            playPromise !== undefined
+        ) {
 
-                video.play().catch(
-                    error => {
+            playPromise.catch(error => {
 
-                        console.warn(
-                            "Intro video could not play:",
-                            error
-                        );
+                /*
+                 * Ignore the harmless race that can
+                 * happen if the video is skipped while
+                 * playback is starting.
+                 */
 
-                        finishIntro();
+                if (
+                    error.name !==
+                    "AbortError"
+                ) {
 
-                    }
-                );
+                    console.warn(
+                        "Intro video could not play:",
+                        error
+                    );
 
-            }, 650);
+                    finishIntro();
+
+                }
+
+            });
 
         }
-    );
 
+    }
+);
 
     /* =====================================================
        VIDEO COMPLETE
