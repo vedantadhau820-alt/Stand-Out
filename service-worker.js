@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 12";
+const CACHE_NAME = "standout-v2.3 beta 13";
 //const MEDIA_CACHE = "standout-media";  
 // NEVER versioned
 
@@ -94,6 +94,7 @@ const BACKGROUND_ASSETS = [
   "/Images/e8.jpg",
   
   "/Images/w4.jpg",
+  "/Images/jjk.gif",
 
   // Sounds
   "/Music/Complete.mp3",
