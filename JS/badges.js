@@ -19,7 +19,7 @@ const MONTHLY_BADGES = {
         requirements: {
             missions: 10,
             goals: 1,
-            activeDays: 5
+            activeDays: 3
         }
 
     },
