@@ -10756,3 +10756,173 @@ document.addEventListener(
 
     }
 );
+
+/* =====================================================
+   APP INTRO
+===================================================== */
+
+function startAppIntro() {
+
+    const intro =
+        document.getElementById(
+            "app-intro"
+        );
+
+    const welcome =
+        document.getElementById(
+            "intro-welcome"
+        );
+
+    const readyButton =
+        document.getElementById(
+            "intro-ready"
+        );
+
+    const videoScreen =
+        document.getElementById(
+            "intro-video-screen"
+        );
+
+    const video =
+        document.getElementById(
+            "intro-video"
+        );
+
+    if (
+        !intro ||
+        !welcome ||
+        !readyButton ||
+        !videoScreen ||
+        !video
+    ) {
+        return;
+    }
+
+
+    let finished = false;
+
+
+    /* =====================================================
+       FINISH INTRO
+    ===================================================== */
+
+    function finishIntro() {
+
+        if (finished) {
+            return;
+        }
+
+        finished = true;
+
+        video.pause();
+
+        intro.classList.add(
+            "intro-exit"
+        );
+
+    }
+
+
+    /* =====================================================
+       READY
+    ===================================================== */
+
+    readyButton.addEventListener(
+        "click",
+        () => {
+
+            intro.classList.add(
+                "video-mode"
+            );
+
+            /*
+             * Wait for the fade/transition to begin
+             * before starting the video.
+             */
+
+            setTimeout(() => {
+
+                video.currentTime = 0;
+
+                video.play().catch(
+                    error => {
+
+                        console.warn(
+                            "Intro video could not play:",
+                            error
+                        );
+
+                        finishIntro();
+
+                    }
+                );
+
+            }, 650);
+
+        }
+    );
+
+
+    /* =====================================================
+       VIDEO COMPLETE
+    ===================================================== */
+
+    video.addEventListener(
+        "ended",
+        finishIntro
+    );
+
+
+    /* =====================================================
+       VIDEO CLICK = SKIP
+    ===================================================== */
+
+    videoScreen.addEventListener(
+        "click",
+        event => {
+
+            /*
+             * Don't let a click on the video
+             * behave like a normal video control.
+             */
+
+            event.preventDefault();
+
+            finishIntro();
+
+        }
+    );
+
+
+    /* =====================================================
+       VIDEO ERROR
+    ===================================================== */
+
+    video.addEventListener(
+        "error",
+        () => {
+
+            console.warn(
+                "Intro video failed to load."
+            );
+
+            finishIntro();
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   START AFTER DOM IS READY
+===================================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        startAppIntro();
+
+    }
+);
