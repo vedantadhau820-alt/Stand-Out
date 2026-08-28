@@ -2081,6 +2081,16 @@ async function loadProgressFromFile() {
 
         }
 
+        /* =====================================================
+   FINAL MOMENTUM SYNC AFTER RESTORE
+===================================================== */
+
+        if (
+            typeof Momentum !== "undefined" &&
+            typeof Momentum.reload === "function"
+        ) {
+            Momentum.reload();
+        }
 
         /* =====================================================
            20. REFRESH UI
@@ -6693,6 +6703,12 @@ function completeMission(btn) {
         1
     );
 
+    if (
+        typeof Momentum !== "undefined" &&
+        typeof Momentum.reload === "function"
+    ) {
+        Momentum.reload();
+    }
 
     localStorage.setItem(
         "dailyImprovementCount",
@@ -8887,7 +8903,7 @@ async function resetData() {
 
         missionHistory = {};
 
-        
+
         localStorage.removeItem(
             "missionHistory"
         );
@@ -9667,28 +9683,28 @@ async function resetData() {
    28. RESET COMPLETE
 ===================================================== */
 
-console.log(
-    "✓ COMPLETE APP RESET"
-);
+        console.log(
+            "✓ COMPLETE APP RESET"
+        );
 
-reloadAfterAlert = true;
+        reloadAfterAlert = true;
 
-customAlert(
-    "Reset completed. Please Reopen The App."
-);
+        customAlert(
+            "Reset completed. Please Reopen The App."
+        );
 
-} catch (error) {
+    } catch (error) {
 
-    console.error(
-        "Complete reset failed:",
-        error
-    );
+        console.error(
+            "Complete reset failed:",
+            error
+        );
 
-    customAlert(
-        "Reset failed. Check the console."
-    );
+        customAlert(
+            "Reset failed. Check the console."
+        );
 
-}
+    }
 
 }
 
