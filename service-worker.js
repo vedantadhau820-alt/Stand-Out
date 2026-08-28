@@ -1,6 +1,16 @@
 const CACHE_NAME = "standout-v2.3 beta 14";
 //const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
+const FONT_AWESOME_CACHE =
+    "standout-fontawesome-v1";
+
+const FONT_AWESOME_FILES = [
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-regular-400.woff2",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2"
+];
+
 const APP_SHELL = [
   "/",                  // IMPORTANT
   "/index.html",
@@ -98,21 +108,96 @@ const APP_SHELL = [
    INSTALL → CACHE APP SHELL
 =========================== */
 self.addEventListener("install", event => {
-  console.log("🟡 SW installing...");
 
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(async cache => {
-      try {
-        await cache.addAll(APP_SHELL);
-        console.log("✅ App shell cached");
-      } catch (err) {
-        console.error("❌ Cache failed:", err);
-        throw err; // VERY IMPORTANT
-      }
-    })
-  );
+    console.log("🟡 SW installing...");
 
-  self.skipWaiting();
+    event.waitUntil(
+        (async () => {
+
+            /* =====================================================
+               APP SHELL
+            ===================================================== */
+
+            const appCache =
+                await caches.open(CACHE_NAME);
+
+            try {
+
+                await appCache.addAll(
+                    APP_SHELL
+                );
+
+                console.log(
+                    "✅ App shell cached"
+                );
+
+            } catch (err) {
+
+                console.error(
+                    "❌ App shell cache failed:",
+                    err
+                );
+
+                throw err;
+
+            }
+
+
+            /* =====================================================
+               FONT AWESOME
+            ===================================================== */
+
+            const fontAwesomeCache =
+                await caches.open(
+                    FONT_AWESOME_CACHE
+                );
+
+            for (
+                const url of FONT_AWESOME_FILES
+            ) {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            url,
+                            {
+                                mode: "cors"
+                            }
+                        );
+
+                    if (
+                        response.ok
+                    ) {
+
+                        await fontAwesomeCache.put(
+                            url,
+                            response
+                        );
+
+                        console.log(
+                            "✅ Font Awesome cached:",
+                            url
+                        );
+
+                    }
+
+                } catch (error) {
+
+                    console.warn(
+                        "⚠️ Could not cache Font Awesome:",
+                        url,
+                        error
+                    );
+
+                }
+
+            }
+
+        })()
+    );
+
+    self.skipWaiting();
 });
 
 self.addEventListener("message", event => {
@@ -131,8 +216,20 @@ self.addEventListener("activate", event => {
       // clean old caches
       const keys = await caches.keys();
       await Promise.all(
-        keys.map(k => k !== CACHE_NAME && caches.delete(k))
-      );
+  keys.map(k => {
+
+    if (
+      k === CACHE_NAME ||
+      k === FONT_AWESOME_CACHE
+    ) {
+      return Promise.resolve();
+    }
+
+    return caches.delete(k);
+
+  })
+);
+
 
       // notify ALL clients
       const clients = await self.clients.matchAll({
@@ -152,6 +249,68 @@ self.addEventListener("activate", event => {
    FETCH → CACHE STRATEGY
 =========================== */
 self.addEventListener("fetch", event => {
+  const url =
+    event.request.url;
+
+if (
+    FONT_AWESOME_FILES.includes(url)
+) {
+
+    event.respondWith(
+        (async () => {
+
+            const cache =
+                await caches.open(
+                    FONT_AWESOME_CACHE
+                );
+
+            const cached =
+                await cache.match(
+                    event.request
+                );
+
+            if (cached) {
+
+                return cached;
+
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        event.request
+                    );
+
+                if (
+                    response.ok
+                ) {
+
+                    await cache.put(
+                        event.request,
+                        response.clone()
+                    );
+
+                }
+
+                return response;
+
+            } catch (error) {
+
+                console.error(
+                    "Font Awesome unavailable:",
+                    error
+                );
+
+                throw error;
+
+            }
+
+        })()
+    );
+
+    return;
+}
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
@@ -162,8 +321,6 @@ self.addEventListener("fetch", event => {
     })
   );
 });
-
-
 
 
 
