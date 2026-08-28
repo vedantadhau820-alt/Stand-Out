@@ -1232,6 +1232,31 @@ try {
 }
 
         /* =====================================================
+   RELOAD MISSION HISTORY
+===================================================== */
+
+try {
+
+    const storedHistory =
+        localStorage.getItem(
+            "missionHistory"
+        );
+
+    missionHistory =
+        storedHistory
+            ? JSON.parse(storedHistory)
+            : {};
+
+} catch (error) {
+
+    console.warn(
+        "Could not reload mission history:",
+        error
+    );
+
+}
+
+        /* =====================================================
            9. RESTORE RUNTIME STATE
         ===================================================== */
 
