@@ -57,11 +57,12 @@ window.cardCatalog = [
             /* ======================
             w GRADE - LIMITED EDITIONS 
             ========================*/
-            { id: "momo_ayase", title: "Momo Ayase", grade: "w", quote: "Come On, Someone Comfort Me !", cost: 48, image: "Images/w1.jpg", limited: true, expiresAt: "2026-01-31T23:29:30Z" },
-            { id: "okarun", title: "Okarun", grade: "w", cost: 11,  image: "Images/w3.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
-            { id: "chainsaw_man", title: "Chainsaw Man", grade: "w", cost: 11, image: "Images/w2.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
-            { id: "jjk_sukuna", title: "Ryomen Sukuna", grade: "w", cost: 70, image: "Images/jjk.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
+            // { id: "momo_ayase", title: "Momo Ayase", grade: "w", quote: "Come On, Someone Comfort Me !", cost: 48, image: "Images/w1.jpg", limited: true, expiresAt: "2026-01-31T23:29:30Z" },
+            // { id: "okarun", title: "Okarun", grade: "w", cost: 11,  image: "Images/w3.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
+            // { id: "chainsaw_man", title: "Chainsaw Man", grade: "w", cost: 11, image: "Images/w2.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
+            // { id: "jjk_sukuna", title: "Ryomen Sukuna", grade: "w", cost: 70, image: "Images/jjk.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
 
 
-            { id: "ayanokoji_kiyotaka", title: "Kiyotaka Ayanokoji", grade: "w", quote: "Winning Is Everything.", cost: 211, image: "Images/w4.jpg", limited: true, expiresAt: "2026-08-30T23:29:30Z" },
+            { id: "Endgame_Cap", title: "Captain America - Endgame", grade: "w", quote: "The Worthy Human.", cost: 70, image: "Images/Endgame_Cap.jpg", limited: true, expiresAt: "2026-08-30T23:29:30Z" },
+            { id: "Endgame_Thor", title: "Thor - Ragnarock", grade: "w", quote: "God Of Thunder.", cost: 80, image: "Images/Endgame_Thor.jpg", limited: true, expiresAt: "2026-08-30T23:29:30Z" },
         ];
