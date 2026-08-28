@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 10";
+const CACHE_NAME = "standout-v2.3 beta 11";
 //const MEDIA_CACHE = "standout-media";  
 // NEVER versioned
 
@@ -6,7 +6,7 @@ const FONT_AWESOME_CACHE =
   "standout-fontawesome-v1";
 
 const BACKGROUND_CACHE =
-  "standout-background-v2";
+  "standout-background-v3";
 
 const FONT_AWESOME_FILES = [
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
@@ -34,6 +34,7 @@ const APP_SHELL = [
   "/CSS/badges.css",
   "/CSS/momentum.css",
   "/CSS/monthly-report.css",
+  "/CSS/Intro.css",
 
   //JS
   "/JS/cards.js",
@@ -107,6 +108,7 @@ const BACKGROUND_ASSETS = [
 
   // Video
   "/AchievedGoal.mp4",
+  "/Intro.mp4",
 
   // Font Awesome
   //...FONT_AWESOME_FILES
