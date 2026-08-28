@@ -5911,13 +5911,38 @@ function closeModal() {
 
 
 /* Alerts */
-function customAlert(msg) {
-    document.getElementById("alertMsg").textContent = msg;
-    document.getElementById("alertModal").classList.add("active");
+/* Alerts */
+
+let alertCallback = null;
+
+function customAlert(msg, callback = null) {
+
+    alertCallback = callback;
+
+    document.getElementById("alertMsg").textContent =
+        msg;
+
+    document
+        .getElementById("alertModal")
+        .classList.add("active");
 }
 
+
+let reloadAfterAlert = false;
+
 function closeAlert() {
-    document.getElementById("alertModal").classList.remove("active");
+
+    document
+        .getElementById("alertModal")
+        .classList.remove("active");
+
+    if (reloadAfterAlert) {
+
+        reloadAfterAlert = false;
+
+        location.reload();
+
+    }
 }
 
 /* Confirm */
@@ -8760,6 +8785,11 @@ function loadData() {
    EVERYTHING → FACTORY STATE
 ========================================================= */
 
+/* =========================================================
+   COMPLETE APP RESET
+   EVERYTHING → FACTORY STATE
+========================================================= */
+
 async function resetData() {
 
     try {
@@ -8789,158 +8819,24 @@ async function resetData() {
 
 
         /* =====================================================
-           2. RESET RUNTIME MEMORY
-        ===================================================== */
-
-        completedMissions = 0;
-
-        appNotifications = [];
-
-        dailyImprovementCount = 0;
-
-        lastImprovementDate =
-            new Date().toDateString();
-
-
-        /* =====================================================
-           3. RESET MAIN DATA ARRAYS
-        ===================================================== */
-
-        if (
-            typeof missions !==
-            "undefined"
-        ) {
-
-            missions = [];
-
-        }
-
-
-        if (
-            typeof goalsData !==
-            "undefined"
-        ) {
-
-            goalsData = [];
-
-        }
-
-
-        if (
-            typeof countdowns !==
-            "undefined"
-        ) {
-
-            countdowns = [];
-
-        }
-
-
-        if (
-            typeof ownedCards !==
-            "undefined"
-        ) {
-
-            ownedCards = {};
-
-        }
-
-
-        if (
-            typeof achievementsData !==
-            "undefined" &&
-            typeof achievements !==
-            "undefined"
-        ) {
-
-            achievementsData =
-                achievements.map(
-                    achievement => ({
-                        ...achievement,
-                        unlocked: false
-                    })
-                );
-
-        }
-
-
-        /* =====================================================
-           4. RESET CUSTOM CARD MEMORY
-        ===================================================== */
-
-        window.customCardEditId =
-            null;
-
-        window.customCardImageData =
-            "";
-
-
-        if (
-            typeof customCardImageData !==
-            "undefined"
-        ) {
-
-            customCardImageData = "";
-
-        }
-
-
-        /* =====================================================
-           5. RESET CUSTOM CARDS DATABASE
+           2. DELETE CUSTOM AUDIO DATABASE
         ===================================================== */
 
         try {
 
             if (
-                typeof customCardDB !==
-                "undefined" &&
-                customCardDB
+                typeof deleteCustomAudioDatabase ===
+                "function"
             ) {
 
-                customCardDB.close();
-
-                customCardDB = null;
+                await deleteCustomAudioDatabase();
 
             }
 
-
-            await new Promise(
-                (resolve, reject) => {
-
-                    const request =
-                        indexedDB.deleteDatabase(
-                            "standout-custom-cards"
-                        );
-
-
-                    request.onsuccess =
-                        () => resolve();
-
-
-                    request.onerror =
-                        () => reject(
-                            request.error
-                        );
-
-
-                    request.onblocked =
-                        () => {
-
-                            console.warn(
-                                "Custom card database deletion is blocked."
-                            );
-
-                            resolve();
-
-                        };
-
-                }
-            );
-
         } catch (error) {
 
-            console.error(
-                "Failed to reset custom cards:",
+            console.warn(
+                "Could not reset custom audio:",
                 error
             );
 
@@ -8948,69 +8844,7 @@ async function resetData() {
 
 
         /* =====================================================
-           6. RESET CUSTOM AUDIO DATABASE
-        ===================================================== */
-
-        try {
-
-            if (
-                typeof soundDB !==
-                "undefined" &&
-                soundDB
-            ) {
-
-                soundDB.close();
-
-                soundDB = null;
-
-            }
-
-
-            await new Promise(
-                (resolve, reject) => {
-
-                    const request =
-                        indexedDB.deleteDatabase(
-                            "standout-sounds"
-                        );
-
-
-                    request.onsuccess =
-                        () => resolve();
-
-
-                    request.onerror =
-                        () => reject(
-                            request.error
-                        );
-
-
-                    request.onblocked =
-                        () => {
-
-                            console.warn(
-                                "Sound database deletion is blocked."
-                            );
-
-                            resolve();
-
-                        };
-
-                }
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Failed to reset custom audio:",
-                error
-            );
-
-        }
-
-
-        /* =====================================================
-           7. RESET SOUND SETTINGS
+           3. RESET SOUND SETTINGS
         ===================================================== */
 
         localStorage.removeItem(
@@ -9031,47 +8865,50 @@ async function resetData() {
 
 
         /* =====================================================
-           8. RESET ALL LOCAL STORAGE
+           4. RESET ALL LOCAL STORAGE
         ===================================================== */
 
         localStorage.clear();
 
 
         /* =====================================================
-           9. RESET CUSTOM BACKGROUND
+           5. RESET MISSION HISTORY
         ===================================================== */
 
         /*
-         * Remove every known background-related
-         * localStorage value.
+         * IMPORTANT:
          *
-         * localStorage.clear() already removes these,
-         * but explicitly removing them protects against
-         * background systems using different keys.
+         * Monthly reports are calculated directly from
+         * missionHistory.
+         *
+         * Clearing LocalStorage alone is not enough because
+         * missionHistory already exists in memory.
          */
+
+        missionHistory = {};
+
+        
+        localStorage.removeItem(
+            "missionHistory"
+        );
+
+
+        /* =====================================================
+           6. RESET BACKGROUND
+        ===================================================== */
 
         const backgroundStorageKeys = [
 
             "customBackground",
-
             "customBackgroundImage",
-
             "backgroundImage",
-
             "backgroundImageData",
-
             "background",
-
             "appBackground",
-
             "customBg",
-
             "customBgImage",
-
             "backgroundSettings",
-
             "backgroundOpacity",
-
             "backgroundBlur"
 
         ];
@@ -9100,10 +8937,9 @@ async function resetData() {
         );
 
 
-        /*
-         * Remove CSS variables that may have
-         * been applied directly to :root.
-         */
+        /* =====================================================
+           7. RESET BACKGROUND CSS VARIABLES
+        ===================================================== */
 
         document.documentElement.style.removeProperty(
             "--custom-background"
@@ -9130,9 +8966,9 @@ async function resetData() {
         );
 
 
-        /*
-         * Remove inline background from body.
-         */
+        /* =====================================================
+           8. RESET BODY BACKGROUND
+        ===================================================== */
 
         document.body.style.backgroundImage =
             "";
@@ -9153,15 +8989,15 @@ async function resetData() {
             "";
 
 
-        /*
-         * Remove possible custom background
-         * elements/layers.
-         */
+        /* =====================================================
+           9. RESET BACKGROUND LAYERS
+        ===================================================== */
 
         const backgroundLayer =
             document.getElementById(
                 "customBackgroundLayer"
             );
+
 
         if (backgroundLayer) {
 
@@ -9182,6 +9018,7 @@ async function resetData() {
                 "customBackgroundOverlay"
             );
 
+
         if (backgroundOverlay) {
 
             backgroundOverlay.style.opacity =
@@ -9198,11 +9035,6 @@ async function resetData() {
 
         }
 
-
-        /*
-         * Remove common dynamically-created
-         * background elements.
-         */
 
         document
             .querySelectorAll(
@@ -9508,7 +9340,16 @@ async function resetData() {
         if (monthlySummaryTitle) {
 
             monthlySummaryTitle.textContent =
-                "August";
+                new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth(),
+                    1
+                ).toLocaleDateString(
+                    [],
+                    {
+                        month: "long"
+                    }
+                );
 
         }
 
@@ -9739,21 +9580,13 @@ async function resetData() {
         const monthlyStorageKeys = [
 
             "monthlyReport",
-
             "monthlyReports",
-
             "monthlySummary",
-
             "monthlySummaryData",
-
             "monthlyReportData",
-
             "monthlyGoals",
-
             "monthlyMomentum",
-
             "monthlyStats",
-
             "monthlyHistory"
 
         ];
@@ -9834,36 +9667,29 @@ async function resetData() {
    28. RESET COMPLETE
 ===================================================== */
 
-        console.log(
-            "✓ COMPLETE APP RESET"
-        );
+console.log(
+    "✓ COMPLETE APP RESET"
+);
 
+reloadAfterAlert = true;
 
-        /* =====================================================
-           29. RESET COMPLETE MESSAGE
-        ===================================================== */
+customAlert(
+    "Reset completed. Please Reopen The App."
+);
 
-        customAlert(
-            "Reset completed. Please Reopen The App.",
-            "Reset Complete"
-        );
+} catch (error) {
 
-    } catch (error) {
+    console.error(
+        "Complete reset failed:",
+        error
+    );
 
-        console.error(
-            "Complete reset failed:",
-            error
-        );
+    customAlert(
+        "Reset failed. Check the console."
+    );
 
-        customAlert(
-            "Reset completed. Please Reopen The App.",
-            "Reset Complete",
-            () => {
-                location.reload();
-            }
-        );
+}
 
-    }
 }
 
 
@@ -9886,6 +9712,18 @@ window.addEventListener("load", () => {
     renderAchievements();
     renderCountdowns();
     renderGoals();
+
+    /* =====================================================
+       MONTHLY REPORT
+    ===================================================== */
+
+    if (
+        typeof renderMonthlyReport ===
+        "function"
+    ) {
+        renderMonthlyReport();
+    }
+
 
     setTimeout(() => {
 
