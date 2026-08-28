@@ -111,6 +111,9 @@ const BACKGROUND_ASSETS = [
   // Font Awesome
   //...FONT_AWESOME_FILES
 
+  //bagdes
+  "/badges/aug-2026.png",
+  "/badges/sep-2026.png",
 ];
 
 /* ===========================
