@@ -19,8 +19,7 @@ const APP_SHELL = [
   "/",                  // IMPORTANT
   "/index.html",
   "/manifest.json",
-  "/JS/cards.js",
-  "/JS/app.js",
+
   "/widget.js",
   "/widget.html",
 
@@ -32,61 +31,30 @@ const APP_SHELL = [
   "/CSS/effects.css",
   "/CSS/timer.css",
   "/CSS/account.css",
+  "/CSS/badges.css",
+  "/CSS/momentum.css",
+  "/CSS/monthly-report.css",
+
+  //JS
+  "/JS/cards.js",
+  "/JS/app.js",
+  "/JS/background.js",
+  "/JS/badges.js",
+  "/JS/custom-cards.js",
+  "/JS/momentum.js",
+  "/JS/sound.js",
+  "/icon.jpeg",
+  
 
 
 
-  // // Assets
-  // "/icon.jpeg",
-
-  // "/Images/s1.jpg",
-  // "/Images/s2.jpg",
-  // "/Images/a1.jpg",
-  // "/Images/a2.jpg",
-  // "/Images/a3.jpg",
-  // "/Images/b1.jpg",
-  // "/Images/b2.jpg",
-  // "/Images/b3.jpg",
-  // "/Images/b4.jpg",
-  // "/Images/b5.jpg",
-  // "/Images/c1.jpg",
-  // "/Images/c2.jpg",
-  // "/Images/c3.jpg",
-  // "/Images/c4.jpg",
-  // "/Images/c5.jpg",
-  // "/Images/d1.jpg",
-  // "/Images/d2.jpg",
-  // "/Images/d3.jpg",
-  // "/Images/d4.jpg",
-  // "/Images/d5.jpg",
-  // "/Images/d6.jpg",
-  // "/Images/d7.jpg",
-  // "/Images/e1.jpg",
-  // "/Images/e2.jpg",
-  // "/Images/e3.jpg",
-  // "/Images/e4.jpg",
-  // "/Images/e5.jpg",
-  // "/Images/e6.jpg",
-  // "/Images/e7.jpg",
-  // "/Images/e8.jpg",
-
-  // "/Music/Complete.mp3",
-  // "/Music/Achievements.mp3",
-  // "/Music/m1.mp3",
-  // "/Music/m2.mp3",
-  // "/Music/m3.mp3",
-  // "/Music/m4.mp3",
-  // "/Music/m5.mp3",
-  // "/Music/m6.mp3",
-  //"/Music/MintCard.mp3",
 ];
 
 
 
 const BACKGROUND_ASSETS = [
 
-  // App icon
-  "/icon.jpeg",
-
+  
   // Images
   "/Images/s1.jpg",
   "/Images/s2.jpg",
@@ -123,6 +91,8 @@ const BACKGROUND_ASSETS = [
   "/Images/e6.jpg",
   "/Images/e7.jpg",
   "/Images/e8.jpg",
+  
+  "/Images/w4.jpg",
 
   // Sounds
   "/Music/Complete.mp3",
