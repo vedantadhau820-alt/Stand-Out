@@ -277,6 +277,23 @@ self.addEventListener("fetch", event => {
   const url =
     event.request.url;
 
+  const pathname =
+        new URL(url).pathname;
+
+
+    /* =====================================================
+       INTRO VIDEO
+       Handle video Range requests separately.
+    ===================================================== */
+
+    if (pathname === "/Intro.mp4") {
+
+        event.respondWith(
+            handleIntroVideo(event.request)
+        );
+
+        return;
+    }
 
   /* =====================================================
      FONT AWESOME / BACKGROUND ASSETS
