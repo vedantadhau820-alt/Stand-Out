@@ -1,29 +1,56 @@
-const CACHE_NAME = "standout-v2.3 beta 18";
-//const MEDIA_CACHE = "standout-media";  
+const CACHE_NAME = "standout-v2.3 beta 19";
+
+// const MEDIA_CACHE = "standout-media";
 // NEVER versioned
+
+
+/* =====================================================
+   FONT AWESOME CACHE
+===================================================== */
 
 const FONT_AWESOME_CACHE =
   "standout-fontawesome-v1";
 
+
+const FONT_AWESOME_FILES = [
+
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2",
+
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-regular-400.woff2",
+
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2"
+
+];
+
+
+/* =====================================================
+   BACKGROUND CACHE
+===================================================== */
+
 const BACKGROUND_CACHE =
   "standout-background-v4";
 
-const FONT_AWESOME_FILES = [
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-regular-400.woff2",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2"
-];
+
+/* =====================================================
+   APP SHELL
+===================================================== */
 
 const APP_SHELL = [
-  "/",                  // IMPORTANT
+
+  "/",
   "/index.html",
   "/manifest.json",
 
   "/widget.js",
   "/widget.html",
 
-  // CSS
+
+  /* ===========================
+     CSS
+  =========================== */
+
   "/CSS/base.css",
   "/CSS/buttons.css",
   "/CSS/components.css",
@@ -36,7 +63,11 @@ const APP_SHELL = [
   "/CSS/monthly-report.css",
   "/CSS/intro.css",
 
-  //JS
+
+  /* ===========================
+     JS
+  =========================== */
+
   "/JS/cards.js",
   "/JS/app.js",
   "/JS/background.js",
@@ -44,19 +75,27 @@ const APP_SHELL = [
   "/JS/custom-cards.js",
   "/JS/momentum.js",
   "/JS/sound.js",
-  "/icon.jpeg",
-  
 
 
+  /* ===========================
+     APP ICON
+  =========================== */
+
+  "/icon.jpeg"
 
 ];
 
 
+/* =====================================================
+   BACKGROUND ASSETS
+===================================================== */
 
 const BACKGROUND_ASSETS = [
 
-  
-  // Images
+  /* ===========================
+     IMAGES
+  =========================== */
+
   "/Images/s1.jpg",
   "/Images/s2.jpg",
 
@@ -92,49 +131,71 @@ const BACKGROUND_ASSETS = [
   "/Images/e6.jpg",
   "/Images/e7.jpg",
   "/Images/e8.jpg",
-  
+
   "/Images/w4.jpg",
   "/Images/jjk.gif",
 
-  // Sounds
+
+  /* ===========================
+     SOUNDS
+  =========================== */
+
   "/Music/Complete.mp3",
   "/Music/Achievements.mp3",
+
   "/Music/m1.mp3",
   "/Music/m2.mp3",
   "/Music/m3.mp3",
   "/Music/m4.mp3",
   "/Music/m5.mp3",
   "/Music/m6.mp3",
+
   "/Music/MintCard.mp3",
 
-  // Video
+
+  /* ===========================
+     VIDEOS
+  =========================== */
+
   "/AchievedGoal.mp4",
   "/Intro.mp4",
 
-  // Font Awesome
-  //...FONT_AWESOME_FILES
 
-  //bagdes
+  /* ===========================
+     BADGES
+  =========================== */
+
   "/badges/aug-2026.png",
-  "/badges/sep-2026.png",
+  "/badges/sep-2026.png"
+
 ];
 
-/* ===========================
+
+/* =====================================================
    INSTALL → CACHE APP SHELL
-=========================== */
+===================================================== */
+
 self.addEventListener("install", event => {
 
-  console.log("🟡 SW installing...");
+  console.log(
+    "🟡 SW installing..."
+  );
+
 
   event.waitUntil(
+
     (async () => {
 
-      /* =====================================================
+
+      /* =================================================
          APP SHELL
-      ===================================================== */
+      ================================================= */
 
       const appCache =
-        await caches.open(CACHE_NAME);
+        await caches.open(
+          CACHE_NAME
+        );
+
 
       try {
 
@@ -142,9 +203,11 @@ self.addEventListener("install", event => {
           APP_SHELL
         );
 
+
         console.log(
           "✅ App shell cached"
         );
+
 
       } catch (err) {
 
@@ -153,19 +216,21 @@ self.addEventListener("install", event => {
           err
         );
 
+
         throw err;
 
       }
 
 
-      /* =====================================================
+      /* =================================================
          FONT AWESOME
-      ===================================================== */
+      ================================================= */
 
       const fontAwesomeCache =
         await caches.open(
           FONT_AWESOME_CACHE
         );
+
 
       for (
         const url of FONT_AWESOME_FILES
@@ -181,6 +246,7 @@ self.addEventListener("install", event => {
               }
             );
 
+
           if (
             response.ok
           ) {
@@ -189,6 +255,7 @@ self.addEventListener("install", event => {
               url,
               response
             );
+
 
             console.log(
               "✅ Font Awesome cached:",
@@ -210,112 +277,269 @@ self.addEventListener("install", event => {
       }
 
     })()
+
   );
+
 
   self.skipWaiting();
+
 });
 
-self.addEventListener("message", event => {
-  if (event.data === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
-/* ===========================
-   ACTIVATE → CLEAN OLD CACHES
-=========================== */
-self.addEventListener("activate", event => {
-  console.log("🟢 SW activating");
 
-  event.waitUntil(
-    (async () => {
-      // clean old caches
-      const keys = await caches.keys();
-      await Promise.all(
-        keys.map(k => {
+/* =====================================================
+   MESSAGE
+===================================================== */
 
-          if (
-            k === CACHE_NAME ||
-            k === FONT_AWESOME_CACHE ||
-            k === BACKGROUND_CACHE
-          ) {
-            return Promise.resolve();
-          }
+self.addEventListener(
+  "message",
+  event => {
 
-          return caches.delete(k);
+    if (
+      event.data ===
+      "SKIP_WAITING"
+    ) {
 
-        })
-      );
+      self.skipWaiting();
 
-      cacheBackgroundAssets().catch(error => {
-
-        console.warn(
-          "Background asset caching failed:",
-          error
-        );
-
-      });
-
-      // notify ALL clients
-      const clients = await self.clients.matchAll({
-        includeUncontrolled: true
-      });
-
-      clients.forEach(client => {
-        client.postMessage({ type: "SW_UPDATED" });
-      });
-    })()
-  );
-
-  self.clients.claim();
-});
-
-/* ===========================
-   FETCH → CACHE STRATEGY
-=========================== */
-self.addEventListener("fetch", event => {
-
-  const url =
-    event.request.url;
-
-  const pathname =
-        new URL(url).pathname;
-
-
-    /* =====================================================
-       INTRO VIDEO
-       Handle video Range requests separately.
-    ===================================================== */
-
-    if (pathname === "/Intro.mp4") {
-
-        event.respondWith(
-            handleIntroVideo(event.request)
-        );
-
-        return;
     }
 
-  /* =====================================================
-     FONT AWESOME / BACKGROUND ASSETS
-  ===================================================== */
+  }
+);
 
-  if (
-    FONT_AWESOME_FILES.includes(url) ||
-    BACKGROUND_ASSETS.includes(
-      new URL(
-        event.request.url
-      ).pathname
-    )
-  ) {
 
-    event.respondWith(
+/* =====================================================
+   ACTIVATE → CLEAN OLD CACHES
+===================================================== */
+
+self.addEventListener(
+  "activate",
+  event => {
+
+    console.log(
+      "🟢 SW activating"
+    );
+
+
+    event.waitUntil(
 
       (async () => {
 
-        const cached =
-          await caches.match(
-            event.request
-          );
+
+        /* =============================================
+           CLEAN OLD CACHES
+        ============================================= */
+
+        const keys =
+          await caches.keys();
+
+
+        await Promise.all(
+
+          keys.map(k => {
+
+            /*
+             * Keep all active caches.
+             */
+
+            if (
+              k === CACHE_NAME ||
+              k === FONT_AWESOME_CACHE ||
+              k === BACKGROUND_CACHE
+            ) {
+
+              return Promise.resolve();
+
+            }
+
+
+            return caches.delete(k);
+
+          })
+
+        );
+
+
+        /* =============================================
+           BACKGROUND ASSET CACHING
+        ============================================= */
+
+        cacheBackgroundAssets()
+          .catch(error => {
+
+            console.warn(
+              "Background asset caching failed:",
+              error
+            );
+
+          });
+
+
+        /* =============================================
+           NOTIFY ALL CLIENTS
+        ============================================= */
+
+        const clients =
+          await self.clients.matchAll({
+            includeUncontrolled: true
+          });
+
+
+        clients.forEach(client => {
+
+          client.postMessage({
+            type: "SW_UPDATED"
+          });
+
+        });
+
+      })()
+
+    );
+
+
+    self.clients.claim();
+
+  }
+);
+
+
+/* =====================================================
+   FETCH → CACHE STRATEGY
+===================================================== */
+
+self.addEventListener(
+  "fetch",
+  event => {
+
+
+    const url =
+      event.request.url;
+
+
+    const pathname =
+      new URL(
+        url
+      ).pathname;
+
+
+    /* =================================================
+       INTRO VIDEO
+       Handle separately because videos can use
+       HTTP Range requests.
+    ================================================= */
+
+    if (
+      pathname ===
+      "/Intro.mp4"
+    ) {
+
+      event.respondWith(
+        handleIntroVideo(
+          event.request
+        )
+      );
+
+
+      return;
+
+    }
+
+
+    /* =================================================
+       FONT AWESOME / BACKGROUND ASSETS
+    ================================================= */
+
+    if (
+
+      FONT_AWESOME_FILES.includes(
+        url
+      )
+
+      ||
+
+      (
+        BACKGROUND_ASSETS.includes(
+          pathname
+        )
+
+        &&
+
+        pathname !==
+        "/Intro.mp4"
+      )
+
+    ) {
+
+      event.respondWith(
+
+        (async () => {
+
+
+          /* =========================================
+             CHECK ANY CACHE
+          ========================================= */
+
+          const cached =
+            await caches.match(
+              event.request
+            );
+
+
+          if (cached) {
+
+            return cached;
+
+          }
+
+
+          /* =========================================
+             NETWORK FALLBACK
+          ========================================= */
+
+          try {
+
+            const response =
+              await fetch(
+                event.request
+              );
+
+
+            return response;
+
+          } catch (error) {
+
+            console.warn(
+              "Offline asset unavailable:",
+              event.request.url
+            );
+
+
+            throw error;
+
+          }
+
+        })()
+
+      );
+
+
+      return;
+
+    }
+
+
+    /* =================================================
+       EXISTING APP SHELL LOGIC
+    ================================================= */
+
+    event.respondWith(
+
+      caches.match(
+        event.request
+      )
+
+      .then(cached => {
+
 
         if (cached) {
 
@@ -324,70 +548,38 @@ self.addEventListener("fetch", event => {
         }
 
 
-        try {
+        return fetch(
+          event.request
+        )
 
-          const response =
-            await fetch(
-              event.request
-            );
+        .catch(() =>
 
-          return response;
+          caches.match(
+            "/index.html"
+          )
 
-        } catch (error) {
+        );
 
-          console.warn(
-            "Offline asset unavailable:",
-            event.request.url
-          );
-
-          throw error;
-
-        }
-
-      })()
+      })
 
     );
 
-    return;
-
   }
+);
 
 
-  /* =====================================================
-     EXISTING APP SHELL LOGIC
-  ===================================================== */
-
-  event.respondWith(
-
-    caches.match(
-      event.request
-    ).then(cached => {
-
-      if (cached) {
-        return cached;
-      }
-
-      return fetch(
-        event.request
-      ).catch(() =>
-        caches.match(
-          "/index.html"
-        )
-      );
-
-    })
-
-  );
-
-});
-
+/* =====================================================
+   BACKGROUND ASSET CACHING
+===================================================== */
 
 async function cacheBackgroundAssets() {
+
 
   const cache =
     await caches.open(
       BACKGROUND_CACHE
     );
+
 
   for (
     const url of BACKGROUND_ASSETS
@@ -395,8 +587,16 @@ async function cacheBackgroundAssets() {
 
     try {
 
+
+      /* =============================================
+         CHECK IF ALREADY CACHED
+      ============================================= */
+
       const existing =
-        await cache.match(url);
+        await cache.match(
+          url
+        );
+
 
       if (existing) {
 
@@ -405,14 +605,25 @@ async function cacheBackgroundAssets() {
           url
         );
 
+
         continue;
 
       }
+
+
+      /* =============================================
+         DOWNLOAD
+      ============================================= */
 
       const response =
         await fetch(
           url
         );
+
+
+      /* =============================================
+         STORE
+      ============================================= */
 
       if (
         response.ok
@@ -423,6 +634,7 @@ async function cacheBackgroundAssets() {
           response.clone()
         );
 
+
         console.log(
           "✅ Background cached:",
           url
@@ -430,7 +642,13 @@ async function cacheBackgroundAssets() {
 
       }
 
+
     } catch (error) {
+
+      /*
+       * One failed asset should NEVER stop
+       * the remaining assets from downloading.
+       */
 
       console.warn(
         "⚠️ Background cache failed:",
@@ -442,5 +660,262 @@ async function cacheBackgroundAssets() {
 
   }
 
+
+  console.log(
+    "🎯 Background asset caching complete"
+  );
+
 }
 
+
+/* =====================================================
+   INTRO VIDEO HANDLER
+   Supports HTTP RANGE requests.
+===================================================== */
+
+async function handleIntroVideo(
+  request
+) {
+
+
+  const cache =
+    await caches.open(
+      BACKGROUND_CACHE
+    );
+
+
+  /* =================================================
+     CHECK CACHE
+  ================================================= */
+
+  const cached =
+    await cache.match(
+      "/Intro.mp4"
+    );
+
+
+  const range =
+    request.headers.get(
+      "range"
+    );
+
+
+  /* =================================================
+     RANGE REQUEST
+  ================================================= */
+
+  if (
+    range &&
+    cached
+  ) {
+
+
+    const buffer =
+      await cached.arrayBuffer();
+
+
+    const total =
+      buffer.byteLength;
+
+
+    /* ===============================================
+       PARSE RANGE
+
+       Examples:
+
+       bytes=0-
+       bytes=1000-
+       bytes=1000-5000
+    =============================================== */
+
+    const match =
+      range.match(
+        /bytes=(\d+)-(\d*)/
+      );
+
+
+    /* ===============================================
+       INVALID RANGE
+    =============================================== */
+
+    if (!match) {
+
+      return new Response(
+        null,
+        {
+          status: 416,
+
+          statusText:
+            "Range Not Satisfiable",
+
+          headers: {
+
+            "Content-Range":
+              `bytes */${total}`
+
+          }
+
+        }
+      );
+
+    }
+
+
+    const start =
+      Number(
+        match[1]
+      );
+
+
+    const requestedEnd =
+      match[2]
+        ? Number(
+            match[2]
+          )
+        : total - 1;
+
+
+    /* ===============================================
+       RANGE OUT OF BOUNDS
+    =============================================== */
+
+    if (
+      start >= total
+    ) {
+
+      return new Response(
+        null,
+        {
+          status: 416,
+
+          statusText:
+            "Range Not Satisfiable",
+
+          headers: {
+
+            "Content-Range":
+              `bytes */${total}`
+
+          }
+
+        }
+      );
+
+    }
+
+
+    /* ===============================================
+       CALCULATE END
+    =============================================== */
+
+    const end =
+      Math.min(
+        requestedEnd,
+        total - 1
+      );
+
+
+    /* ===============================================
+       EXTRACT CHUNK
+    =============================================== */
+
+    const chunk =
+      buffer.slice(
+        start,
+        end + 1
+      );
+
+
+    /* ===============================================
+       RETURN 206 PARTIAL CONTENT
+    =============================================== */
+
+    return new Response(
+      chunk,
+      {
+
+        status: 206,
+
+        statusText:
+          "Partial Content",
+
+        headers: {
+
+          "Content-Type":
+            cached.headers.get(
+              "Content-Type"
+            ) ||
+            "video/mp4",
+
+          "Content-Length":
+            String(
+              chunk.byteLength
+            ),
+
+          "Content-Range":
+            `bytes ${start}-${end}/${total}`,
+
+          "Accept-Ranges":
+            "bytes"
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =================================================
+     NORMAL CACHED REQUEST
+  ================================================= */
+
+  if (cached) {
+
+    return cached;
+
+  }
+
+
+  /* =================================================
+     FIRST REQUEST
+     FETCH + CACHE
+  ================================================= */
+
+  try {
+
+
+    const response =
+      await fetch(
+        request
+      );
+
+
+    if (
+      response.ok
+    ) {
+
+      await cache.put(
+        "/Intro.mp4",
+        response.clone()
+      );
+
+    }
+
+
+    return response;
+
+
+  } catch (error) {
+
+    console.error(
+      "Intro video unavailable:",
+      error
+    );
+
+
+    throw error;
+
+  }
+
+}
