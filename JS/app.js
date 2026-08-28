@@ -3,7 +3,7 @@ if (!window.cardCatalog) {
     console.error("❌ cardCatalog not loaded");
     window.cardCatalog = [];
 }
- 
+
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/service-worker.js").then(reg => {
 
@@ -841,6 +841,8 @@ async function saveProgressToFile() {
 
     }
 
+    checkMissedDeadlines()
+
 }
 
 /* =========================================================
@@ -1209,52 +1211,52 @@ async function loadProgressFromFile() {
    RELOAD IMPROVEMENT POINTS
 ===================================================== */
 
-try {
+        try {
 
-    const storedPoints =
-        localStorage.getItem(
-            "completedMissions"
-        );
+            const storedPoints =
+                localStorage.getItem(
+                    "completedMissions"
+                );
 
-    completedMissions =
-        Math.max(
-            0,
-            Number(storedPoints) || 0
-        );
+            completedMissions =
+                Math.max(
+                    0,
+                    Number(storedPoints) || 0
+                );
 
-} catch (error) {
+        } catch (error) {
 
-    console.warn(
-        "Could not reload Improvement Points:",
-        error
-    );
+            console.warn(
+                "Could not reload Improvement Points:",
+                error
+            );
 
-}
+        }
 
         /* =====================================================
    RELOAD MISSION HISTORY
 ===================================================== */
 
-try {
+        try {
 
-    const storedHistory =
-        localStorage.getItem(
-            "missionHistory"
-        );
+            const storedHistory =
+                localStorage.getItem(
+                    "missionHistory"
+                );
 
-    missionHistory =
-        storedHistory
-            ? JSON.parse(storedHistory)
-            : {};
+            missionHistory =
+                storedHistory
+                    ? JSON.parse(storedHistory)
+                    : {};
 
-} catch (error) {
+        } catch (error) {
 
-    console.warn(
-        "Could not reload mission history:",
-        error
-    );
+            console.warn(
+                "Could not reload mission history:",
+                error
+            );
 
-}
+        }
 
         /* =====================================================
            9. RESTORE RUNTIME STATE
@@ -1313,19 +1315,19 @@ try {
 
 
         if (
-    runtime.completedMissions !==
-    undefined
-) {
+            runtime.completedMissions !==
+            undefined
+        ) {
 
-    completedMissions =
-        Math.max(
-            0,
-            Number(
-                runtime.completedMissions
-            ) || 0
-        );
+            completedMissions =
+                Math.max(
+                    0,
+                    Number(
+                        runtime.completedMissions
+                    ) || 0
+                );
 
-}
+        }
 
 
         if (
@@ -1408,6 +1410,82 @@ try {
                         runtime.soundSettings
                     )
                 );
+
+        }
+
+        /* =====================================================
+   SYNC RESTORED MISSION STATE
+===================================================== */
+
+        completedMissions =
+            Math.max(
+                0,
+                Number(
+                    localStorage.getItem(
+                        "completedMissions"
+                    )
+                ) || 0
+            );
+
+
+        dailyImprovementCount =
+            Math.max(
+                0,
+                Number(
+                    localStorage.getItem(
+                        "dailyImprovementCount"
+                    )
+                ) || 0
+            );
+
+
+        lastImprovementDate =
+            localStorage.getItem(
+                "lastImprovementDate"
+            ) || "";
+
+
+        /* -----------------------------------------------------
+           MISSION HISTORY
+        ----------------------------------------------------- */
+
+        try {
+
+            const storedHistory =
+                localStorage.getItem(
+                    "missionHistory"
+                );
+
+            missionHistory =
+                storedHistory
+                    ? JSON.parse(storedHistory)
+                    : {};
+
+        } catch (error) {
+
+            console.error(
+                "Could not restore mission history:",
+                error
+            );
+
+            missionHistory = {};
+
+        }
+
+
+        /* -----------------------------------------------------
+           UPDATE COUNTER
+        ----------------------------------------------------- */
+
+        const missionCounter =
+            document.getElementById(
+                "missionCounter"
+            );
+
+        if (missionCounter) {
+
+            missionCounter.textContent =
+                completedMissions;
 
         }
 
@@ -1825,14 +1903,14 @@ try {
    RELOAD MOMENTUM
 ===================================================== */
 
-if (
-    typeof Momentum !== "undefined" &&
-    typeof Momentum.reload === "function"
-) {
+        if (
+            typeof Momentum !== "undefined" &&
+            typeof Momentum.reload === "function"
+        ) {
 
-    Momentum.reload();
+            Momentum.reload();
 
-}
+        }
 
 
         /* =====================================================
@@ -1894,6 +1972,115 @@ if (
 
         }
 
+        /* =====================================================
+   SYNC RESTORED RUNTIME STATE
+===================================================== */
+
+        try {
+
+            /* -------------------------------------------------
+               IMPROVEMENT POINTS
+            ------------------------------------------------- */
+
+            completedMissions =
+                Math.max(
+                    0,
+                    Number(
+                        localStorage.getItem(
+                            "completedMissions"
+                        )
+                    ) || 0
+                );
+
+
+            /* -------------------------------------------------
+               DAILY IMPROVEMENT
+            ------------------------------------------------- */
+
+            dailyImprovementCount =
+                Math.max(
+                    0,
+                    Number(
+                        localStorage.getItem(
+                            "dailyImprovementCount"
+                        )
+                    ) || 0
+                );
+
+
+            /* -------------------------------------------------
+               LAST IMPROVEMENT DATE
+            ------------------------------------------------- */
+
+            lastImprovementDate =
+                localStorage.getItem(
+                    "lastImprovementDate"
+                ) || "";
+
+
+            /* -------------------------------------------------
+               MISSION HISTORY
+               
+               IMPORTANT:
+               Replace the in-memory object.
+               Writing to localStorage alone does NOT update
+               the existing missionHistory object.
+            ------------------------------------------------- */
+
+            const storedMissionHistory =
+                localStorage.getItem(
+                    "missionHistory"
+                );
+
+            missionHistory =
+                storedMissionHistory
+                    ? JSON.parse(
+                        storedMissionHistory
+                    )
+                    : {};
+
+
+            /* -------------------------------------------------
+               UPDATE IMPROVEMENT COUNTER UI
+            ------------------------------------------------- */
+
+            const missionCounter =
+                document.getElementById(
+                    "missionCounter"
+                );
+
+            if (missionCounter) {
+
+                missionCounter.textContent =
+                    completedMissions;
+
+            }
+
+
+            console.log(
+                "✓ Restored Improvement Points:",
+                completedMissions
+            );
+
+            console.log(
+                "✓ Restored Daily Improvement:",
+                dailyImprovementCount
+            );
+
+            console.log(
+                "✓ Restored Mission History:",
+                missionHistory
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Failed to synchronize restored mission state:",
+                error
+            );
+
+        }
+
 
         /* =====================================================
            20. REFRESH UI
@@ -1908,6 +2095,19 @@ if (
 
         }
 
+
+        /* =====================================================
+   CHECK RESTORED MISSION DEADLINES
+===================================================== */
+
+        if (
+            typeof checkMissedDeadlines ===
+            "function"
+        ) {
+
+            checkMissedDeadlines();
+
+        }
 
         if (
             typeof renderGoals ===
@@ -6193,51 +6393,51 @@ function checkMissedDeadlines() {
             // }
 
             // 🔥 HARDCORE MODE — DEDUCT 5 POINTS (ONCE)
-if (
-    li.dataset.hardcore === "true" &&
-    !li.dataset.hardcorePunished
-) {
+            if (
+                li.dataset.hardcore === "true" &&
+                !li.dataset.hardcorePunished
+            ) {
 
-    li.dataset.hardcorePunished = "true";
-    li.dataset.deducted = "true";
-    const hardcorePenalty = 5;
+                li.dataset.hardcorePunished = "true";
+                li.dataset.deducted = "true";
+                const hardcorePenalty = 5;
 
-    const pointsBefore =
-        completedMissions;
+                const pointsBefore =
+                    completedMissions;
 
-    completedMissions = Math.max(
-        0,
-        completedMissions - hardcorePenalty
-    );
+                completedMissions = Math.max(
+                    0,
+                    completedMissions - hardcorePenalty
+                );
 
-    const pointsLost =
-        pointsBefore - completedMissions;
+                const pointsLost =
+                    pointsBefore - completedMissions;
 
-    localStorage.setItem(
-        "completedMissions",
-        completedMissions
-    );
+                localStorage.setItem(
+                    "completedMissions",
+                    completedMissions
+                );
 
-    document.getElementById(
-        "missionCounter"
-    ).textContent =
-        completedMissions;
+                document.getElementById(
+                    "missionCounter"
+                ).textContent =
+                    completedMissions;
 
-    renderMarketplace(
-        currentMarketplaceFilter
-    );
+                renderMarketplace(
+                    currentMarketplaceFilter
+                );
 
-    renderMyCards();
+                renderMyCards();
 
-    showSmartNotification(
-        "🔥 Hardcore Failed",
-        `-${pointsLost} Improvement Points`
-    );
+                showSmartNotification(
+                    "🔥 Hardcore Failed",
+                    `-${pointsLost} Improvement Points`
+                );
 
-    saveData();
+                saveData();
 
-    return;
-}
+                return;
+            }
 
             // ❌ NORMAL MODE — DEDUCT 1 POINT (ONCE)
             if (!li.dataset.deducted) {
@@ -6247,9 +6447,9 @@ if (
 
 
                 completedMissions = Math.max(
-    0,
-    completedMissions - 1
-);
+                    0,
+                    completedMissions - 1
+                );
                 li.dataset.deducted = "true";
 
                 const pointsDelta =
@@ -8158,9 +8358,9 @@ function updateGoalTimers() {
                 getGoalReward(goal.priority);
 
             completedMissions = Math.max(
-    0,
-    completedMissions - penalty
-);
+                0,
+                completedMissions - penalty
+            );
             localStorage.setItem(
                 "completedMissions",
                 completedMissions
@@ -8442,7 +8642,25 @@ function loadData() {
         ) || 0
     );
 
-    
+    try {
+        const storedHistory =
+            localStorage.getItem("missionHistory");
+
+        missionHistory =
+            storedHistory
+                ? JSON.parse(storedHistory)
+                : {};
+
+    } catch (error) {
+        console.warn(
+            "Could not load mission history:",
+            error
+        );
+
+        missionHistory = {};
+    }
+
+
     document.getElementById("mission-list").innerHTML =
         localStorage.getItem("missions") || "";
     document.getElementById("skill-list").innerHTML =
@@ -8522,6 +8740,14 @@ function loadData() {
         skill.querySelector(".xp-count").textContent = xp;
         skill.querySelector(".progress-bar").style.width = xp + "%";
     });
+
+    const missionCounter =
+        document.getElementById("missionCounter");
+
+    if (missionCounter) {
+        missionCounter.textContent =
+            completedMissions;
+    }
 }
 
 /* =========================================================
@@ -9605,25 +9831,8 @@ async function resetData() {
 
 
         /* =====================================================
-           28. RELOAD CLEAN APPLICATION STATE
-        ===================================================== */
-
-        if (
-            typeof loadData ===
-            "function"
-        ) {
-
-            loadData();
-
-        }
-
-
-        /*
-         * Do not rely only on manually resetting the DOM.
-         * Reloading guarantees that the background, summary,
-         * mission history and every other initialization
-         * path starts from the cleared storage.
-         */
+   28. RESET COMPLETE
+===================================================== */
 
         console.log(
             "✓ COMPLETE APP RESET"
@@ -9631,28 +9840,13 @@ async function resetData() {
 
 
         /* =====================================================
-           29. SUCCESS
+           29. RESET COMPLETE MESSAGE
         ===================================================== */
 
         customAlert(
-            "Everything has been reset to factory state."
+            "Reset completed. Please Reopen The App.",
+            "Reset Complete"
         );
-
-
-        /*
-         * Give the success notification a moment to render,
-         * then reload the application.
-         */
-
-        setTimeout(
-            () => {
-
-                location.reload();
-
-            },
-            500
-        );
-
 
     } catch (error) {
 
@@ -9661,14 +9855,18 @@ async function resetData() {
             error
         );
 
-
         customAlert(
-            "Reset failed. Check the console."
+            "Reset completed. Please Reopen The App.",
+            "Reset Complete",
+            () => {
+                location.reload();
+            }
         );
 
     }
-
 }
+
+
 
 function isPastDateTime(dateTimeValue) {
     if (!dateTimeValue) return false; // allow empty deadlines
