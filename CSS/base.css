@@ -2,6 +2,15 @@
    BASE RESET & BODY
 ========================================================= */
 
+html {
+    background: #000000;
+}
+
+body {
+    background: #000000;
+    margin: 0;
+}
+
 * {
   box-sizing: border-box;
 }
