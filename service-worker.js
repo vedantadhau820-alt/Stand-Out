@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 22";
+const CACHE_NAME = "standout-v2.3 beta 23";
 //const MEDIA_CACHE = "standout-media";
 // NEVER versioned
 
@@ -33,6 +33,8 @@ const APP_SHELL = [
   "/widget.js",
   "/widget.html",
 
+  // well-known
+  "/.well-known/assetlinks.json",
   // CSS
   "/CSS/base.css",
   "/CSS/buttons.css",
