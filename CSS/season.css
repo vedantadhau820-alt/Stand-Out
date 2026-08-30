@@ -801,3 +801,97 @@
 .monthly-resolution-review[hidden] {
     display: none !important;
 }
+
+/* =========================================================
+   SEASON EDITION EFFECTS
+========================================================= */
+
+.season-badge {
+
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #a78bfa
+        );
+
+    border-radius: 999px;
+
+    box-shadow:
+        0 0 12px rgba(139, 92, 246, 0.55);
+
+    z-index: 3;
+}
+
+
+/* =========================================================
+   SEASON CARD VISUAL BOOST
+========================================================= */
+
+.flex-card.season-card {
+
+    border:
+        2px solid #8b5cf6;
+
+    box-shadow:
+        0 0 18px rgba(139, 92, 246, 0.32),
+        0 0 40px rgba(139, 92, 246, 0.14);
+
+    transform:
+        scale(1.02);
+}
+
+
+/* =========================================================
+   SEASON CARD GLOW
+========================================================= */
+
+@keyframes seasonGlow {
+
+    0% {
+
+        box-shadow:
+            0 0 10px rgba(139, 92, 246, 0.35);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 26px rgba(139, 92, 246, 0.70);
+
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 10px rgba(139, 92, 246, 0.35);
+
+    }
+
+}
+
+
+/* Only unowned Season rewards glow */
+
+.flex-card.season-card:not(.owned) {
+
+    animation:
+        seasonGlow 2.5s infinite ease-in-out;
+
+}
