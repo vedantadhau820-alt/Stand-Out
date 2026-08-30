@@ -541,6 +541,22 @@
             window.Momentum.registerProof();
         }
 
+        /* =====================================================
+   SEASON XP
+===================================================== */
+
+        if (
+            window.StandOutSeason &&
+            typeof window.StandOutSeason.addXP === "function"
+        ) {
+
+            window.StandOutSeason.addXP(
+                25,
+                "Daily Challenge"
+            );
+
+        }
+
 
         /*
          * Save application state.
