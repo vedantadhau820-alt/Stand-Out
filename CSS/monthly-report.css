@@ -2044,3 +2044,138 @@
     margin-top: 84px;
 }
 
+/* =========================================================
+   MONTHLY — DAILY CHALLENGE
+========================================================= */
+
+.monthly-daily-challenge {
+    position: relative;
+    overflow: hidden;
+}
+
+.monthly-card-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: rgba(80, 150, 255, .75);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .16em;
+}
+
+.monthly-daily-challenge h3 {
+    margin: 0;
+    color: rgba(255,255,255,.92);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.monthly-daily-count {
+    color: rgba(120,175,255,.95);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.monthly-daily-progress {
+    width: 100%;
+    height: 5px;
+    margin: 20px 0 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255,255,255,.06);
+}
+
+.monthly-daily-progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: rgba(70,140,255,.85);
+    box-shadow: 0 0 12px rgba(70,140,255,.35);
+    transition: width .5s ease;
+}
+
+.monthly-daily-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.monthly-daily-footer span {
+    color: rgba(255,255,255,.48);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.monthly-daily-footer span:last-child {
+    color: rgba(110,165,255,.85);
+}
+
+.monthly-daily-message {
+    margin: 12px 0 0;
+    color: rgba(255,255,255,.42);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   DAILY CHALLENGE
+========================================================= */
+
+.monthly-daily-challenge {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: var(--report-card);
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+}
+
+.monthly-daily-count {
+    color: var(--report-blue);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.monthly-daily-progress {
+    width: 100%;
+    height: 5px;
+    margin-top: 18px;
+
+    overflow: hidden;
+    border-radius: 999px;
+
+    background: var(--report-divider);
+}
+
+.monthly-daily-progress-fill {
+    width: 0%;
+    height: 100%;
+
+    border-radius: inherit;
+    background: var(--report-blue);
+
+    transition: width .5s ease;
+}
+
+.monthly-daily-meta {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 12px;
+
+    color: var(--report-muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.monthly-daily-meta span:last-child {
+    color: var(--report-blue);
+}
+
+.monthly-daily-message {
+    margin: 12px 0 0;
+
+    color: var(--report-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
