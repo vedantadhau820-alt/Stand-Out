@@ -2402,6 +2402,8 @@ function renderMarketplace(filterGrade = "ALL") {
 
     let cards = [...window.cardCatalog];
 
+
+
     if (filterGrade !== "ALL") {
         cards = cards.filter(c => c.grade === filterGrade);
     }
@@ -2423,7 +2425,84 @@ function renderMarketplace(filterGrade = "ALL") {
         return gradeRank(b.grade) - gradeRank(a.grade);
     });
 
+    /* =========================================================
+   CARDS PAGE TABS
+========================================================= */
+
+    document
+        .querySelectorAll("[data-card-tab]")
+        .forEach(tab => {
+
+            tab.addEventListener("click", () => {
+
+                const target =
+                    tab.dataset.cardTab;
+
+                /*
+                 * Update tab buttons
+                 */
+                document
+                    .querySelectorAll("[data-card-tab]")
+                    .forEach(button => {
+                        button.classList.remove("active");
+                    });
+
+                tab.classList.add("active");
+
+
+                /*
+                 * Update views
+                 */
+                const marketplaceView =
+                    document.getElementById(
+                        "cards-marketplace-view"
+                    );
+
+                const collectionView =
+                    document.getElementById(
+                        "cards-collection-view"
+                    );
+
+                if (!marketplaceView ||
+                    !collectionView) {
+                    return;
+                }
+
+
+                if (target === "collection") {
+
+                    marketplaceView.classList.remove(
+                        "active"
+                    );
+
+                    collectionView.classList.add(
+                        "active"
+                    );
+
+                    renderMyCards();
+
+                } else {
+
+                    collectionView.classList.remove(
+                        "active"
+                    );
+
+                    marketplaceView.classList.add(
+                        "active"
+                    );
+
+                    renderMarketplace(
+                        currentMarketplaceFilter
+                    );
+                }
+
+            });
+
+        });
+
     cards.forEach(card => {
+
+        if (card.seasonReward === true) return;
         const isOwned = !!ownedCards[card.id];
         const expired = isExpired(card);
 
@@ -2544,50 +2623,131 @@ function formatDate(isoDate) {
 }
 
 function renderMyCards() {
-    const container = document.getElementById("ownedCards");
+    const container =
+        document.getElementById("ownedCards");
+
     if (!container) return;
 
     container.innerHTML = "";
 
-    const ownedList = window.cardCatalog
-        .filter(card => ownedCards[card.id])
-        .sort((a, b) => gradeRank(b.grade) - gradeRank(a.grade));
+    /*
+     * Always read the latest owned cards.
+     * This keeps Season rewards synchronized
+     * with the existing card system.
+     */
+    let currentOwnedCards = {};
+
+    try {
+        currentOwnedCards =
+            JSON.parse(
+                localStorage.getItem("ownedCards") ||
+                "{}"
+            );
+    } catch (error) {
+        console.error(
+            "Could not load owned cards:",
+            error
+        );
+
+        currentOwnedCards = {};
+    }
+
+    /*
+     * Keep the runtime reference synchronized.
+     */
+    if (
+        typeof window.ownedCards !==
+        "undefined"
+    ) {
+        window.ownedCards =
+            currentOwnedCards;
+    }
+
+    /*
+     * Find every card that is actually owned.
+     */
+    const ownedList =
+        (window.cardCatalog || [])
+            .filter(
+                card =>
+                    currentOwnedCards[card.id]
+            )
+            .sort(
+                (a, b) =>
+                    gradeRank(b.grade) -
+                    gradeRank(a.grade)
+            );
 
     if (ownedList.length === 0) {
-        container.innerHTML = `<p style="opacity:.6;">No cards minted yet.</p>`;
+
+        container.innerHTML =
+            `<p style="opacity:.6;">
+                No cards minted yet.
+            </p>`;
+
         return;
     }
 
+    /*
+     * Render owned cards.
+     */
     ownedList.forEach(card => {
-        const data = ownedCards[card.id];
 
-        const div = document.createElement("div");
-        div.className = `flex-card owned grade-${card.grade.toLowerCase()}`;
+        const data =
+            currentOwnedCards[card.id];
+
+        const mintedAt =
+            data?.mintedAt
+                ? formatDate(data.mintedAt)
+                : "Unknown";
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            `flex-card owned grade-${card.grade.toLowerCase()}`;
 
         div.innerHTML = `
-    <img src="${card.image}" alt="${card.title}">
-    <span class="grade-badge">${card.grade}</span>
+            <img
+                src="${card.image}"
+                alt="${card.title}"
+                class="owned-card-image"
+            >
 
-    <div class="card-body">
-        <h3>${card.title}</h3>
-        <p class="card-quote">${card.quote}</p>
+            <span class="grade-badge">
+                ${card.grade}
+            </span>
 
-        ${isOwned
-                ? `
-                  <p class="mint-date">
-                      Minted on ${mintedAt}
-                  </p>
-                  <button class="buy-btn" disabled>OWNED</button>
-                `
-                : `
-                  <button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-                      ${card.cost} pts
-                  </button>
-                `
+            ${card.limited
+                ? `<span class="limited-badge">
+                           LIMITED
+                       </span>`
+                : ""
             }
-    </div>
-`;
 
+            <div class="card-body">
+
+                <h3>
+                    ${card.title}
+                </h3>
+
+                <p class="card-quote">
+                    ${card.quote}
+                </p>
+
+                <p class="mint-date">
+                    Minted on ${mintedAt}
+                </p>
+
+                <button
+                    class="buy-btn"
+                    disabled
+                >
+                    OWNED
+                </button>
+
+            </div>
+        `;
 
         container.appendChild(div);
     });
@@ -2629,7 +2789,62 @@ document.getElementById("marketplaceIcon").onclick = () => {
         isMarketplaceOpen = false;
     } else {
         // Open marketplace
-        showPage("marketplace-cards");
+        document.getElementById("marketplaceIcon").onclick = () => {
+
+            if (isMarketplaceOpen) {
+
+                showPage("missions");
+
+                isMarketplaceOpen = false;
+
+            } else {
+
+                showPage("marketplace-cards");
+
+                isMarketplaceOpen = true;
+
+                /*
+                 * Always open Cards on Marketplace tab
+                 */
+                document
+                    .querySelectorAll("[data-card-tab]")
+                    .forEach(button => {
+                        button.classList.remove("active");
+                    });
+
+                const marketplaceTab =
+                    document.querySelector(
+                        '[data-card-tab="marketplace"]'
+                    );
+
+                if (marketplaceTab) {
+                    marketplaceTab.classList.add("active");
+                }
+
+
+                const marketplaceView =
+                    document.getElementById(
+                        "cards-marketplace-view"
+                    );
+
+                const collectionView =
+                    document.getElementById(
+                        "cards-collection-view"
+                    );
+
+                if (marketplaceView) {
+                    marketplaceView.classList.add("active");
+                }
+
+                if (collectionView) {
+                    collectionView.classList.remove("active");
+                }
+
+                renderMarketplace(
+                    currentMarketplaceFilter
+                );
+            }
+        };
         isMarketplaceOpen = true;
     }
 };
@@ -5706,6 +5921,22 @@ function unlockAchievement(id) {
 
     if (ach && !ach.unlocked) {
         ach.unlocked = true;
+
+        /* =====================================================
+   SEASON XP
+===================================================== */
+
+        if (
+            window.StandOutSeason &&
+            typeof window.StandOutSeason.addXP === "function"
+        ) {
+
+            window.StandOutSeason.addXP(
+                50,
+                "Achievement"
+            );
+
+        }
         ach.unlockedAt = new Date().toDateString(); // 🔥 ADD THIS
 
         localStorage.setItem("achievements", JSON.stringify(achievementsData));
@@ -6959,6 +7190,22 @@ function completeMission(btn) {
         1
     );
 
+    /* =====================================================
+   SEASON XP
+===================================================== */
+
+    if (
+        window.StandOutSeason &&
+        typeof window.StandOutSeason.addXP === "function"
+    ) {
+
+        window.StandOutSeason.addXP(
+            10,
+            "Mission"
+        );
+
+    }
+
     if (
         typeof Momentum !== "undefined" &&
         typeof Momentum.reload === "function"
@@ -7089,6 +7336,64 @@ function completeMission(btn) {
 
     saveData();
 }
+
+window.addImprovementPoints = function (amount) {
+
+    amount = Number(amount) || 0;
+
+    if (amount <= 0) {
+        return 0;
+    }
+
+    completedMissions =
+        Math.max(
+            0,
+            completedMissions + amount
+        );
+
+    localStorage.setItem(
+        "completedMissions",
+        completedMissions
+    );
+
+    const counter =
+        document.getElementById(
+            "missionCounter"
+        );
+
+    if (counter) {
+        counter.textContent =
+            completedMissions;
+    }
+
+    renderMarketplace(
+        currentMarketplaceFilter
+    );
+
+    return completedMissions;
+};
+
+window.addImprovementPoints = function (amount) {
+    amount = Number(amount) || 0;
+
+    if (amount <= 0) return completedMissions;
+
+    completedMissions += amount;
+
+    localStorage.setItem(
+        "completedMissions",
+        completedMissions
+    );
+
+    const counter =
+        document.getElementById("missionCounter");
+
+    if (counter) {
+        counter.textContent = completedMissions;
+    }
+
+    return completedMissions;
+};
 //
 
 /* =========================================================
@@ -9141,6 +9446,32 @@ async function resetData() {
         ===================================================== */
 
         localStorage.clear();
+
+        ownedCards = {};
+
+        /* =====================================================
+   RESET SEASON
+   Full app reset → Season returns to factory state.
+===================================================== */
+
+        if (
+            window.StandOutSeason &&
+            typeof window.StandOutSeason.resetSeason === "function"
+        ) {
+            try {
+                window.StandOutSeason.resetSeason();
+
+                console.log("✓ Season state reset.");
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not reset Season state:",
+                    error
+                );
+
+            }
+        }
 
 
         /* =====================================================
