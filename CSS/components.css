@@ -1,96 +1,386 @@
 /* =========================================================
-   LIST ITEMS (MISSIONS, SKILLS, GOALS)
+   LIST ITEMS
+   MISSIONS • SKILLS • GOALS
 ========================================================= */
 
 ul {
-  list-style-type: none;
-  padding: 0;
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+
 }
+
 
 ul li {
-  background: #1f2937;
-  margin: 0.5rem 0;
-  padding: 1rem;
-  border-radius: 6px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: transform 0.4s ease, opacity 0.4s ease;
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 14px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin: 8px 0;
+
+    padding: 14px 15px;
+
+    border:
+        1px solid #202938;
+
+    border-radius: 14px;
+
+    background:
+        #111827;
+
+    color:
+        #f5f7fb;
+
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.20);
+
+    transition:
+        transform 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease,
+        opacity 300ms ease;
+
 }
 
-ul li.remove {
-  transform: translateX(100%);
-  opacity: 0;
-  display: none;
+
+ul li:hover {
+
+    background:
+        #151e2d;
+
+    border-color:
+        #293750;
+
+    transform:
+        translateY(-1px);
+
 }
+
+
+ul li:active {
+
+    transform:
+        scale(0.985);
+
+}
+
+
+ul li.remove {
+
+    transform:
+        translateX(100%);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   SKILLS & GOALS
+========================================================= */
 
 .skill,
 .goal {
-  background: #1f2937;
-  margin: 0.5rem 0;
-  padding: 0.7rem;
-  border-radius: 6px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  cursor: pointer;
-  display: none;
+
+    position: relative;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin: 8px 0;
+
+    padding: 13px 15px;
+
+    border:
+        1px solid #202938;
+
+    border-radius: 14px;
+
+    background:
+        #111827;
+
+    color:
+        #f5f7fb;
+
+    opacity: 0;
+
+    transform:
+        translateY(12px);
+
+    transition:
+        opacity 280ms ease,
+        transform 280ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+
+    cursor: pointer;
+
+    display: none;
+
 }
+
 
 .skill.show,
 .goal.show {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
+
+    display: block;
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
 }
 
+
+.skill:hover,
+.goal:hover {
+
+    background:
+        #151e2d;
+
+    border-color:
+        #293750;
+
+}
+
+
+.skill:active,
+.goal:active {
+
+    transform:
+        scale(0.985);
+
+}
+
+
 /* =========================================================
-   BUTTONS
+   COMPLETE BUTTON
 ========================================================= */
 
 .complete-btn {
-  background: transparent;
-  border: none;
-  color: #3B82F6;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
+
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid rgba(59, 130, 246, 0.14);
+
+    border-radius: 11px;
+
+    background:
+        rgba(59, 130, 246, 0.055);
+
+    color:
+        #3b82f6;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition:
+        transform 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
 }
 
+
 .complete-btn:hover {
-  transform: scale(1.2);
-  color: #2563EB;
+
+    background:
+        rgba(59, 130, 246, 0.10);
+
+    border-color:
+        rgba(59, 130, 246, 0.25);
+
+    transform:
+        scale(1.05);
 }
+
+
+.complete-btn:active {
+
+    transform:
+        scale(0.92);
+}
+
+
+/* =========================================================
+   REMOVE BUTTONS
+========================================================= */
 
 .remove-btn,
 .remove-btn2 {
-  background: transparent;
-  border: none;
-  color: #e63946;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  margin-right: 1rem;
+
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 0;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    background:
+        transparent;
+
+    color:
+        rgba(245, 247, 251, 0.30);
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
 }
+
 
 .remove-btn:hover,
 .remove-btn2:hover {
-  transform: scale(1.2);
-  color: #f87171;
+
+    color:
+        rgba(245, 247, 251, 0.75);
+
+    background:
+        rgba(255, 255, 255, 0.055);
+
+    transform:
+        scale(1.05);
 }
+
+
+.remove-btn:active,
+.remove-btn2:active {
+
+    color:
+        #3b82f6;
+
+    background:
+        rgba(59, 130, 246, 0.08);
+
+    transform:
+        scale(0.90);
+}
+
+
+/* =========================================================
+   DANGER BUTTON
+========================================================= */
 
 .danger-btn {
-  background: #e63946;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
+
+    min-height: 42px;
+
+    padding:
+        0 16px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    color:
+        rgba(245, 247, 251, 0.72);
+
+    font-size: 11px;
+
+    font-weight: 650;
+
+    letter-spacing: .02em;
+
+    cursor: pointer;
+
+    transition:
+        background 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
 }
 
+
 .danger-btn:hover {
-  background: #d62828;
+
+    background:
+        rgba(255, 255, 255, 0.075);
+
+    border-color:
+        rgba(59, 130, 246, 0.16);
+
+    color:
+        #f5f7fb;
+}
+
+
+.danger-btn:active {
+
+    background:
+        rgba(59, 130, 246, 0.08);
+
+    transform:
+        scale(0.96);
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    ul li,
+    .skill,
+    .goal,
+    .complete-btn,
+    .remove-btn,
+    .remove-btn2,
+    .danger-btn {
+
+        transition: none;
+
+    }
+
 }
 
 /* =========================================================
