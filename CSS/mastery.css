@@ -1394,3 +1394,88 @@ textarea {
     cursor: pointer;
 
 }
+
+/* =========================================================
+   MASTERY MODAL — MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .mastery-modal {
+        align-items: flex-end;
+        padding: 10px;
+    }
+
+    .mastery-modal-card {
+
+        width: 100%;
+        max-width: none;
+
+        max-height: calc(
+            100dvh - 20px
+        );
+
+        overflow-y: auto;
+        overscroll-behavior: contain;
+
+        padding: 20px;
+
+        border-radius: 22px 22px 16px 16px;
+
+        transform:
+            translateY(30px);
+
+    }
+
+    .mastery-modal.open
+    .mastery-modal-card {
+
+        transform:
+            translateY(0);
+
+    }
+
+    .mastery-modal-header {
+
+        margin-bottom: 20px;
+
+    }
+
+    .mastery-modal-header h2 {
+
+        font-size: 19px;
+
+    }
+
+    .mastery-modal-close {
+
+        width: 38px;
+        height: 38px;
+
+        flex: 0 0 38px;
+
+    }
+
+    .mastery-field {
+
+        margin-bottom: 15px;
+
+    }
+
+    .mastery-field input,
+    .mastery-field textarea {
+
+        font-size: 16px;
+        /* Prevents iOS Safari zoom */
+
+    }
+
+    .mastery-create-btn {
+
+        min-height: 46px;
+
+        margin-top: 6px;
+
+    }
+
+}
