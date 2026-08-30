@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="CSS/welcome.css">
     <link rel="stylesheet" href="CSS/daily-challenge.css">
     <link rel="stylesheet" href="CSS/season.css">
+    <link rel="stylesheet" href="CSS/mastery.css">
 
 </head>
 
@@ -239,10 +240,451 @@
        Skillset Section
   ============================ -->
     <section id="skillset">
+        <div id="mastery-list"></div>
         <h2>Skillset</h2>
         <div id="skill-list"></div>
         <!--<button class="skill-level" onclick="increaseSkillXP('Grade', 50)">+50 XP</button>-->
     </section>
+
+    <!-- =====================================================
+     MASTERIES
+===================================================== -->
+
+    <section class="mastery-section">
+
+    <div class="mastery-section-header">
+
+        <div>
+
+            <span class="mastery-eyebrow">
+                LONG-TERM GROWTH
+            </span>
+
+            <h2>
+                Masteries
+            </h2>
+
+            <p>
+                Become exceptionally good at
+                what matters to you.
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="mastery-add-btn"
+            onclick="openMasteryModal()"
+            aria-label="Create Mastery"
+        >
+            +
+        </button>
+
+    </div>
+
+
+    <!-- ONLY THIS IS DYNAMIC -->
+
+    <div id="mastery-list"></div>
+
+
+</section>
+
+<!-- =====================================================
+     MASTERY LIMIT ALERT
+===================================================== -->
+
+<div
+    id="mastery-limit-modal"
+    class="mastery-modal"
+    aria-hidden="true"
+>
+
+    <div
+        class="mastery-modal-backdrop"
+        onclick="closeMasteryLimitModal()"
+    ></div>
+
+
+    <div
+        class="mastery-limit-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mastery-limit-title"
+    >
+
+        <div class="mastery-limit-icon">
+            2
+        </div>
+
+
+        <h2 id="mastery-limit-title">
+            Mastery Limit Reached
+        </h2>
+
+
+        <p>
+            You can focus on a maximum of
+            <strong>2 Masteries</strong> at a time.
+        </p>
+
+
+        <button
+            type="button"
+            class="mastery-limit-ok-btn"
+            onclick="closeMasteryLimitModal()"
+        >
+            GOT IT
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     MASTERY EVIDENCE MODAL
+===================================================== -->
+
+<div
+    id="mastery-evidence-modal"
+    class="mastery-modal"
+    aria-hidden="true"
+>
+
+    <div
+        class="mastery-modal-backdrop"
+        onclick="closeMasteryEvidenceModal()"
+    ></div>
+
+
+    <div
+        class="mastery-modal-card mastery-evidence-modal-card"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div class="mastery-modal-header">
+
+            <div>
+
+                <span class="mastery-eyebrow">
+                    MILESTONE EVIDENCE
+                </span>
+
+                <h2 id="mastery-evidence-title">
+                    Add Evidence
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="mastery-modal-close"
+                onclick="closeMasteryEvidenceModal()"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="mastery-evidence-milestone">
+
+            <span>
+                MILESTONE
+            </span>
+
+            <strong id="mastery-evidence-milestone">
+                Milestone
+            </strong>
+
+        </div>
+
+
+        <div class="mastery-field">
+
+            <label for="mastery-evidence-input">
+                WHAT DID YOU ACCOMPLISH?
+            </label>
+
+            <textarea
+                id="mastery-evidence-input"
+                maxlength="1000"
+                rows="6"
+                placeholder="Describe what you did, built, learned, or achieved..."
+            ></textarea>
+
+            <div class="mastery-evidence-counter">
+                <span id="mastery-evidence-count">
+                    0
+                </span>
+                / 1000
+            </div>
+
+        </div>
+
+
+        <div
+            id="mastery-evidence-error"
+            class="mastery-form-error"
+        ></div>
+
+
+        <button
+            type="button"
+            class="mastery-create-btn"
+            onclick="saveMasteryEvidence()"
+        >
+            SAVE EVIDENCE
+        </button>
+
+    </div>
+
+</div>
+
+    <!-- =====================================================
+     CREATE MASTERY MODAL
+===================================================== -->
+
+    <div id="mastery-modal" class="mastery-modal" aria-hidden="true">
+
+        <div class="mastery-modal-backdrop" onclick="closeMasteryModal()"></div>
+
+
+        <div class="mastery-modal-card" role="dialog" aria-modal="true" aria-labelledby="mastery-modal-title">
+
+            <div class="mastery-modal-header">
+
+                <div>
+
+                    <span class="mastery-eyebrow">
+                        NEW MASTERY
+                    </span>
+
+                    <h2 id="mastery-modal-title">
+                        What do you want to master?
+                    </h2>
+
+                </div>
+
+
+                <button type="button" class="mastery-modal-close" onclick="closeMasteryModal()" aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="mastery-form">
+
+                <!-- NAME -->
+
+                <div class="mastery-field">
+
+                    <label for="mastery-title">
+                        MASTERY
+                    </label>
+
+                    <input id="mastery-title" type="text" maxlength="60" placeholder="e.g. JavaScript"
+                        autocomplete="off">
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="mastery-field">
+
+                    <label for="mastery-description">
+                        DESCRIPTION
+                    </label>
+
+                    <textarea id="mastery-description" maxlength="180" rows="3"
+                        placeholder="What does becoming great at this mean to you?"></textarea>
+
+                </div>
+
+
+                <!-- MILESTONES -->
+
+                <div class="mastery-field">
+
+                    <div class="mastery-field-heading">
+
+                        <label>
+                            MILESTONES
+                        </label>
+
+                        <button type="button" class="mastery-add-milestone" onclick="addMasteryMilestoneInput()">
+                            + Add
+                        </button>
+
+                    </div>
+
+
+                    <div id="mastery-milestone-inputs" class="mastery-milestone-inputs"></div>
+
+                </div>
+
+
+                <div class="mastery-form-error" id="mastery-form-error">
+                </div>
+
+
+                <button type="button" class="mastery-create-btn" onclick="submitMasteryCreation()">
+                    CREATE MASTERY
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+     EDIT MASTERY MODAL
+===================================================== -->
+
+    <div id="mastery-edit-modal" class="mastery-modal" aria-hidden="true">
+
+        <div class="mastery-modal-backdrop" onclick="closeMasteryEditModal()"></div>
+
+
+        <div class="mastery-modal-card" role="dialog" aria-modal="true">
+
+            <div class="mastery-modal-header">
+
+                <div>
+
+                    <span class="mastery-eyebrow">
+                        EDIT MASTERY
+                    </span>
+
+                    <h2>
+                        Refine your Mastery
+                    </h2>
+
+                </div>
+
+
+                <button type="button" class="mastery-modal-close" onclick="closeMasteryEditModal()" aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <input type="hidden" id="mastery-edit-id">
+
+
+            <div class="mastery-form">
+
+                <div class="mastery-field">
+
+                    <label for="mastery-edit-title">
+                        MASTERY
+                    </label>
+
+                    <input id="mastery-edit-title" type="text" maxlength="60" autocomplete="off">
+
+                </div>
+
+
+                <div class="mastery-field">
+
+                    <label for="mastery-edit-description">
+                        DESCRIPTION
+                    </label>
+
+                    <textarea id="mastery-edit-description" maxlength="180" rows="3"></textarea>
+
+                </div>
+
+
+                <div class="mastery-field">
+
+                    <div class="mastery-field-heading">
+
+                        <label>
+                            MILESTONES
+                        </label>
+
+                        <button type="button" class="mastery-add-milestone" onclick="addEditMasteryMilestone()">
+                            + Add
+                        </button>
+
+                    </div>
+
+
+                    <div id="mastery-edit-milestones" class="mastery-milestone-inputs"></div>
+
+                </div>
+
+
+                <div id="mastery-edit-error" class="mastery-form-error"></div>
+
+
+                <button type="button" class="mastery-create-btn" onclick="saveMasteryEdits()">
+                    SAVE CHANGES
+                </button>
+
+
+                <button type="button" class="mastery-delete-btn" onclick="openDeleteMasteryModal()">
+                    DELETE MASTERY
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+     DELETE MASTERY CONFIRMATION
+===================================================== -->
+
+    <div id="mastery-delete-modal" class="mastery-modal" aria-hidden="true">
+
+        <div class="mastery-modal-backdrop" onclick="closeDeleteMasteryModal()"></div>
+
+
+        <div class="mastery-delete-card" role="dialog" aria-modal="true" aria-labelledby="mastery-delete-title">
+
+            <div class="mastery-delete-icon">
+                !
+            </div>
+
+
+            <h2 id="mastery-delete-title">
+                Delete this Mastery?
+            </h2>
+
+
+            <p>
+                This will permanently remove the
+                Mastery, its milestones, and all
+                saved evidence.
+            </p>
+
+
+            <div class="mastery-delete-actions">
+
+                <button type="button" class="mastery-cancel-delete" onclick="closeDeleteMasteryModal()">
+                    CANCEL
+                </button>
+
+
+                <button type="button" class="mastery-confirm-delete" onclick="confirmDeleteMastery()">
+                    DELETE
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <!-- =========================================================
      CARDS
@@ -1989,6 +2431,7 @@
     <script src="JS/badges.js"></script>
     <script src="JS/daily-challenge.js"></script>
     <script src="JS/season.js"></script>
+    <script src="JS/mastery.js"></script>
 </body>
 
 </html>
