@@ -743,7 +743,19 @@ async function saveProgressToFile() {
             cardCatalog:
                 cardCatalog
 
+
+
         };
+
+        /* -------------------------------------------------
+   DAILY CHALLENGE
+------------------------------------------------- */
+
+        dailyChallenge:
+        localStorage.getItem(
+            "standout_daily_challenge"
+        )
+
 
 
         /* =====================================================
@@ -842,6 +854,7 @@ async function saveProgressToFile() {
     }
 
     checkMissedDeadlines()
+    window.location.reload();
 
 }
 
@@ -1177,6 +1190,14 @@ async function loadProgressFromFile() {
 
         localStorage.clear();
 
+        /* =====================================================
+   RESET DAILY CHALLENGE
+===================================================== */
+
+        localStorage.removeItem(
+            "standout_daily_challenge"
+        );
+
 
         /* =====================================================
            8. RESTORE LOCAL STORAGE
@@ -1206,6 +1227,23 @@ async function loadProgressFromFile() {
 
             }
         );
+
+        /* =====================================================
+   RESTORE DAILY CHALLENGE
+===================================================== */
+
+        if (
+            backup.dailyChallenge !==
+            undefined &&
+            backup.dailyChallenge !== null
+        ) {
+
+            localStorage.setItem(
+                "dailyChallengeState",
+                backup.dailyChallenge
+            );
+
+        }
 
         /* =====================================================
    RELOAD IMPROVEMENT POINTS
@@ -2313,6 +2351,8 @@ async function loadProgressFromFile() {
 
     }
 
+    window.location.reload();
+
 }
 
 document.getElementById("importProgressFile").addEventListener("change", function (e) {
@@ -3339,6 +3379,8 @@ function calculateDailyConsistency(year, month) {
             0
         ).getDate();
 
+
+
     const result = [];
 
     for (let day = 1; day <= daysInMonth; day++) {
@@ -3564,6 +3606,10 @@ function renderMonthlyReport() {
         month
     );
     renderMonthlySummary(
+        year,
+        month
+    );
+    renderMonthlyDailyChallenges(
         year,
         month
     );
@@ -3846,6 +3892,197 @@ function calculateMonthlyMomentum(year, month) {
     return result;
 }
 
+/* =========================================================
+   MONTHLY REPORT — DAILY CHALLENGES
+========================================================= */
+
+/* =========================================================
+   MONTHLY REPORT — DAILY CHALLENGE METRICS
+========================================================= */
+
+function calculateMonthlyDailyChallenges(year, month) {
+
+    const monthPrefix =
+        `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+    const now = new Date();
+
+    const isCurrentMonth =
+        year === now.getFullYear() &&
+        month === now.getMonth();
+
+    const totalDays =
+        isCurrentMonth
+            ? now.getDate()
+            : daysInMonth;
+
+    let completed = 0;
+    let points = 0;
+
+    Object.keys(missionHistory)
+        .filter(date =>
+            date.startsWith(monthPrefix)
+        )
+        .forEach(date => {
+
+            const events =
+                Array.isArray(
+                    missionHistory[date]?.events
+                )
+                    ? missionHistory[date].events
+                    : [];
+
+            events.forEach(event => {
+
+                if (
+                    event.type === "daily-challenge" &&
+                    event.status === "completed"
+                ) {
+
+                    completed++;
+
+                    points +=
+                        Number(
+                            event.pointsDelta
+                        ) || 0;
+
+                }
+
+            });
+
+        });
+
+
+    return {
+        completed,
+        total: totalDays,
+        points,
+        rate:
+            totalDays > 0
+                ? Math.round(
+                    (completed / totalDays) * 100
+                )
+                : 0
+    };
+}
+
+/* =========================================================
+   MONTHLY REPORT — DAILY CHALLENGE UI
+========================================================= */
+
+function renderMonthlyDailyChallenges(year, month) {
+
+    const data =
+        calculateMonthlyDailyChallenges(
+            year,
+            month
+        );
+
+
+    const count =
+        document.getElementById(
+            "monthlyDailyChallengeCount"
+        );
+
+    const progress =
+        document.getElementById(
+            "monthlyDailyChallengeProgress"
+        );
+
+    const rate =
+        document.getElementById(
+            "monthlyDailyChallengeRate"
+        );
+
+    const points =
+        document.getElementById(
+            "monthlyDailyChallengePoints"
+        );
+
+    const message =
+        document.getElementById(
+            "monthlyDailyChallengeMessage"
+        );
+
+
+    if (count) {
+
+        count.textContent =
+            `${data.completed} / ${data.total}`;
+
+    }
+
+
+    if (progress) {
+
+        progress.style.width =
+            `${Math.min(data.rate, 100)}%`;
+
+    }
+
+
+    if (rate) {
+
+        rate.textContent =
+            `${data.rate}%`;
+
+    }
+
+
+    if (points) {
+
+        points.textContent =
+            `+${data.points} IP`;
+
+    }
+
+
+    if (message) {
+
+        if (data.completed === 0) {
+
+            message.textContent =
+                "No Daily Challenges completed yet.";
+
+        } else if (
+            data.completed === data.total
+        ) {
+
+            message.textContent =
+                "You conquered every Daily Challenge this month.";
+
+        } else if (
+            data.rate >= 75
+        ) {
+
+            message.textContent =
+                "Excellent consistency. You kept showing up.";
+
+        } else if (
+            data.rate >= 50
+        ) {
+
+            message.textContent =
+                "Good work. Keep building the habit.";
+
+        } else {
+
+            message.textContent =
+                "Every challenge conquered is progress.";
+
+        }
+
+    }
+
+}
+
 function generateMonthlySummary(year, month) {
 
     const metrics =
@@ -3856,6 +4093,12 @@ function generateMonthlySummary(year, month) {
 
     const goals =
         calculateMonthlyGoalMetrics(year, month);
+
+    const dailyChallenges =
+        calculateMonthlyDailyChallenges(
+            year,
+            month
+        );
 
     const monthName =
         new Date(year, month, 1)
@@ -3929,6 +4172,20 @@ function generateMonthlySummary(year, month) {
 
     }
 
+    let dailyChallengeInsight = "";
+
+    if (dailyChallenges === 1) {
+
+        dailyChallengeInsight =
+            "You conquered 1 Daily Challenge this month.";
+
+    } else if (dailyChallenges > 1) {
+
+        dailyChallengeInsight =
+            `You conquered ${dailyChallenges} Daily Challenges this month.`;
+
+    }
+
 
     return {
         month: monthName,
@@ -3946,9 +4203,8 @@ function generateMonthlySummary(year, month) {
         goalsTotal:
             goals.total,
         summary:
-            `${opening} You completed ${performance.completionRate}% of your recorded missions. ${consistencyInsight} ${goalInsight}`
+            `${opening} You completed ${performance.completionRate}% of your recorded missions. ${consistencyInsight} ${dailyChallengeInsight} ${goalInsight}`
     };
-
 }
 /* =========================================================
    MONTHLY REPORT — MISSION PERFORMANCE UI
