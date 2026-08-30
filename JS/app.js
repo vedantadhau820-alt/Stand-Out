@@ -2782,13 +2782,6 @@ window.addEventListener("load", () => {
 });
 
 
-document.getElementById("marketplaceIcon").onclick = () => {
-    if (isMarketplaceOpen) {
-        // Close marketplace → go back to missions (or last page)
-        showPage("missions");
-        isMarketplaceOpen = false;
-    } else {
-        // Open marketplace
         document.getElementById("marketplaceIcon").onclick = () => {
 
             if (isMarketplaceOpen) {
@@ -2845,10 +2838,6 @@ document.getElementById("marketplaceIcon").onclick = () => {
                 );
             }
         };
-        isMarketplaceOpen = true;
-    }
-};
-
 /* =========================================================
    MONTHLY REPORT TOGGLE
 ========================================================= */
@@ -6881,39 +6870,7 @@ function checkMissedDeadlines() {
                 );
             }
 
-            // // 🔥 HARDCORE MODE — RESET ALL POINTS (ONCE)
-            // if (
-            //     li.dataset.hardcore === "true" &&
-            //     !li.dataset.hardcorePunished
-            // ) {
-            //     li.dataset.hardcorePunished = "true";
-
-            //     if (completedMissions < 0) {
-
-            //         completedMissions -= 4;
-            //         localStorage.setItem("completedMissions", completedMissions);
-            //         document.getElementById("missionCounter").textContent = completedMissions;
-            //     }
-            //     else {
-
-            //         completedMissions = 0;
-            //         localStorage.setItem("completedMissions", 0);
-            //         document.getElementById("missionCounter").textContent = "0";
-
-            //     }
-
-            //     renderMarketplace();
-            //     renderMyCards();
-
-            //     showSmartNotification(
-            //         "🔥 Hardcore Failed",
-            //         "Improvement Points reduce -5."
-            //     );
-
-            //     saveData();
-            //     return; // ⛔ stop further penalties
-            // }
-
+            
             // 🔥 HARDCORE MODE — DEDUCT 5 POINTS (ONCE)
             if (
                 li.dataset.hardcore === "true" &&
