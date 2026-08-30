@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="CSS/monthly-report.css">
     <link rel="stylesheet" href="CSS/badges.css">
     <link rel="stylesheet" href="CSS/welcome.css">
+    <link rel="stylesheet" href="CSS/daily-challenge.css">
 
 </head>
 
@@ -207,6 +208,43 @@
         </div>
 
         <div id="momentum-panel-slot"></div>
+
+        <!-- =================================================
+     DAILY CHALLENGE
+================================================= -->
+
+        <div id="dailyChallenge" class="daily-challenge">
+
+            <div class="daily-challenge-top">
+
+                <div>
+                    <span class="daily-challenge-eyebrow">
+                        DAILY CHALLENGE
+                    </span>
+
+                    <h3 id="dailyChallengeTitle">
+                        Today's Challenge
+                    </h3>
+                </div>
+
+                <span class="daily-challenge-reward">
+                    +3 IP
+                </span>
+
+            </div>
+
+
+            <p id="dailyChallengeText" class="daily-challenge-text">
+                Preparing today's challenge...
+            </p>
+
+
+            <button id="dailyChallengeComplete" class="daily-challenge-btn" type="button">
+                Complete
+            </button>
+
+        </div>
+
 
         <ul id="mission-list"></ul>
 
@@ -1628,6 +1666,7 @@
     <script src="JS/custom-cards.js"></script>
     <script src="JS/background.js"></script>
     <script src="JS/badges.js"></script>
+    <script src="JS/daily-challenge.js"></script>
 </body>
 
 </html>
