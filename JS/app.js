@@ -2705,7 +2705,11 @@ function renderMyCards() {
             document.createElement("div");
 
         div.className =
-            `flex-card owned grade-${card.grade.toLowerCase()}`;
+    `flex-card owned grade-${card.grade.toLowerCase()}${
+        card.seasonReward
+            ? " season-card"
+            : ""
+    }`;
 
         div.innerHTML = `
             <img
@@ -2718,12 +2722,22 @@ function renderMyCards() {
                 ${card.grade}
             </span>
 
-            ${card.limited
-                ? `<span class="limited-badge">
-                           LIMITED
-                       </span>`
-                : ""
-            }
+           ${card.seasonReward && card.season
+    ? `
+        <span class="season-badge">
+            SEASON ${card.season
+                .replace("season-", "")
+                .padStart(2, "0")}
+        </span>
+      `
+    : card.limited
+        ? `
+            <span class="limited-badge">
+                LIMITED
+            </span>
+          `
+        : ""
+}
 
             <div class="card-body">
 
