@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 31";
+const CACHE_NAME = "standout-v2.3 beta 32";
 //const MEDIA_CACHE = "standout-media";
 // NEVER versioned
 
@@ -6,7 +6,7 @@ const FONT_AWESOME_CACHE =
   "standout-fontawesome-v1";
 
 const BACKGROUND_CACHE =
-  "standout-background-v8";
+  "standout-background-v9";
 
 const WELCOME_CACHE =
   "standout-welcome-v4";
@@ -48,6 +48,7 @@ const APP_SHELL = [
   "/CSS/monthly-report.css",
   "/CSS/welcome.css",
   "/CSS/daily-challenge.css",
+  "/CSS/season.css",
 
   // JS
   "/JS/cards.js",
@@ -59,6 +60,7 @@ const APP_SHELL = [
   "/JS/sound.js",
   "/JS/welcome.js",
   "/JS/daily-challenge.js",
+  "/JS/season.js",
 
   "/icon.jpeg"
 ];
@@ -124,6 +126,10 @@ const BACKGROUND_ASSETS = [
   // Badges
   "/badges/aug-2026.png",
   "/badges/sep-2026.png"
+
+  //assets
+  "/assets/cards/season-01-ascension"
+  "/assets/cards/season-01-beyond-limits"
 ];
 
 
