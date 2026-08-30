@@ -74,7 +74,7 @@ window.cardCatalog = [
       cost: 0,
       image: "assets/cards/season-01-ascension.png",
       limited: true,
-      expiresAt: null,
+      expiresAt: "2026-09-30T23:29:30Z",
       season: "season-01",
       seasonReward: true
    },
@@ -87,7 +87,7 @@ window.cardCatalog = [
       cost: 0,
       image: "assets/cards/season-01-beyond-limits.png",
       limited: true,
-      expiresAt: null,
+      expiresAt: "2026-09-30T23:29:30Z",
       season: "season-01",
       seasonReward: true
    }
