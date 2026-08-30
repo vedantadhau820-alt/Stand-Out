@@ -54,94 +54,545 @@ header h1 {
 }
 
 /* =========================================================
-   TOP NAVBAR
+   TOP NAVBAR — PREMIUM
 ========================================================= */
 
 .top-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
 
-  width: 100%;
-  height: 60px;
-  padding: 0 16px;
+    position: fixed;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: nowrap;
+    top: 0;
+    left: 0;
 
-  background: #111827;
-  z-index: 9999;
+    width: 100%;
+
+    height: 60px;
+
+    padding:
+        0 16px;
+
+    padding-top:
+        env(safe-area-inset-top);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 14px;
+
+    box-sizing: border-box;
+
+    background:
+        rgba(8, 11, 17, 0.88);
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    backdrop-filter:
+        blur(18px)
+        saturate(140%);
+
+    -webkit-backdrop-filter:
+        blur(18px)
+        saturate(140%);
+
+    z-index: 9999;
+
+    isolation: isolate;
+
 }
+
+
+/* =========================================================
+   LEFT SIDE
+========================================================= */
 
 .nav-left {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #3b82f6;
-  white-space: nowrap;
+
+    display: flex;
+
+    align-items: center;
+
+    min-width: 0;
+
+    font-size: 1.25rem;
+
+    font-weight: 700;
+
+    letter-spacing: -0.035em;
+
+    color: #f5f7fb;
+
+    white-space: nowrap;
+
+    user-select: none;
+
 }
+
+
+/* Accent only the important part if applicable */
+
+.nav-left span {
+
+    color:
+        #3b82f6;
+
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+========================================================= */
 
 .nav-right {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+
 }
 
+
+/* =========================================================
+   PROFILE / NAV IMAGE
+========================================================= */
+
 .nav-right .nav-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
+
+    width: 40px;
+
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: block;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.10);
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.045);
+
+    background:
+        rgba(255, 255, 255, 0.04);
+
+    cursor: pointer;
+
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+
+}
+
+
+/* =========================================================
+   PROFILE PRESS EFFECT
+========================================================= */
+
+.nav-right .nav-img:active {
+
+    transform:
+        scale(0.93);
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.10);
+
+}
+
+
+/* =========================================================
+   OPTIONAL NAV BUTTONS
+========================================================= */
+
+.nav-right button {
+
+    width: 40px;
+
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background:
+        transparent;
+
+    color:
+        rgba(245, 247, 251, 0.65);
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+
+}
+
+
+.nav-right button:hover {
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    color:
+        #f5f7fb;
+
+}
+
+
+.nav-right button:active {
+
+    transform:
+        scale(0.93);
+
+    background:
+        rgba(59, 130, 246, 0.08);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .top-navbar {
+
+        height: 58px;
+
+        padding-left: 14px;
+
+        padding-right: 14px;
+
+    }
+
+    .nav-left {
+
+        font-size: 1.15rem;
+
+    }
+
+    .nav-right .nav-img {
+
+        width: 38px;
+
+        height: 38px;
+
+        flex-basis: 38px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .nav-right .nav-img,
+    .nav-right button {
+
+        transition: none;
+
+    }
+
 }
 
 /* =========================================================
-   BOTTOM NAVIGATION
+   BOTTOM NAVIGATION — PREMIUM
 ========================================================= */
 
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
 
-  width: 100%;
-  height: 55px;
+    position: fixed;
 
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
+    left: 0;
+    bottom: 0;
 
-  background: #1f2937;
-  border-top: 2px solid #111;
-  z-index: 50;
+    width: 100%;
+
+    height: 62px;
+
+    padding:
+        0 8px
+        env(safe-area-inset-bottom);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-evenly;
+
+    box-sizing: border-box;
+
+    background:
+        rgba(8, 11, 17, 0.92);
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    backdrop-filter:
+        blur(20px)
+        saturate(140%);
+
+    -webkit-backdrop-filter:
+        blur(20px)
+        saturate(140%);
+
+    z-index: 9998;
+
+    isolation: isolate;
+
 }
+
+
+/* =========================================================
+   NAV BUTTON
+========================================================= */
 
 .bottom-nav button {
-  flex: 1;
-  height: 100%;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+    position: relative;
 
-  background: none;
-  border: none;
-  color: #9ca3af;
+    flex: 1;
 
-  font-size: 14px;
-  cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
+    height: 48px;
+
+    max-width: 90px;
+
+    margin: 0 3px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+
+    border-radius: 14px;
+
+    color:
+        rgba(245, 247, 251, 0.38);
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    letter-spacing: .01em;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition:
+        color 180ms ease,
+        background 180ms ease,
+        transform 180ms ease;
+
 }
 
-.bottom-nav button:hover {
-  color: #3b82f6;
-  transform: scale(1.05);
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.bottom-nav button i,
+.bottom-nav button svg {
+
+    font-size: 18px;
+
+    width: 20px;
+
+    height: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition:
+        transform 180ms ease;
+
 }
+
+
+/* =========================================================
+   ACTIVE
+========================================================= */
 
 .bottom-nav button.active {
-  color: #3b82f6;
-  font-weight: 700;
+
+    color:
+        #3b82f6;
+
+    font-weight: 600;
+
+    background:
+        rgba(59, 130, 246, 0.065);
+
+}
+
+
+/* Active indicator */
+
+.bottom-nav button.active::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 3px;
+
+    left: 50%;
+
+    width: 18px;
+
+    height: 2px;
+
+    border-radius: 999px;
+
+    background:
+        #3b82f6;
+
+    transform:
+        translateX(-50%);
+
+}
+
+
+/* =========================================================
+   ACTIVE ICON
+========================================================= */
+
+.bottom-nav button.active i,
+.bottom-nav button.active svg {
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.bottom-nav button:hover {
+
+    color:
+        rgba(245, 247, 251, 0.75);
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================================================
+   PRESS
+========================================================= */
+
+.bottom-nav button:active {
+
+    transform:
+        scale(0.94);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .bottom-nav {
+
+        height: 60px;
+
+        padding-left: 5px;
+
+        padding-right: 5px;
+
+    }
+
+    .bottom-nav button {
+
+        max-width: 78px;
+
+        height: 46px;
+
+        border-radius: 13px;
+
+        font-size: 9px;
+
+    }
+
+    .bottom-nav button i,
+    .bottom-nav button svg {
+
+        font-size: 17px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .bottom-nav button,
+    .bottom-nav button i,
+    .bottom-nav button svg {
+
+        transition: none;
+
+    }
+
 }
 
 /* =========================================================
