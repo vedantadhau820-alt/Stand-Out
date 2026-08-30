@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.3 beta 33";
+const CACHE_NAME = "standout-v2.3 beta 34";
 //const MEDIA_CACHE = "standout-media";
 // NEVER versioned
 
@@ -49,6 +49,7 @@ const APP_SHELL = [
   "/CSS/welcome.css",
   "/CSS/daily-challenge.css",
   "/CSS/season.css",
+  "/CSS/mastery.css",
 
   // JS
   "/JS/cards.js",
@@ -61,6 +62,7 @@ const APP_SHELL = [
   "/JS/welcome.js",
   "/JS/daily-challenge.js",
   "/JS/season.js",
+  "/JS/mastery.js",
 
   "/icon.jpeg"
 ];
