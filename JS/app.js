@@ -274,13 +274,13 @@ async function saveProgressToFile() {
         ----------------------------------------------------- */
 
         if (
-            typeof completedMissions !==
+            typeof completedMissionCount !==
             "undefined"
         ) {
 
-            runtimeState.completedMissions =
+            runtimeState.completedMissionCount =
                 Number(
-                    completedMissions
+                    completedMissionCount
                 ) || 0;
 
         }
@@ -1271,6 +1271,27 @@ async function loadProgressFromFile() {
 
         }
 
+        try {
+
+    const storedMissionCount =
+        localStorage.getItem(
+            "completedMissionCount"
+        );
+
+    completedMissionCount =
+        Math.max(
+            0,
+            Number(storedMissionCount) || 0
+        );
+
+} catch (error) {
+
+    console.warn(
+        "Could not reload completed mission count:",
+        error
+    );
+
+}
         /* =====================================================
    RELOAD MISSION HISTORY
 ===================================================== */
@@ -2077,6 +2098,7 @@ async function loadProgressFromFile() {
                     )
                     : {};
 
+            
 
             /* -------------------------------------------------
                UPDATE IMPROVEMENT COUNTER UI
@@ -2383,7 +2405,7 @@ document.getElementById("importProgressFile").addEventListener("change", functio
 window.saveProgressToFile = saveProgressToFile;
 window.loadProgressFromFile = loadProgressFromFile;
 
-const DAILY_IMPROVEMENT_LIMIT = 10;
+const DAILY_IMPROVEMENT_LIMIT = 11;
 
 let dailyImprovementCount = parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
 let lastImprovementDate = localStorage.getItem("lastImprovementDate") || new Date().toDateString();
@@ -3387,6 +3409,12 @@ function dailyGoalReminder() {
 ========================================================= */
 let completedMissions = parseInt(localStorage.getItem("completedMissions")) || 0;
 let missionHistory = JSON.parse(localStorage.getItem("missionHistory")) || {};
+let completedMissionCount =
+    Number(
+        localStorage.getItem(
+            "completedMissionCount"
+        )
+    ) || 0;
 window.addEventListener("load", () => {
     checkMissedDeadlines();
 });
@@ -5974,7 +6002,7 @@ function unlockAchievement(id) {
         ) {
 
             window.StandOutSeason.addXP(
-                50,
+                25,
                 "Achievement"
             );
 
@@ -7187,6 +7215,8 @@ function completeMission(btn) {
     dailyImprovementCount++;
 
     completedMissions++;
+
+    completedMissionCount++;
     const isMissionAchievement =
         missionMilestones.includes(completedMissions);
 
@@ -7347,19 +7377,17 @@ function completeMission(btn) {
     saveData();
 }
 
+
+
 window.addImprovementPoints = function (amount) {
 
     amount = Number(amount) || 0;
 
     if (amount <= 0) {
-        return 0;
+        return completedMissions;
     }
 
-    completedMissions =
-        Math.max(
-            0,
-            completedMissions + amount
-        );
+    completedMissions += amount;
 
     localStorage.setItem(
         "completedMissions",
@@ -7379,28 +7407,6 @@ window.addImprovementPoints = function (amount) {
     renderMarketplace(
         currentMarketplaceFilter
     );
-
-    return completedMissions;
-};
-
-window.addImprovementPoints = function (amount) {
-    amount = Number(amount) || 0;
-
-    if (amount <= 0) return completedMissions;
-
-    completedMissions += amount;
-
-    localStorage.setItem(
-        "completedMissions",
-        completedMissions
-    );
-
-    const counter =
-        document.getElementById("missionCounter");
-
-    if (counter) {
-        counter.textContent = completedMissions;
-    }
 
     return completedMissions;
 };
@@ -7804,7 +7810,7 @@ function increaseSkillXP(skillName, amount) {
 
 function checkMissionAchievements() {
     missionMilestones.forEach(m => {
-        if (completedMissions === m) unlockAchievement("mission" + m);
+        if (completedMissionCount === m) unlockAchievement("mission" + m);
     });
 }
 
@@ -8012,7 +8018,7 @@ function getGoalCommitmentDays(priority) {
     }
 
     if (priority === "High") {
-        return 30;
+        return 25;
     }
 
     return 0;
@@ -9212,7 +9218,10 @@ function updateTimers() {
    9. RESET & DATA MANAGEMENT
 ========================================================= */
 function saveData() {
-    localStorage.setItem("completedMissions", completedMissions);
+    localStorage.setItem(
+    "completedMissionCount",
+    completedMissionCount
+);
     localStorage.setItem("missionHistory", JSON.stringify(missionHistory));
     // Save deducted flag on missions
     document.querySelectorAll("#mission-list li").forEach(li => {
