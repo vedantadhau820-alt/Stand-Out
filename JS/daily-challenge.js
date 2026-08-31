@@ -460,7 +460,8 @@
         /*
          * Improvement Points
          */
-        completedMissions += REWARD;
+        completedMissions++;
+        checkMissionAchievements();
 
         completedMissions =
             Math.max(
@@ -513,6 +514,19 @@
          * Record in mission history.
          */
         recordDailyChallenge();
+
+        /* =====================================================
+   ACHIEVEMENTS
+===================================================== */
+
+        if (
+            typeof checkMissionAchievements ===
+            "function"
+        ) {
+
+            checkMissionAchievements();
+
+        }
 
 
         /*
