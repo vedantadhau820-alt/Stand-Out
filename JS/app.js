@@ -3235,31 +3235,70 @@ function updateNotificationBadge() {
     }
 }
 
-// Open/Close drawer
+// =========================================================
+// NOTIFICATION DRAWER — OPEN / CLOSE
+// =========================================================
+
 document.getElementById("notifyBell").onclick = (e) => {
+
+    e.preventDefault();
     e.stopPropagation();
-    const drawer = document.getElementById("notificationDrawer");
 
-    if (drawer.style.display === "none") {
+    const drawer =
+        document.getElementById(
+            "notificationDrawer"
+        );
+
+    if (!drawer) return;
+
+
+    const isOpen =
+        drawer.classList.contains(
+            "notification-open"
+        );
+
+
+    if (!isOpen) {
+
         renderNotifications();
-        drawer.style.display = "block";
 
-        // 🔥 Clear the badge
-        const badge = document.getElementById("notifyBadge");
-        // Clear badge
-        badge.style.display = "none";
-        badge.textContent = "";
+        drawer.classList.add(
+            "notification-open"
+        );
 
-        // Mark all as read  (but keep them in list)
-        // Reset unread count
-        localStorage.setItem("lastNotifCount", appNotifications.length);
+        // Clear notification badge
+        const badge =
+            document.getElementById(
+                "notifyBadge"
+            );
+
+        if (badge) {
+
+            badge.style.display =
+                "none";
+
+            badge.textContent =
+                "";
+        }
+
+
+        // Mark notifications as read
+        localStorage.setItem(
+            "lastNotifCount",
+            appNotifications.length
+        );
+
         updateNotificationBadge();
-        saveNotifications();
-    } else {
-        drawer.style.display = "none";
-    }
-}; // ← CLOSE THIS PROPERLY
 
+        saveNotifications();
+
+    } else {
+
+        drawer.classList.remove(
+            "notification-open"
+        );
+    }
+};
 document.getElementById("notificationDrawer").addEventListener("click", function (e) {
     e.stopPropagation();
 });
