@@ -329,6 +329,15 @@
         const state =
             loadState();
 
+       if (!hasSeasonStarted()) {
+
+    console.log(
+        "Season has not started yet."
+    );
+
+    return state;
+       }
+
 
         /*
          * Season already completed.
@@ -499,6 +508,15 @@
 
         const state =
             loadState();
+
+       if (!hasSeasonStarted()) {
+
+    console.log(
+        "Season has not started yet."
+    );
+
+    return false;
+       }
 
         const reward =
             SEASON.rewards[level];
@@ -1103,6 +1121,20 @@
 
     }
 
+   /* =====================================================
+   SEASON START
+===================================================== */
+
+function hasSeasonStarted() {
+
+    const now = new Date();
+
+    const start =
+        new Date(SEASON.start);
+
+    return now >= start;
+}
+
 
     /* =====================================================
        SEASON EXPIRY
@@ -1155,6 +1187,13 @@
     ===================================================== */
 
     function renderSeason() {
+
+       if (!hasSeasonStarted()) {
+
+        renderSeasonComingSoon();
+
+        return;
+       }
 
         const state =
             checkSeasonExpiry();
