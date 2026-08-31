@@ -404,7 +404,7 @@
                 "completed",
 
             pointsDelta:
-                REWARD,
+                1,
 
             timestamp:
                 new Date().toISOString()
@@ -423,7 +423,7 @@
          * reward to the day's history.
          */
         history[today].pointsDelta +=
-            REWARD;
+            1;
 
 
         /*
