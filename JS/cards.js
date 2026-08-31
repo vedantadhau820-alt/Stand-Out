@@ -63,8 +63,8 @@ window.cardCatalog = [
    // { id: "jjk_sukuna", title: "Ryomen Sukuna", grade: "w", cost: 70, image: "Images/jjk.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
 
 
-   { id: "Endgame_Cap", title: "Captain America - Endgame", grade: "w", quote: "The Worthy Human.", cost: 70, image: "Images/Endgame_Cap.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
-   { id: "Endgame_Thor", title: "Thor - Ragnarock", grade: "w", quote: "God Of Thunder.", cost: 80, image: "Images/Endgame_Thor.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
+   { id: "Endgame_Cap", title: "Captain America - Endgame", grade: "w", quote: "The Worthy Human.", cost: 200, image: "Images/Endgame_Cap.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
+   { id: "Endgame_Thor", title: "Thor - Ragnarock", grade: "w", quote: "God Of Thunder.", cost: 210, image: "Images/Endgame_Thor.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
 
    {
       id: "season_01_card",
