@@ -24,7 +24,7 @@
          * TESTING START DATE
          * Change back to September 1 for production.
          */
-        start: "2026-09-01T00:00:00+05:30",
+        start: "2026-09-01T23:59:59+05:30",
 
         end: "2026-09-30T23:59:59+05:30",
 
