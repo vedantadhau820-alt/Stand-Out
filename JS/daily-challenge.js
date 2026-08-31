@@ -615,7 +615,7 @@
 
                 if (typeof customAlert === "function") {
                     customAlert(
-                        "Challenge conquered. +3 Improvement Points."
+                        "Challenge conquered. +1 Improvement Points."
                     );
                 }
 
