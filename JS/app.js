@@ -10328,6 +10328,12 @@ function isPastDateTime(dateTimeValue) {
 window.addEventListener("load", () => {
     loadData();
     enforceDailyReset();
+    if (
+        typeof window.refreshDailyChallenge ===
+        "function"
+    ) {
+        window.refreshDailyChallenge();
+    }
     renderMarketplace();
     refreshRecurringMissions();
     checkMissedDeadlines();
