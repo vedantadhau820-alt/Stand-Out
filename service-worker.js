@@ -130,8 +130,8 @@ const BACKGROUND_ASSETS = [
   "/badges/sep-2026.png"
 
   //assets
-  "/assets/cards/season-01-ascension"
-  "/assets/cards/season-01-beyond-limits"
+  "/assets/cards/season-01-ascension.png"
+  "/assets/cards/season-01-beyond-limitso.png"
 ];
 
 
