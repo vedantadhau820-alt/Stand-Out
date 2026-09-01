@@ -634,10 +634,36 @@
 
 
     /* =====================================================
-       INITIALIZE
-    ===================================================== */
+   INITIALIZE
+===================================================== */
+
+/*
+ * Expose Daily Challenge refresh to the main app.
+ * This allows the challenge to be initialized whenever
+ * the application itself initializes.
+ */
+window.refreshDailyChallenge = render;
+
+
+/*
+ * Initial render.
+ *
+ * If this script loads after the DOM is ready,
+ * render immediately. Otherwise wait for DOMContentLoaded.
+ */
+if (document.readyState === "loading") {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        render,
+        { once: true }
+    );
+
+} else {
 
     render();
+
+}
 
 
 })();
