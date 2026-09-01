@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.4 beta 10";
+const CACHE_NAME = "standout-v2.4 beta 11";
 //const MEDIA_CACHE = "standout-media";
 // NEVER versioned
 
@@ -35,6 +35,7 @@ const APP_SHELL = [
 
   // well-known
   "/.well-known/assetlinks.json",
+
   // CSS
   "/CSS/base.css",
   "/CSS/buttons.css",
@@ -127,11 +128,11 @@ const BACKGROUND_ASSETS = [
 
   // Badges
   "/badges/aug-2026.png",
-  "/badges/sep-2026.png"
+  "/badges/sep-2026.png",
 
-  //assets
-  "/assets/cards/season-01-ascension.png"
-  "/assets/cards/season-01-beyond-limitso.png"
+  // Assets
+  "/assets/cards/season-01-ascension",
+  "/assets/cards/season-01-beyond-limits"
 ];
 
 
@@ -147,7 +148,6 @@ self.addEventListener(
       "🟡 SW installing..."
     );
 
-
     event.waitUntil(
 
       (async () => {
@@ -161,28 +161,69 @@ self.addEventListener(
             CACHE_NAME
           );
 
+        /*
+         * Cache files individually.
+         *
+         * IMPORTANT:
+         * If one file is missing, the Service Worker
+         * installation will NOT fail.
+         */
 
-        try {
+        await Promise.all(
 
-          await appCache.addAll(
-            APP_SHELL
-          );
+          APP_SHELL.map(
+            async url => {
 
+              try {
 
-          console.log(
-            "✅ App shell cached"
-          );
+                const response =
+                  await fetch(
+                    url,
+                    {
+                      cache: "no-cache"
+                    }
+                  );
 
-        } catch (err) {
+                if (response.ok) {
 
-          console.error(
-            "❌ App shell cache failed:",
-            err
-          );
+                  await appCache.put(
+                    url,
+                    response.clone()
+                  );
 
-          throw err;
+                  console.log(
+                    "✅ Shell cached:",
+                    url
+                  );
 
-        }
+                } else {
+
+                  console.warn(
+                    "⚠️ Shell file unavailable:",
+                    url,
+                    response.status
+                  );
+
+                }
+
+              } catch (error) {
+
+                console.warn(
+                  "⚠️ Shell cache failed:",
+                  url,
+                  error
+                );
+
+              }
+
+            }
+          )
+
+        );
+
+        console.log(
+          "✅ App shell caching finished"
+        );
 
 
         /* =====================================================
@@ -209,7 +250,6 @@ self.addEventListener(
                 }
               );
 
-
             if (
               response.ok
             ) {
@@ -218,7 +258,6 @@ self.addEventListener(
                 url,
                 response
               );
-
 
               console.log(
                 "✅ Font Awesome cached:",
@@ -255,7 +294,6 @@ self.addEventListener(
           await welcomeCache.addAll(
             WELCOME_ASSETS
           );
-
 
           console.log(
             "✅ Welcome video cached"
@@ -313,7 +351,6 @@ self.addEventListener(
       "🟢 SW activating"
     );
 
-
     event.waitUntil(
 
       (async () => {
@@ -348,14 +385,16 @@ self.addEventListener(
 
 
         cacheBackgroundAssets()
-          .catch(error => {
+          .catch(
+            error => {
 
-            console.warn(
-              "Background asset caching failed:",
-              error
-            );
+              console.warn(
+                "Background asset caching failed:",
+                error
+              );
 
-          });
+            }
+          );
 
 
         /* =====================================================
@@ -389,9 +428,9 @@ self.addEventListener(
 );
 
 
-/* ===========================
+/* =========================================================
    FETCH → CACHE STRATEGY
-=========================== */
+========================================================= */
 
 self.addEventListener(
   "fetch",
@@ -450,7 +489,6 @@ self.addEventListener(
               event.request.url
             );
 
-
             throw error;
 
           }
@@ -466,34 +504,99 @@ self.addEventListener(
 
 
     /* =====================================================
-       EXISTING APP SHELL LOGIC
+       APP REQUESTS
+
+       1. Use cached version first.
+       2. If not cached, try network.
+       3. Cache successful same-origin GET requests.
+       4. If offline navigation fails, return index.html.
     ===================================================== */
 
     event.respondWith(
 
-      caches.match(
-        event.request
-      ).then(
-        cached => {
+      (async () => {
 
-          if (cached) {
+        const cached =
+          await caches.match(
+            event.request
+          );
 
-            return cached;
+
+        if (cached) {
+
+          return cached;
+
+        }
+
+
+        try {
+
+          const response =
+            await fetch(
+              event.request
+            );
+
+
+          /*
+           * Runtime-cache successful
+           * same-origin GET requests.
+           */
+
+          if (
+            event.request.method === "GET" &&
+            new URL(
+              event.request.url
+            ).origin === self.location.origin &&
+            response.ok
+          ) {
+
+            const runtimeCache =
+              await caches.open(
+                CACHE_NAME
+              );
+
+
+            await runtimeCache.put(
+              event.request,
+              response.clone()
+            );
 
           }
 
 
-          return fetch(
-            event.request
-          ).catch(
-            () =>
-              caches.match(
+          return response;
+
+        } catch (error) {
+
+          /*
+           * Only navigation requests should
+           * fall back to index.html.
+           */
+
+          if (
+            event.request.mode === "navigate"
+          ) {
+
+            const offlinePage =
+              await caches.match(
                 "/index.html"
-              )
-          );
+              );
+
+
+            if (offlinePage) {
+
+              return offlinePage;
+
+            }
+
+          }
+
+
+          throw error;
 
         }
-      )
+
+      })()
 
     );
 
@@ -572,4 +675,4 @@ async function cacheBackgroundAssets() {
 
   }
 
-}
+        }
