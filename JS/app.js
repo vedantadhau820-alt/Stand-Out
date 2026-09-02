@@ -7380,8 +7380,8 @@ const isMissionAchievement =
         )
         : (
             repeat === "none"
-                ? "Mission completed! No Improvement Point gained."
-                : "Mission completed! No Improvement Point gained. It will return for the next occurrence."
+                ? "Mission completed! No Improvement Point gained. Daily Improvement Limit Reached."
+                : "Mission completed! No Improvement Point gained. Daily Improvement Limit Reached. It will return for the next occurrence."
         )
 );
 
