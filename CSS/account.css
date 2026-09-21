@@ -81,6 +81,65 @@
   color: #6b7280;
 }
 
+/* ================================
+   ACHIEVEMENTS TOGGLE BUTTON
+   ================================ */
+
+.achievements-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin: 18px 0 4px;
+    padding: 11px 16px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease,
+        color 0.2s ease;
+}
+
+/* Hover */
+.achievements-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.20);
+}
+
+/* Press */
+.achievements-toggle:active {
+    transform: scale(0.98);
+}
+
+/* Arrow */
+.achievements-toggle i {
+    font-size: 10px;
+    opacity: 0.7;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.achievements-toggle:hover i {
+    opacity: 1;
+}
+
 /* =========================================================
    ACHIEVEMENT DATE
 ========================================================= */
