@@ -96,6 +96,8 @@
 
     "Don't eat junk food today.",
 
+    "Take 20 slow, deep breaths.",
+
     "Write down 5 interesting things you learned today.",
 
     "Spend 20 minutes outside without using your phone.",
@@ -105,8 +107,6 @@
     "Write down everything you need to accomplish tomorrow.",
 
     "Spend 30 minutes reading instead of scrolling.",
-
-    "Take 20 slow, deep breaths.",
 
     "Organize one drawer, shelf, or cupboard.",
 
