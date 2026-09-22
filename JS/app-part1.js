@@ -2645,8 +2645,7 @@ function formatDate(isoDate) {
 }
 
 function renderMyCards() {
-    const container =
-        document.getElementById("ownedCards");
+    const container = document.getElementById("ownedCards");
 
     if (!container) return;
 
@@ -2654,84 +2653,93 @@ function renderMyCards() {
 
     /*
      * Always read the latest owned cards.
-     * This keeps Season rewards synchronized
-     * with the existing card system.
      */
     let currentOwnedCards = {};
 
     try {
-        currentOwnedCards =
-            JSON.parse(
-                localStorage.getItem("ownedCards") ||
-                "{}"
-            );
-    } catch (error) {
-        console.error(
-            "Could not load owned cards:",
-            error
+        currentOwnedCards = JSON.parse(
+            localStorage.getItem("ownedCards") || "{}"
         );
-
+    } catch (error) {
+        console.error("Could not load owned cards:", error);
         currentOwnedCards = {};
     }
 
     /*
      * Keep the runtime reference synchronized.
      */
-    if (
-        typeof window.ownedCards !==
-        "undefined"
-    ) {
-        window.ownedCards =
-            currentOwnedCards;
+    if (typeof window.ownedCards !== "undefined") {
+        window.ownedCards = currentOwnedCards;
     }
 
     /*
      * Find every card that is actually owned.
+     *
+     * IMPORTANT:
+     * Do NOT filter out seasonReward cards here.
      */
-    const ownedList =
-        (window.cardCatalog || [])
-            .filter(
-                card =>
-                    currentOwnedCards[card.id]
-            )
-            .sort(
-                (a, b) =>
-                    gradeRank(b.grade) -
-                    gradeRank(a.grade)
-            );
+    const ownedList = (window.cardCatalog || [])
+        .filter(card => currentOwnedCards[card.id])
+        .sort(
+            (a, b) =>
+                gradeRank(b.grade) -
+                gradeRank(a.grade)
+        );
 
     if (ownedList.length === 0) {
-
-        container.innerHTML =
-            `<p style="opacity:.6;">
+        container.innerHTML = `
+            <p style="opacity:.6;">
                 No cards minted yet.
-            </p>`;
-
+            </p>
+        `;
         return;
     }
 
     /*
-     * Render owned cards.
+     * Render every owned card.
      */
     ownedList.forEach(card => {
+        const data = currentOwnedCards[card.id];
 
-        const data =
-            currentOwnedCards[card.id];
+        const mintedAt = data?.mintedAt
+            ? formatDate(data.mintedAt)
+            : "Unknown";
 
-        const mintedAt =
-            data?.mintedAt
-                ? formatDate(data.mintedAt)
-                : "Unknown";
+        const div = document.createElement("div");
 
-        const div =
-            document.createElement("div");
-
+        /*
+         * Season cards get their own class,
+         * but remain normal owned cards.
+         */
         div.className =
-    `flex-card owned grade-${card.grade.toLowerCase()}${
-        card.seasonReward
-            ? " season-card"
-            : ""
-    }`;
+            `flex-card owned grade-${card.grade.toLowerCase()}` +
+            `${card.seasonReward ? " season-card" : ""}`;
+
+        /*
+         * Badge:
+         * Season card → SEASON XX
+         * Limited card → LIMITED
+         * Normal card → no special badge
+         */
+        let specialBadge = "";
+
+        if (card.seasonReward && card.season) {
+            const seasonNumber = card.season
+                .replace("season-", "")
+                .padStart(2, "0");
+
+            specialBadge = `
+                <span class="season-badge">
+                    SEASON ${seasonNumber}
+                </span>
+            `;
+        } else if (card.limited) {
+            specialBadge = `
+                <span class="limited-badge">
+                    LIMITED
+                </span>
+            `;
+        }
 
         div.innerHTML = `
             <img
@@ -2744,22 +2752,7 @@ function renderMyCards() {
                 ${card.grade}
             </span>
 
-           ${card.seasonReward && card.season
-    ? `
-        <span class="season-badge">
-            SEASON ${card.season
-                .replace("season-", "")
-                .padStart(2, "0")}
-        </span>
-      `
-    : card.limited
-        ? `
-            <span class="limited-badge">
-                LIMITED
-            </span>
-          `
-        : ""
-}
+            ${specialBadge}
 
             <div class="card-body">
 
