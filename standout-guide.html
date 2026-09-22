@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StandOut — How to Use</title>
+
+  <!-- Your existing app theme -->
+  <link rel="stylesheet" href="base.css">
+
+  <style>
+    /* StandOut guide page — simple, using the existing app theme */
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      padding-bottom: 80px;
+    }
+
+    .guide-page {
+      width: min(100% - 32px, 760px);
+      margin: 0 auto;
+      padding: 82px 0 40px;
+    }
+
+    .guide-header {
+      margin-bottom: 28px;
+    }
+
+    .guide-header h1 {
+      margin: 0 0 8px;
+      color: #3b82f6;
+      font-size: 2rem;
+      line-height: 1.2;
+    }
+
+    .guide-header p {
+      margin: 0;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .guide-card {
+      background: #111827;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 14px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .guide-card h2 {
+      margin: 0;
+      padding: 17px 18px 6px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .guide-card p {
+      margin: 0;
+      padding: 0 18px 18px;
+      color: #9ca3af;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .guide-number {
+      color: #3b82f6;
+      margin-right: 7px;
+    }
+
+    .guide-note {
+      margin-top: 22px;
+      padding: 15px 18px;
+      background: rgba(59,130,246,.06);
+      border: 1px solid rgba(59,130,246,.14);
+      border-radius: 12px;
+      color: #b8c0cc;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 480px) {
+      .guide-page {
+        width: min(100% - 24px, 760px);
+        padding-top: 74px;
+      }
+
+      .guide-header h1 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Optional top navbar: keep/remove depending on your app -->
+  <div class="top-navbar">
+    <div class="nav-left">
+      <span>StandOut</span>
+    </div>
+  </div>
+
+  <main class="guide-page">
+
+    <header class="guide-header">
+      <h1>How to Use StandOut</h1>
+      <p>A simple guide to help you get started.</p>
+    </header>
+
+    <!--
+      ADD / EDIT YOUR GUIDE BELOW.
+      Keep each instruction as one guide-card.
+    -->
+
+    <section class="guide-card">
+      <h2><span class="guide-number">01.</span> Start with Missions</h2>
+      <p>
+        <!-- Add your explanation here. -->
+        Choose a mission you want to complete and follow the instructions shown on the mission page.
+      </p>
+    </section>
+
+    <section class="guide-card">
+      <h2><span class="guide-number">02.</span> Complete the Mission</h2>
+      <p>
+        <!-- Add your explanation here. -->
+        Complete the required task. Make sure you understand the mission before marking it as complete.
+      </p>
+    </section>
+
+    <section class="guide-card">
+      <h2><span class="guide-number">03.</span> Earn Your Reward</h2>
+      <p>
+        <!-- Add your explanation here. -->
+        Once a mission is completed, your progress and rewards will be updated according to the app rules.
+      </p>
+    </section>
+
+    <section class="guide-card">
+      <h2><span class="guide-number">04.</span> Keep Your Progress</h2>
+      <p>
+        <!-- Add your explanation here. -->
+        Come back regularly, complete more missions, and continue building your progress.
+      </p>
+    </section>
+
+    <div class="guide-note">
+      <strong>Tip:</strong> Add your own instructions, screenshots, rules, or explanations here.
+    </div>
+
+  </main>
+
+</body>
+</html>
