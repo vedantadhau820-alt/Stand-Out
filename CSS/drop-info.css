@@ -1,0 +1,930 @@
+/* =========================================================
+   STAND OUT — MONTHLY DROP / EVENT EXPERIENCE
+========================================================= */
+
+.drop-page {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(59, 130, 246, .28),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 10% 35%,
+            rgba(59, 130, 246, .06),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 65%,
+            rgba(59, 130, 246, .05),
+            transparent 30%
+        ),
+        #05070A;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   MAIN EVENT CONTAINER
+========================================================= */
+
+.drop-shell {
+    width: min(1000px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 70px;
+}
+
+
+/* =========================================================
+   HERO / EVENT REVEAL
+========================================================= */
+
+.drop-hero {
+    position: relative;
+    text-align: center;
+    padding: 72px 20px 58px;
+    margin-bottom: 18px;
+}
+
+.drop-hero::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    width: 320px;
+    height: 320px;
+    transform: translateX(-50%);
+    background: radial-gradient(
+        circle,
+        rgba(59,130,246,.18),
+        transparent 68%
+    );
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+.drop-hero::after {
+    content: "";
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(59,130,246,.5),
+        transparent
+    );
+}
+
+
+/* =========================================================
+   DROP LABEL
+========================================================= */
+
+.drop-eyebrow {
+    position: relative;
+    z-index: 1;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 8px 15px;
+
+    border: 1px solid rgba(59,130,246,.35);
+    border-radius: 999px;
+
+    background: rgba(59,130,246,.08);
+
+    color: #60A5FA;
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .22em;
+
+    box-shadow:
+        0 0 25px rgba(59,130,246,.08);
+}
+
+.drop-eyebrow i {
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.drop-hero h1 {
+    position: relative;
+    z-index: 1;
+
+    margin: 20px 0 8px;
+
+    font-size: clamp(44px, 8vw, 78px);
+    line-height: .95;
+
+    letter-spacing: -.055em;
+    font-weight: 900;
+
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #dbeafe 45%,
+        #60a5fa 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    text-shadow:
+        0 0 45px rgba(59,130,246,.15);
+}
+
+
+.drop-month {
+    position: relative;
+    z-index: 1;
+
+    margin: 12px 0 0;
+
+    color: rgba(255,255,255,.48);
+
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+
+.drop-description {
+    position: relative;
+    z-index: 1;
+
+    max-width: 580px;
+    margin: 20px auto 0;
+
+    color: rgba(255,255,255,.68);
+
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   EXPIRY
+========================================================= */
+
+.drop-expiry {
+    position: relative;
+    z-index: 1;
+
+    width: fit-content;
+    max-width: 100%;
+
+    margin: 24px auto 0;
+    padding: 10px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.02)
+        );
+
+    color: rgba(255,255,255,.48);
+
+    font-size: 11px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.drop-expiry i {
+    color: #60A5FA;
+}
+
+.drop-expiry strong {
+    color: #fff;
+}
+
+
+/* =========================================================
+   EVENT SECTIONS
+========================================================= */
+
+.drop-section {
+    position: relative;
+
+    margin-top: 22px;
+    padding: 25px;
+
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.045),
+            rgba(255,255,255,.018)
+        );
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.22),
+        inset 0 1px 0 rgba(255,255,255,.035);
+
+    overflow: hidden;
+}
+
+
+/* subtle event accent */
+
+.drop-section::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 2px;
+
+    background: linear-gradient(
+        180deg,
+        #3B82F6,
+        rgba(59,130,246,.08)
+    );
+
+    opacity: .7;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-bottom: 20px;
+}
+
+.section-number {
+    display: grid;
+    place-items: center;
+
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+
+    border: 1px solid rgba(59,130,246,.28);
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(59,130,246,.16),
+            rgba(59,130,246,.04)
+        );
+
+    color: #60A5FA;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    box-shadow:
+        0 0 20px rgba(59,130,246,.08);
+}
+
+
+.section-heading .section-eyebrow {
+    margin: 0 0 4px;
+
+    color: #60A5FA;
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .2em;
+}
+
+
+.section-heading h2 {
+    margin: 0;
+
+    font-size: 21px;
+    font-weight: 850;
+    letter-spacing: -.02em;
+}
+
+
+/* =========================================================
+   FEATURED VIDEOS
+========================================================= */
+
+.drop-video-wrap {
+    position: relative;
+
+    overflow: hidden;
+
+    min-height: 210px;
+
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 17px;
+
+    background: #000;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.35);
+}
+
+
+.drop-video-wrap::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.12),
+            transparent 30%,
+            transparent 70%,
+            rgba(0,0,0,.2)
+        );
+}
+
+
+.drop-video-wrap video {
+    width: 100%;
+    display: block;
+
+    max-height: 560px;
+
+    background: #000;
+}
+
+
+.drop-media-fallback {
+    display: none;
+
+    min-height: 210px;
+
+    place-items: center;
+
+    color: rgba(255,255,255,.35);
+
+    font-size: 13px;
+}
+
+
+.drop-video-wrap.is-empty video {
+    display: none;
+}
+
+
+.drop-video-wrap.is-empty .drop-media-fallback {
+    display: grid;
+}
+
+
+/* =========================================================
+   LIMITED EDITION CARDS
+========================================================= */
+
+.drop-card-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.drop-card {
+    position: relative;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.018)
+        );
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.28);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.drop-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(59,130,246,.4);
+
+    box-shadow:
+        0 28px 65px rgba(0,0,0,.38),
+        0 0 35px rgba(59,130,246,.08);
+}
+
+
+.drop-card-image {
+    position: relative;
+
+    aspect-ratio: 3 / 4;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(59,130,246,.12),
+            transparent 55%
+        ),
+        #080B10;
+
+    overflow: hidden;
+}
+
+
+.drop-card-image::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent 55%,
+            rgba(0,0,0,.2)
+        );
+}
+
+
+.drop-card-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform .4s ease;
+}
+
+
+.drop-card:hover .drop-card-image img {
+    transform: scale(1.025);
+}
+
+
+.drop-card-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    place-items: center;
+
+    color: rgba(255,255,255,.22);
+
+    font-size: 30px;
+}
+
+
+.drop-card-info {
+    padding: 15px 16px 17px;
+}
+
+
+.drop-card-info h3,
+.drop-feature h3 {
+    margin: 0;
+
+    font-size: 15px;
+    font-weight: 850;
+}
+
+
+.drop-card-info p,
+.drop-feature p {
+    margin: 7px 0 0;
+
+    color: rgba(255,255,255,.5);
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   SEASON / BADGE REWARD BLOCKS
+========================================================= */
+
+.drop-feature {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    padding: 19px;
+
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(59,130,246,.075),
+            rgba(255,255,255,.025)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+
+.drop-feature-icon,
+.drop-badge-image {
+    width: 72px;
+    height: 72px;
+
+    flex: 0 0 72px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(59,130,246,.25);
+    border-radius: 18px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(59,130,246,.16),
+            rgba(59,130,246,.04)
+        );
+
+    color: #60A5FA;
+
+    font-size: 25px;
+
+    box-shadow:
+        0 0 30px rgba(59,130,246,.08);
+}
+
+
+.drop-badge-image {
+    overflow: hidden;
+}
+
+
+.drop-badge-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    padding: 6px;
+}
+
+
+.drop-feature h3 {
+    font-size: 17px;
+}
+
+
+.drop-feature p {
+    max-width: 650px;
+
+    font-size: 12px;
+}
+
+
+.drop-feature-meta {
+    margin-top: 10px;
+
+    color: rgba(255,255,255,.45);
+
+    font-size: 11px;
+}
+
+
+.drop-feature-meta i {
+    margin-right: 5px;
+    color: #60A5FA;
+}
+
+
+.drop-feature-meta b {
+    color: rgba(255,255,255,.8);
+}
+
+
+/* =========================================================
+   TIPS / GUIDANCE
+========================================================= */
+
+.drop-tips {
+    display: grid;
+
+    gap: 10px;
+
+    padding: 0;
+    margin: 0;
+
+    list-style: none;
+}
+
+
+.drop-tips li {
+    position: relative;
+
+    padding: 14px 15px 14px 39px;
+
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: 13px;
+
+    background: rgba(255,255,255,.025);
+
+    color: rgba(255,255,255,.62);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+.drop-tips li::before {
+    content: "✓";
+
+    position: absolute;
+
+    left: 15px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #60A5FA;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   FOOTER / ENTER DROP
+========================================================= */
+
+.drop-footer {
+    position: relative;
+
+    margin-top: 42px;
+
+    padding: 38px 10px 5px;
+
+    text-align: center;
+}
+
+
+.drop-footer::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 18%;
+    right: 18%;
+
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(59,130,246,.35),
+        transparent
+    );
+}
+
+
+.drop-footer p {
+    margin: 0 0 18px;
+
+    color: rgba(255,255,255,.38);
+
+    font-size: 12px;
+}
+
+
+.drop-continue {
+    position: relative;
+
+    min-width: 220px;
+
+    padding: 15px 24px;
+
+    border: 1px solid rgba(96,165,250,.45);
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #3B82F6,
+            #2563EB
+        );
+
+    color: #fff;
+
+    font-weight: 900;
+    letter-spacing: .1em;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+
+    box-shadow:
+        0 12px 35px rgba(37,99,235,.25),
+        inset 0 1px 0 rgba(255,255,255,.18);
+
+    transition:
+        transform .2s ease,
+        filter .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.drop-continue:hover {
+    filter: brightness(1.08);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 18px 45px rgba(37,99,235,.35),
+        inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+
+.drop-continue:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   EVENT ENTRY ANIMATION
+========================================================= */
+
+.drop-hero,
+.drop-section,
+.drop-footer {
+    animation: dropReveal .65s ease both;
+}
+
+
+.drop-section:nth-of-type(2) {
+    animation-delay: .06s;
+}
+
+.drop-section:nth-of-type(3) {
+    animation-delay: .12s;
+}
+
+.drop-section:nth-of-type(4) {
+    animation-delay: .18s;
+}
+
+.drop-section:nth-of-type(5) {
+    animation-delay: .24s;
+}
+
+.drop-section:nth-of-type(6) {
+    animation-delay: .30s;
+}
+
+
+@keyframes dropReveal {
+
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 620px) {
+
+    .drop-shell {
+        width: min(100% - 18px, 1000px);
+        padding-top: 12px;
+        padding-bottom: 50px;
+    }
+
+    .drop-hero {
+        padding: 55px 12px 42px;
+    }
+
+    .drop-hero h1 {
+        font-size: clamp(40px, 12vw, 58px);
+    }
+
+    .drop-section {
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .drop-card-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 11px;
+    }
+
+    .drop-card-info {
+        padding: 12px;
+    }
+
+    .drop-feature {
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .drop-feature-icon,
+    .drop-badge-image {
+        width: 62px;
+        height: 62px;
+        flex-basis: 62px;
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .drop-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .drop-hero h1 {
+        font-size: 40px;
+    }
+
+    .drop-section {
+        margin-top: 16px;
+    }
+
+    .section-heading h2 {
+        font-size: 18px;
+    }
+
+}
+
+
+/* =========================================================
+   IMPORTANT — OVERRIDE APP SECTION VISIBILITY
+========================================================= */
+
+.drop-page section.drop-section {
+    display: block;
+    opacity: 1;
+    transform: none;
+}
