@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#05070A">
+    <title>Monthly Drop — Stand Out</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="CSS/base.css">
+    <link rel="stylesheet" href="CSS/buttons.css">
+    <link rel="stylesheet" href="CSS/drop-info.css">
+</head>
+
+<body class="drop-page">
+
+<main id="monthlyDrop" class="drop-shell">
+
+    <header class="drop-hero">
+        <div class="drop-eyebrow">
+            <i class="fa-solid fa-bolt"></i>
+            MONTHLY DROP
+        </div>
+
+        <h1 id="dropName">The Ascension</h1>
+        <p id="dropMonth" class="drop-month">September 2026</p>
+        <p id="dropDescription" class="drop-description">
+            A new month. A new challenge.
+        </p>
+
+        <div class="drop-expiry">
+            <i class="fa-regular fa-clock"></i>
+            <span>Available until</span>
+            <strong id="dropExpiry">September 30, 2026</strong>
+        </div>
+    </header>
+
+    <section class="drop-section">
+        <div class="section-heading">
+            <span class="section-number">01</span>
+            <div>
+                <p class="section-eyebrow">WATCH</p>
+                <h2>Intro Video</h2>
+            </div>
+        </div>
+
+        <div class="drop-video-wrap">
+            <video id="introVideo" controls playsinline preload="metadata">
+                <source id="introVideoSource" src="" type="video/mp4">
+            </video>
+            <div id="introVideoFallback" class="drop-media-fallback">
+                Intro video coming soon.
+            </div>
+        </div>
+    </section>
+
+    <section class="drop-section">
+        <div class="section-heading">
+            <span class="section-number">02</span>
+            <div>
+                <p class="section-eyebrow">LIMITED</p>
+                <h2>Limited Edition Cards</h2>
+            </div>
+        </div>
+
+        <div id="limitedCards" class="drop-card-grid"></div>
+    </section>
+
+    <section class="drop-section">
+        <div class="section-heading">
+            <span class="section-number">03</span>
+            <div>
+                <p class="section-eyebrow">NEW</p>
+                <h2>Season</h2>
+            </div>
+        </div>
+
+        <div class="drop-feature">
+            <div class="drop-feature-icon">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div>
+                <h3 id="seasonName">The Ascension</h3>
+                <p id="seasonDescription">
+                    A new season with new rewards and season cards.
+                </p>
+                <div class="drop-feature-meta">
+                    <span><i class="fa-regular fa-calendar"></i>
+                        <b id="seasonExpiry">September 30, 2026</b>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="drop-section">
+        <div class="section-heading">
+            <span class="section-number">04</span>
+            <div>
+                <p class="section-eyebrow">NEW</p>
+                <h2>Badge</h2>
+            </div>
+        </div>
+
+        <div class="drop-feature badge-feature">
+            <div id="badgeImageWrap" class="drop-badge-image">
+                <i class="fa-solid fa-medal"></i>
+            </div>
+            <div>
+                <h3 id="badgeName">New Monthly Badge</h3>
+                <p id="badgeDescription">
+                    A new badge is waiting for you this month.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="drop-section">
+        <div class="section-heading">
+            <span class="section-number">05</span>
+            <div>
+                <p class="section-eyebrow">MOMENT</p>
+                <h2>Achieved Goal</h2>
+            </div>
+        </div>
+
+        <div class="drop-video-wrap">
+            <video id="achievedGoalVideo" controls playsinline preload="metadata">
+                <source id="achievedGoalVideoSource" src="" type="video/mp4">
+            </video>
+            <div id="achievedGoalVideoFallback" class="drop-media-fallback">
+                Achieved goal video coming soon.
+            </div>
+        </div>
+    </section>
+
+    <section class="drop-section drop-tips-section">
+        <div class="section-heading">
+            <span class="section-number">06</span>
+            <div>
+                <p class="section-eyebrow">GUIDANCE</p>
+                <h2>Tips</h2>
+            </div>
+        </div>
+
+        <ul id="dropTips" class="drop-tips"></ul>
+    </section>
+
+    <footer class="drop-footer">
+        <p>Everything you need for the new month starts here.</p>
+        <button id="dropContinue" class="drop-continue" type="button">
+            <span>CONTINUE</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </footer>
+
+</main>
+
+<script src="./JS/drop-info.js"></script>
+</body>
+</html>
