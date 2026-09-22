@@ -2356,12 +2356,60 @@ const achievements = [
     { id: "mission1000", title: "Millennium Master", desc: "Complete 1000 missions", unlocked: false }
 ];
 
-// Load achievements from storage
-let achievementsData = JSON.parse(localStorage.getItem("achievements"));
-if (!achievementsData) {
-    achievementsData = achievements;
-    localStorage.setItem("achievements", JSON.stringify(achievements));
+// =========================================================
+// LOAD + MIGRATE ACHIEVEMENTS
+// =========================================================
+
+let achievementsData = [];
+
+try {
+    const savedAchievements =
+        JSON.parse(localStorage.getItem("achievements"));
+
+    if (Array.isArray(savedAchievements)) {
+        achievementsData = savedAchievements;
+    }
+} catch (error) {
+    console.warn(
+        "Failed to load saved achievements:",
+        error
+    );
 }
+
+// Add any new achievement definitions that
+// don't exist in the user's saved data.
+//
+// This allows old users who previously had
+// achievements only up to 250 to receive
+// the newer achievements up to 1000.
+
+const savedAchievementMap =
+    new Map(
+        achievementsData.map(
+            achievement => [
+                achievement.id,
+                achievement
+            ]
+        )
+    );
+
+achievements.forEach(achievement => {
+
+    if (!savedAchievementMap.has(achievement.id)) {
+
+        achievementsData.push({
+            ...achievement
+        });
+
+    }
+
+});
+
+// Save the migrated achievement list
+localStorage.setItem(
+    "achievements",
+    JSON.stringify(achievementsData)
+);
 
 const quotes = [
     "Discipline is the bridge between goals and achievement.",
