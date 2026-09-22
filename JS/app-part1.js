@@ -2414,7 +2414,18 @@ let lastImprovementDate = localStorage.getItem("lastImprovementDate") || new Dat
 let isMarketplaceOpen = false;
 
 
-let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
+let ownedCards = {};
+
+try {
+    const savedOwnedCards = localStorage.getItem("ownedCards");
+
+    if (savedOwnedCards) {
+        ownedCards = JSON.parse(savedOwnedCards);
+    }
+} catch (error) {
+    console.error("Failed to load ownedCards:", error);
+    ownedCards = {};
+}
 
 function renderMarketplace(filterGrade = "ALL") {
     const shop = document.getElementById("cardShop");
