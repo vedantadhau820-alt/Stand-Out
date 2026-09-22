@@ -7,18 +7,92 @@
     "use strict";
 
 
+    /* =====================================================
+       MONTHLY DROP SYSTEM
+    ===================================================== */
+
+    const MONTHLY_DROP_KEY =
+        "standOutMonthlyDropSeen";
+
+
+    /*
+     * Returns:
+     *
+     * 2026-09
+     * 2026-10
+     * etc.
+     */
+    function getCurrentDropKey() {
+
+        const now = new Date();
+
+        return `${now.getFullYear()}-${String(
+            now.getMonth() + 1
+        ).padStart(2, "0")}`;
+    }
+
+
+    /*
+     * Drop is available only on the
+     * first day of the month.
+     */
+    function isMonthlyDropDay() {
+        // return true
+        return new Date().getDate() === 1;
+    }
+
+
+    /*
+     * Has the user already opened
+     * this month's Drop?
+     */
+    function hasSeenCurrentDrop() {
+
+        return (
+            localStorage.getItem(
+                MONTHLY_DROP_KEY
+            ) === getCurrentDropKey()
+        );
+    }
+
+
+    /*
+     * Open the Drop information page.
+     */
+    function openMonthlyDrop() {
+
+        console.log(
+            "🎁 Opening Monthly Drop:",
+            getCurrentDropKey()
+        );
+
+        window.location.href =
+            "drop-info.html";
+    }
+
+
+    /* =====================================================
+       WELCOME INTRO
+    ===================================================== */
+
     const VIDEO_URL =
         "/welcome.mp4";
 
 
     const intro =
-        document.getElementById("welcomeIntro");
+        document.getElementById(
+            "welcomeIntro"
+        );
 
     const panel =
-        document.getElementById("welcomePanel");
+        document.getElementById(
+            "welcomePanel"
+        );
 
     const readyButton =
-        document.getElementById("welcomeReadyBtn");
+        document.getElementById(
+            "welcomeReadyBtn"
+        );
 
     const buttonText =
         readyButton?.querySelector(
@@ -54,11 +128,11 @@
         );
 
         return;
-
     }
 
 
     let videoReady = false;
+
     let finishing = false;
 
 
@@ -68,21 +142,20 @@
 
     function prepareVideo() {
 
-        video.src = VIDEO_URL;
+        video.src =
+            VIDEO_URL;
 
         video.load();
 
 
         /*
-         * Browser has enough data.
+         * Browser already has enough data.
          */
-
         if (video.readyState >= 2) {
 
             markReady();
 
             return;
-
         }
 
 
@@ -105,7 +178,6 @@
             handleVideoError,
             { once: true }
         );
-
     }
 
 
@@ -123,7 +195,8 @@
         videoReady = true;
 
 
-        readyButton.disabled = false;
+        readyButton.disabled =
+            false;
 
 
         buttonText.textContent =
@@ -138,7 +211,6 @@
         console.log(
             "✓ Welcome video ready"
         );
-
     }
 
 
@@ -157,19 +229,20 @@
         /*
          * Don't leave the user trapped.
          */
-
         buttonText.textContent =
             "Ready";
+
 
         loader.classList.add(
             "hidden"
         );
 
+
         readyButton.disabled =
             false;
 
-        videoReady = true;
 
+        videoReady = true;
     }
 
 
@@ -185,7 +258,6 @@
         ) {
 
             return;
-
         }
 
 
@@ -197,7 +269,6 @@
         /*
          * Prepare the video stage FIRST.
          */
-
         videoStage.classList.add(
             "active"
         );
@@ -212,8 +283,8 @@
         /*
          * Hide welcome text.
          */
-
-        panel.style.opacity = "0";
+        panel.style.opacity =
+            "0";
 
         panel.style.transform =
             "translateY(-10px) scale(.98)";
@@ -230,7 +301,6 @@
         /*
          * Reset video.
          */
-
         video.currentTime = 0;
 
 
@@ -252,9 +322,7 @@
 
 
             finishIntro();
-
         }
-
     }
 
 
@@ -299,7 +367,6 @@
             }, 950);
 
         }, 350);
-
     }
 
 
@@ -313,8 +380,33 @@
 
             event.stopPropagation();
 
-            startVideo();
 
+            /*
+             * =================================================
+             * MONTHLY DROP CHECK
+             * =================================================
+             *
+             * Only show the Drop:
+             *
+             * 1. On the first day of a month
+             * 2. If this month's Drop has not been seen
+             */
+
+            if (
+                isMonthlyDropDay() &&
+                !hasSeenCurrentDrop()
+            ) {
+
+                openMonthlyDrop();
+
+                return;
+            }
+
+
+            /*
+             * Normal Welcome flow.
+             */
+            startVideo();
         }
     );
 
@@ -355,9 +447,7 @@
             ) {
 
                 finishIntro();
-
             }
-
         }
     );
 
