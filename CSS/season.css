@@ -380,63 +380,6 @@
 
 
 
-/* =========================================================
-   MY CARDS — COMPACT ONLY
-========================================================= */
-
-#ownedCards {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    width: 100%;
-}
-
-#ownedCards .flex-card {
-    width: 100%;
-    min-width: 0;
-    border-radius: 16px;
-    overflow: hidden;
-}
-
-#ownedCards .flex-card > img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-#ownedCards .card-body {
-    padding: 10px 11px 12px;
-}
-
-#ownedCards .card-body h3 {
-    font-size: 14px;
-    line-height: 1.2;
-    margin: 0 0 5px;
-}
-
-#ownedCards .card-quote {
-    font-size: 11px;
-    line-height: 1.35;
-    margin-bottom: 9px;
-}
-
-#ownedCards .buy-btn {
-    width: 100%;
-    min-height: 32px;
-    padding: 6px 9px;
-    border-radius: 9px;
-    font-size: 11px;
-}
-
-#ownedCards .grade-badge {
-    font-size: 9px;
-    padding: 4px 7px;
-}
-
-#ownedCards .mint-date {
-    font-size: 10px;
-    margin: 5px 0;
-}
 
 /* =========================================================
    MONTHLY RESOLUTION
@@ -847,13 +790,14 @@
 
     border:
         2px solid #8b5cf6;
+    /* height: 220px !important; */
 
     box-shadow:
         0 0 18px rgba(139, 92, 246, 0.32),
         0 0 40px rgba(139, 92, 246, 0.14);
 
     transform:
-        scale(1.02);
+        none;
 }
 
 
@@ -894,4 +838,17 @@
     animation:
         seasonGlow 2.5s infinite ease-in-out;
 
+}
+
+
+/* =========================================================
+   SEASON CARD — SAME SIZE AS OTHER CARDS
+   ========================================================= */
+
+#cardShop .flex-card.season-card > img,
+#ownedCards .flex-card.season-card > img {
+    width: 100%;
+    height: 260px !important;
+    object-fit: cover;
+    display: block;
 }
