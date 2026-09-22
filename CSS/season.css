@@ -848,7 +848,7 @@
 #cardShop .flex-card.season-card > img,
 #ownedCards .flex-card.season-card > img {
     width: 100%;
-    height: 260px !important;
+    height: 220px !important;
     object-fit: cover;
     display: block;
 }
