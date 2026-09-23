@@ -126,7 +126,11 @@
                 </span>
             </div>
 
-            <img src="icon.jpeg" alt="Profile" class="nav-img" id="monthlyBadgeNavBtn">
+            <div id="monthlyBadgeOpenBtn" style="position: relative; margin-right: 1.4rem; cursor:pointer;">
+                <i class="fas fa-medal" style="font-size:22px; color:#3B82F6;"></i>
+            </div>
+
+            <img src="icon.jpeg" alt="Profile" class="nav-img" id="monthlyBadgeNavBt">
             <input type="file" id="importProgressFile" accept=".json" hidden>
         </div>
     </nav>
@@ -158,30 +162,27 @@
        Mission Completion Popup
   ============================ -->
     <div id="motivationPopup" class="popup">
-    <div class="popup-content">
+        <div class="popup-content">
 
-        <div class="popup-icon">
-            ✓
+            <div class="popup-icon">
+                ✓
+            </div>
+
+            <h2 id="popup-title">Mission Complete</h2>
+
+            <p id="achievement"></p>
+
+            <div class="popup-divider"></div>
+
+            <p id="motivationQuote"></p>
+
+            <button onclick="closePopup()">Continue</button>
+
         </div>
 
-        <h2 id="popup-title">Mission Complete</h2>
-
-        <p id="achievement"></p>
-
-        <div class="popup-divider"></div>
-
-        <p id="motivationQuote"></p>
-
-        <button onclick="closePopup()">Continue</button>
-
+        <audio id="popupSound" src="Music/Complete.mp3" preload="auto">
+        </audio>
     </div>
-
-    <audio
-        id="popupSound"
-        src="Music/Complete.mp3"
-        preload="auto">
-    </audio>
-</div>
 
 
     <!-- ===========================
@@ -267,197 +268,150 @@
 
     <section class="mastery-section">
 
-    <div class="mastery-section-header">
-
-        <div>
-
-            <span class="mastery-eyebrow">
-                LONG-TERM GROWTH
-            </span>
-
-            <h2>
-                Masteries
-            </h2>
-
-            <p>
-                Become exceptionally good at
-                what matters to you.
-            </p>
-
-        </div>
-
-        <button
-            type="button"
-            class="mastery-add-btn"
-            onclick="openMasteryModal()"
-            aria-label="Create Mastery"
-        >
-            +
-        </button>
-
-    </div>
-
-
-    <!-- ONLY THIS IS DYNAMIC -->
-
-    <div id="mastery-list"></div>
-
-
-</section>
-
-<!-- =====================================================
-     MASTERY LIMIT ALERT
-===================================================== -->
-
-<div
-    id="mastery-limit-modal"
-    class="mastery-modal"
-    aria-hidden="true"
->
-
-    <div
-        class="mastery-modal-backdrop"
-        onclick="closeMasteryLimitModal()"
-    ></div>
-
-
-    <div
-        class="mastery-limit-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="mastery-limit-title"
-    >
-
-        <div class="mastery-limit-icon">
-            2
-        </div>
-
-
-        <h2 id="mastery-limit-title">
-            Mastery Limit Reached
-        </h2>
-
-
-        <p>
-            You can focus on a maximum of
-            <strong>2 Masteries</strong> at a time.
-        </p>
-
-
-        <button
-            type="button"
-            class="mastery-limit-ok-btn"
-            onclick="closeMasteryLimitModal()"
-        >
-            GOT IT
-        </button>
-
-    </div>
-
-</div>
-
-<!-- =====================================================
-     MASTERY EVIDENCE MODAL
-===================================================== -->
-
-<div
-    id="mastery-evidence-modal"
-    class="mastery-modal"
-    aria-hidden="true"
->
-
-    <div
-        class="mastery-modal-backdrop"
-        onclick="closeMasteryEvidenceModal()"
-    ></div>
-
-
-    <div
-        class="mastery-modal-card mastery-evidence-modal-card"
-        role="dialog"
-        aria-modal="true"
-    >
-
-        <div class="mastery-modal-header">
+        <div class="mastery-section-header">
 
             <div>
 
                 <span class="mastery-eyebrow">
-                    MILESTONE EVIDENCE
+                    LONG-TERM GROWTH
                 </span>
 
-                <h2 id="mastery-evidence-title">
-                    Add Evidence
+                <h2>
+                    Masteries
                 </h2>
+
+                <p>
+                    Become exceptionally good at
+                    what matters to you.
+                </p>
 
             </div>
 
-
-            <button
-                type="button"
-                class="mastery-modal-close"
-                onclick="closeMasteryEvidenceModal()"
-                aria-label="Close"
-            >
-                ×
+            <button type="button" class="mastery-add-btn" onclick="openMasteryModal()" aria-label="Create Mastery">
+                +
             </button>
 
         </div>
 
 
-        <div class="mastery-evidence-milestone">
+        <!-- ONLY THIS IS DYNAMIC -->
 
-            <span>
-                MILESTONE
-            </span>
-
-            <strong id="mastery-evidence-milestone">
-                Milestone
-            </strong>
-
-        </div>
+        <div id="mastery-list"></div>
 
 
-        <div class="mastery-field">
+    </section>
 
-            <label for="mastery-evidence-input">
-                WHAT DID YOU ACCOMPLISH?
-            </label>
+    <!-- =====================================================
+     MASTERY LIMIT ALERT
+===================================================== -->
 
-            <textarea
-                id="mastery-evidence-input"
-                maxlength="1000"
-                rows="6"
-                placeholder="Describe what you did, built, learned, or achieved..."
-            ></textarea>
+    <div id="mastery-limit-modal" class="mastery-modal" aria-hidden="true">
 
-            <div class="mastery-evidence-counter">
-                <span id="mastery-evidence-count">
-                    0
-                </span>
-                / 1000
+        <div class="mastery-modal-backdrop" onclick="closeMasteryLimitModal()"></div>
+
+
+        <div class="mastery-limit-card" role="dialog" aria-modal="true" aria-labelledby="mastery-limit-title">
+
+            <div class="mastery-limit-icon">
+                2
             </div>
 
+
+            <h2 id="mastery-limit-title">
+                Mastery Limit Reached
+            </h2>
+
+
+            <p>
+                You can focus on a maximum of
+                <strong>2 Masteries</strong> at a time.
+            </p>
+
+
+            <button type="button" class="mastery-limit-ok-btn" onclick="closeMasteryLimitModal()">
+                GOT IT
+            </button>
+
         </div>
-
-
-        <div
-            id="mastery-evidence-error"
-            class="mastery-form-error"
-        ></div>
-
-
-        <button
-            type="button"
-            class="mastery-create-btn"
-            onclick="saveMasteryEvidence()"
-        >
-            SAVE EVIDENCE
-        </button>
 
     </div>
 
-</div>
+    <!-- =====================================================
+     MASTERY EVIDENCE MODAL
+===================================================== -->
+
+    <div id="mastery-evidence-modal" class="mastery-modal" aria-hidden="true">
+
+        <div class="mastery-modal-backdrop" onclick="closeMasteryEvidenceModal()"></div>
+
+
+        <div class="mastery-modal-card mastery-evidence-modal-card" role="dialog" aria-modal="true">
+
+            <div class="mastery-modal-header">
+
+                <div>
+
+                    <span class="mastery-eyebrow">
+                        MILESTONE EVIDENCE
+                    </span>
+
+                    <h2 id="mastery-evidence-title">
+                        Add Evidence
+                    </h2>
+
+                </div>
+
+
+                <button type="button" class="mastery-modal-close" onclick="closeMasteryEvidenceModal()"
+                    aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="mastery-evidence-milestone">
+
+                <span>
+                    MILESTONE
+                </span>
+
+                <strong id="mastery-evidence-milestone">
+                    Milestone
+                </strong>
+
+            </div>
+
+
+            <div class="mastery-field">
+
+                <label for="mastery-evidence-input">
+                    WHAT DID YOU ACCOMPLISH?
+                </label>
+
+                <textarea id="mastery-evidence-input" maxlength="1000" rows="6"
+                    placeholder="Describe what you did, built, learned, or achieved..."></textarea>
+
+                <div class="mastery-evidence-counter">
+                    <span id="mastery-evidence-count">
+                        0
+                    </span>
+                    / 1000
+                </div>
+
+            </div>
+
+
+            <div id="mastery-evidence-error" class="mastery-form-error"></div>
+
+
+            <button type="button" class="mastery-create-btn" onclick="saveMasteryEvidence()">
+                SAVE EVIDENCE
+            </button>
+
+        </div>
+
+    </div>
 
     <!-- =====================================================
      CREATE MASTERY MODAL
@@ -2122,33 +2076,29 @@
      NOTIFICATION DRAWER
 ===================================================== -->
 
-<div id="notificationDrawer">
+    <div id="notificationDrawer">
 
-    <div class="notification-header">
+        <div class="notification-header">
 
-        <div>
-            <span class="notification-eyebrow">
-                INBOX
-            </span>
+            <div>
+                <span class="notification-eyebrow">
+                    INBOX
+                </span>
 
-            <h3>
-                Notifications
-            </h3>
+                <h3>
+                    Notifications
+                </h3>
+            </div>
+
+            <button type="button" class="notification-clear-btn" onclick="clearAllNotifications()">
+                Clear
+            </button>
+
         </div>
 
-        <button
-            type="button"
-            class="notification-clear-btn"
-            onclick="clearAllNotifications()"
-        >
-            Clear
-        </button>
+        <div id="notificationList"></div>
 
     </div>
-
-    <div id="notificationList"></div>
-
-</div>
     <!-- ===============================
      FULL SCREEN TIMER MODE
 ================================ -->
