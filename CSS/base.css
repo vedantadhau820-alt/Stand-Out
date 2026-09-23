@@ -154,7 +154,7 @@ header h1 {
 
     justify-content: flex-end;
 
-    gap: 8px;
+    gap: 0px;
 
     flex-shrink: 0;
 
