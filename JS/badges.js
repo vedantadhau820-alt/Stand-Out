@@ -1,6 +1,16 @@
 /* =========================================================
    MONTHLY BADGES
 ========================================================= */
+const monthlyBadgeButton =
+    document.getElementById("monthlyBadgeOpenBtn");
+
+if (monthlyBadgeButton) {
+    monthlyBadgeButton.addEventListener(
+        "click",
+        toggleMonthlyBadgePage
+    );
+}
+
 
 const MONTHLY_BADGES = {
 
