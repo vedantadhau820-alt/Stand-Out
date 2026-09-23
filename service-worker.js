@@ -29,9 +29,9 @@ const APP_SHELL = [
   "/",
   "/index.html",
   "/manifest.json",
-
-  "/widget.js",
-  "/widget.html",
+  "/documentation.html",
+  "/standout-guide.html",
+  "/drop-info.html",
 
   // well-known
   "/.well-known/assetlinks.json",
@@ -51,6 +51,7 @@ const APP_SHELL = [
   "/CSS/daily-challenge.css",
   "/CSS/season.css",
   "/CSS/mastery.css",
+  "/CSS/drop-info.css",
 
   // JS
   "/JS/cards.js",
@@ -64,6 +65,7 @@ const APP_SHELL = [
   "/JS/daily-challenge.js",
   "/JS/season.js",
   "/JS/mastery.js",
+  "/JS/drop-info.js",
 
   "/icon.jpeg"
 ];
