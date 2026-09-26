@@ -333,14 +333,14 @@
      * Season has not started yet.
      * Do NOT award Season XP.
      */
-    if (!hasSeasonStarted()) {
+        if (!hasSeasonStarted()) {
 
-        console.log(
-            "Season has not started yet. XP not awarded."
-        );
+            console.log(
+                "Season has not started yet. XP not awarded."
+            );
 
-        return state;
-    }
+            return state;
+        }
 
 
 
@@ -568,15 +568,17 @@
            CARD REWARD
         ================================================= */
 
-        /* =====================================================
+        /* =================================================
    IMPROVEMENT POINT REWARD
-===================================================== */
+================================================= */
+
         if (reward.type === "improvement-points") {
 
             const amount =
                 Number(reward.amount) || 0;
 
             if (amount <= 0) {
+
                 console.warn(
                     "Invalid Improvement Point reward:",
                     amount
@@ -589,6 +591,7 @@
                 typeof window.addImprovementPoints !==
                 "function"
             ) {
+
                 console.error(
                     "Improvement Point system unavailable."
                 );
@@ -596,7 +599,34 @@
                 return false;
             }
 
+
+            /*
+             * Give the reward first.
+             */
             window.addImprovementPoints(amount);
+
+
+            /* =================================================
+               REWARD SOUND
+            ================================================= */
+
+            if (
+                typeof window.playAppTone ===
+                "function"
+            ) {
+
+                window.playAppTone(
+                    "achievement"
+                );
+
+            } else {
+
+                console.warn(
+                    "Reward sound system unavailable."
+                );
+
+            }
+
 
             console.log(
                 `🎁 +${amount} Improvement Points`
@@ -605,7 +635,7 @@
 
         if (
             reward.type === "card" ||
-    reward.type === "exclusive-card"
+            reward.type === "exclusive-card"
         ) {
 
             if (
@@ -747,6 +777,30 @@
             ) {
 
                 renderMyCards();
+
+            }
+
+            /* =================================================
+   SEASON CARD MINT EXPERIENCE
+================================================= */
+
+            if (
+                typeof window.showMintedCard ===
+                "function"
+            ) {
+
+                console.log(
+                    "🎬 SEASON CARD MINT TRIGGERED",
+                    card
+                );
+
+                window.showMintedCard(card);
+
+            } else {
+
+                console.warn(
+                    "Season card mint animation unavailable."
+                );
 
             }
 
@@ -1121,13 +1175,13 @@
    SEASON START CHECK
 ===================================================== */
 
-function hasSeasonStarted() {
+    function hasSeasonStarted() {
 
-    const now = new Date();
-    const start = new Date(SEASON.start);
+        const now = new Date();
+        const start = new Date(SEASON.start);
 
-    return now.getTime() >= start.getTime();
-}
+        return now.getTime() >= start.getTime();
+    }
 
 
     /* =====================================================
@@ -1183,46 +1237,46 @@ function hasSeasonStarted() {
     function renderSeason() {
 
         const started =
-        hasSeasonStarted();
+            hasSeasonStarted();
 
-    const state =
-        checkSeasonExpiry();
+        const state =
+            checkSeasonExpiry();
 
-    const progress =
-        getProgress();
+        const progress =
+            getProgress();
 
-    /*
-     * =====================================================
-     * SEASON STATUS
-     * =====================================================
-     */
+        /*
+         * =====================================================
+         * SEASON STATUS
+         * =====================================================
+         */
 
-    const statusElements =
-        document.querySelectorAll(
-            ".season-status"
-        );
+        const statusElements =
+            document.querySelectorAll(
+                ".season-status"
+            );
 
-    statusElements.forEach(
-        element => {
+        statusElements.forEach(
+            element => {
 
-            if (state.completed) {
+                if (state.completed) {
 
-                element.textContent =
-                    "COMPLETED";
+                    element.textContent =
+                        "COMPLETED";
 
-            } else if (!started) {
+                } else if (!started) {
 
-                element.textContent =
-                    "ARIVING";
+                    element.textContent =
+                        "ARIVING";
 
-            } else {
+                } else {
 
-                element.textContent =
-                    "ACTIVE";
+                    element.textContent =
+                        "ACTIVE";
+                }
+
             }
-
-        }
-    );
+        );
 
 
         /*
@@ -1437,125 +1491,125 @@ function hasSeasonStarted() {
    SEASON COUNTDOWN
 ===================================================== */
 
-function updateSeasonCountdown() {
+    function updateSeasonCountdown() {
 
-    const elements =
-        document.querySelectorAll(
-            "[data-season-countdown]"
-        );
-
-    if (!elements.length) {
-        return;
-    }
-
-    const now =
-        new Date();
-
-    const start =
-        new Date(SEASON.start);
-
-    const end =
-        new Date(SEASON.end);
-
-    let text = "";
-
-    /*
-     * BEFORE SEASON START
-     */
-    if (now.getTime() < start.getTime()) {
-
-        const difference =
-            start.getTime() -
-            now.getTime();
-
-        const days =
-            Math.floor(
-                difference / 86400000
+        const elements =
+            document.querySelectorAll(
+                "[data-season-countdown]"
             );
 
-        const hours =
-            Math.floor(
-                (
-                    difference %
-                    86400000
-                ) / 3600000
-            );
-
-        const minutes =
-            Math.floor(
-                (
-                    difference %
-                    3600000
-                ) / 60000
-            );
-
-        const seconds =
-            Math.floor(
-                (
-                    difference %
-                    60000
-                ) / 1000
-            );
-
-        text =
-            days > 0
-                ? `Starts in ${days}d ${hours}h`
-                : `${hours}h ${minutes}m ${seconds}s until start`;
-    }
-
-    /*
-     * SEASON ACTIVE
-     */
-    else if (now.getTime() <= end.getTime()) {
-
-        const difference =
-            end.getTime() -
-            now.getTime();
-
-        const days =
-            Math.floor(
-                difference / 86400000
-            );
-
-        const hours =
-            Math.floor(
-                (
-                    difference %
-                    86400000
-                ) / 3600000
-            );
-
-        const minutes =
-            Math.floor(
-                (
-                    difference %
-                    3600000
-                ) / 60000
-            );
-
-        text =
-            days > 0
-                ? `${days}d ${hours}h remaining`
-                : `${hours}h ${minutes}m remaining`;
-    }
-
-    /*
-     * SEASON COMPLETE
-     */
-    else {
-
-        text =
-            "Season Complete";
-    }
-
-    elements.forEach(
-        element => {
-
-            element.textContent =
-                text;
+        if (!elements.length) {
+            return;
         }
-    );
-}
+
+        const now =
+            new Date();
+
+        const start =
+            new Date(SEASON.start);
+
+        const end =
+            new Date(SEASON.end);
+
+        let text = "";
+
+        /*
+         * BEFORE SEASON START
+         */
+        if (now.getTime() < start.getTime()) {
+
+            const difference =
+                start.getTime() -
+                now.getTime();
+
+            const days =
+                Math.floor(
+                    difference / 86400000
+                );
+
+            const hours =
+                Math.floor(
+                    (
+                        difference %
+                        86400000
+                    ) / 3600000
+                );
+
+            const minutes =
+                Math.floor(
+                    (
+                        difference %
+                        3600000
+                    ) / 60000
+                );
+
+            const seconds =
+                Math.floor(
+                    (
+                        difference %
+                        60000
+                    ) / 1000
+                );
+
+            text =
+                days > 0
+                    ? `Starts in ${days}d ${hours}h`
+                    : `${hours}h ${minutes}m ${seconds}s until start`;
+        }
+
+        /*
+         * SEASON ACTIVE
+         */
+        else if (now.getTime() <= end.getTime()) {
+
+            const difference =
+                end.getTime() -
+                now.getTime();
+
+            const days =
+                Math.floor(
+                    difference / 86400000
+                );
+
+            const hours =
+                Math.floor(
+                    (
+                        difference %
+                        86400000
+                    ) / 3600000
+                );
+
+            const minutes =
+                Math.floor(
+                    (
+                        difference %
+                        3600000
+                    ) / 60000
+                );
+
+            text =
+                days > 0
+                    ? `${days}d ${hours}h remaining`
+                    : `${hours}h ${minutes}m remaining`;
+        }
+
+        /*
+         * SEASON COMPLETE
+         */
+        else {
+
+            text =
+                "Season Complete";
+        }
+
+        elements.forEach(
+            element => {
+
+                element.textContent =
+                    text;
+            }
+        );
+    }
 
     /* =====================================================
    SEASON REWARD BUTTONS
@@ -1643,27 +1697,27 @@ function updateSeasonCountdown() {
    Resets ONLY Season 01 state.
 ===================================================== */
 
-function resetSeason() {
+    function resetSeason() {
 
-    localStorage.removeItem(
-        STORAGE_KEY
-    );
+        localStorage.removeItem(
+            STORAGE_KEY
+        );
 
-    const freshState =
-        createDefaultState();
+        const freshState =
+            createDefaultState();
 
-    saveState(
-        freshState
-    );
+        saveState(
+            freshState
+        );
 
-    renderSeason();
+        renderSeason();
 
-    console.log(
-        "🔄 Season state reset successfully."
-    );
+        console.log(
+            "🔄 Season state reset successfully."
+        );
 
-    return freshState;
-}
+        return freshState;
+    }
 
 
     /* =====================================================
@@ -2289,4 +2343,3 @@ window.saveMonthlyResolution =
 
 window.answerMonthlyResolution =
     answerMonthlyResolution;
-
