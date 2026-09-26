@@ -2912,36 +2912,41 @@ function renderMyCards() {
 
             div.innerHTML = `
 
-    <div class="season-owned-card-art">
+                <div class="season-owned-card-art">
 
-        <img
-            src="${card.image}"
-            alt="${card.title}"
-        >
+                    <img
+                        src="${card.image}"
+                        alt="${card.title}"
+                    >
 
-        <span class="season-owned-card-badge">
-            SEASON ${String(SEASON.number).padStart(2, "0")}
-        </span>
+                    <span class="season-owned-card-badge">
+                        SEASON
+                    </span>
 
-        <div class="season-owned-card-body">
+                </div>
 
-            <h3>
-                ${card.title}
-            </h3>
 
-            <p>
-                ${card.quote}
-            </p>
+                <div class="season-owned-card-body">
 
-            <div class="season-owned-card-meta">
-                Minted on ${mintedAt}
-            </div>
+                    <span class="season-owned-card-label">
+                        SEASON REWARD
+                    </span>
 
-        </div>
+                    <h3>
+                        ${card.title}
+                    </h3>
 
-    </div>
+                    <p>
+                        ${card.quote}
+                    </p>
 
-`;
+                    <div class="season-owned-card-meta">
+                        Minted on ${mintedAt}
+                    </div>
+
+                </div>
+
+            `;
 
 
             seasonContainer.appendChild(
