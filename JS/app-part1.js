@@ -864,23 +864,19 @@ async function saveProgressToFile() {
 
 function getBackupDate() {
 
-    const date =
-        new Date();
+    const date = new Date();
+
+    const pad = value =>
+        String(value).padStart(2, "0");
 
     return [
-
         date.getFullYear(),
-
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0"),
-
-        String(
-            date.getDate()
-        ).padStart(2, "0")
-
+        pad(date.getMonth() + 1),
+        pad(date.getDate()),
+        pad(date.getHours()),
+        pad(date.getMinutes()),
+        pad(date.getSeconds())
     ].join("-");
-
 }
 
 /* =========================================================
