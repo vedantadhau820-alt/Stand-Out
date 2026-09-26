@@ -498,6 +498,51 @@
     }
 
 
+
+    /* =========================================================
+       BACK BUTTON
+    ========================================================= */
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 32px;
+      padding: 0 11px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--guide-text-soft);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .back-btn span:first-child {
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .back-btn:hover {
+      background: rgba(59, 130, 246, 0.10);
+      border-color: rgba(59, 130, 246, 0.25);
+      color: #fff;
+    }
+
+    .nav-brand {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
     /* =========================================================
        MOBILE
     ========================================================= */
@@ -506,6 +551,15 @@
 
       .top-navbar {
         padding: 0 16px;
+      }
+
+      .nav-left {
+        gap: 10px;
+      }
+
+      .back-btn {
+        height: 30px;
+        padding: 0 9px;
       }
 
       .guide-page {
@@ -584,7 +638,11 @@
 
   <div class="top-navbar">
     <div class="nav-left">
-      <span>StandOut</span>
+      <button class="back-btn" type="button" onclick="history.back()" aria-label="Go back">
+        <span aria-hidden="true">←</span>
+        <span>Back</span>
+      </button>
+      <span class="nav-brand">StandOut</span>
     </div>
   </div>
 
