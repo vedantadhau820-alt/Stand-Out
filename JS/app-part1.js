@@ -1273,25 +1273,25 @@ async function loadProgressFromFile() {
 
         try {
 
-    const storedMissionCount =
-        localStorage.getItem(
-            "completedMissionCount"
-        );
+            const storedMissionCount =
+                localStorage.getItem(
+                    "completedMissionCount"
+                );
 
-    completedMissionCount =
-        Math.max(
-            0,
-            Number(storedMissionCount) || 0
-        );
+            completedMissionCount =
+                Math.max(
+                    0,
+                    Number(storedMissionCount) || 0
+                );
 
-} catch (error) {
+        } catch (error) {
 
-    console.warn(
-        "Could not reload completed mission count:",
-        error
-    );
+            console.warn(
+                "Could not reload completed mission count:",
+                error
+            );
 
-}
+        }
         /* =====================================================
    RELOAD MISSION HISTORY
 ===================================================== */
@@ -2098,7 +2098,7 @@ async function loadProgressFromFile() {
                     )
                     : {};
 
-            
+
 
             /* -------------------------------------------------
                UPDATE IMPROVEMENT COUNTER UI
@@ -2718,7 +2718,7 @@ function renderMyCards() {
             .filter(
                 card =>
                     currentOwnedCards[
-                        card.id
+                    card.id
                     ]
             )
             .sort(
@@ -2770,7 +2770,7 @@ function renderMyCards() {
 
                 const data =
                     currentOwnedCards[
-                        card.id
+                    card.id
                     ];
 
                 const mintedAt =
@@ -2803,14 +2803,13 @@ function renderMyCards() {
                         ${card.grade}
                     </span>
 
-                    ${
-                        card.limited
-                            ? `
+                    ${card.limited
+                        ? `
                                 <span class="limited-badge">
                                     LIMITED
                                 </span>
                             `
-                            : ""
+                        : ""
                     }
 
                     <div class="card-body">
@@ -2888,7 +2887,7 @@ function renderMyCards() {
 
             const data =
                 currentOwnedCards[
-                    card.id
+                card.id
                 ];
 
 
@@ -2909,44 +2908,45 @@ function renderMyCards() {
             div.className =
                 "season-owned-card";
 
+            const seasonNumber = card.season
+                ? card.season
+                    .replace("season-", "")
+                    .padStart(2, "0")
+                : String(SEASON.number).padStart(2, "0");
+
 
             div.innerHTML = `
 
-                <div class="season-owned-card-art">
+    <div class="season-owned-card-art">
 
-                    <img
-                        src="${card.image}"
-                        alt="${card.title}"
-                    >
+        <img
+            src="${card.image}"
+            alt="${card.title}"
+        >
 
-                    <span class="season-owned-card-badge">
-                        SEASON
-                    </span>
+        <span class="season-owned-card-badge">
+    SEASON ${seasonNumber}
+</span>
 
-                </div>
+        <div class="season-owned-card-body">
 
+            <h3>
+                ${card.title}
+            </h3>
 
-                <div class="season-owned-card-body">
+            <p>
+                ${card.quote}
+            </p>
 
-                    <span class="season-owned-card-label">
-                        SEASON REWARD
-                    </span>
+            <div class="season-owned-card-meta">
+                Minted on ${mintedAt}
+            </div>
 
-                    <h3>
-                        ${card.title}
-                    </h3>
+        </div>
 
-                    <p>
-                        ${card.quote}
-                    </p>
+    </div>
 
-                    <div class="season-owned-card-meta">
-                        Minted on ${mintedAt}
-                    </div>
-
-                </div>
-
-            `;
+`;
 
 
             seasonContainer.appendChild(
@@ -2987,62 +2987,62 @@ window.addEventListener("load", () => {
 });
 
 
-        document.getElementById("marketplaceIcon").onclick = () => {
+document.getElementById("marketplaceIcon").onclick = () => {
 
-            if (isMarketplaceOpen) {
+    if (isMarketplaceOpen) {
 
-                showPage("missions");
+        showPage("missions");
 
-                isMarketplaceOpen = false;
+        isMarketplaceOpen = false;
 
-            } else {
+    } else {
 
-                showPage("marketplace-cards");
+        showPage("marketplace-cards");
 
-                isMarketplaceOpen = true;
+        isMarketplaceOpen = true;
 
-                /*
-                 * Always open Cards on Marketplace tab
-                 */
-                document
-                    .querySelectorAll("[data-card-tab]")
-                    .forEach(button => {
-                        button.classList.remove("active");
-                    });
+        /*
+         * Always open Cards on Marketplace tab
+         */
+        document
+            .querySelectorAll("[data-card-tab]")
+            .forEach(button => {
+                button.classList.remove("active");
+            });
 
-                const marketplaceTab =
-                    document.querySelector(
-                        '[data-card-tab="marketplace"]'
-                    );
+        const marketplaceTab =
+            document.querySelector(
+                '[data-card-tab="marketplace"]'
+            );
 
-                if (marketplaceTab) {
-                    marketplaceTab.classList.add("active");
-                }
+        if (marketplaceTab) {
+            marketplaceTab.classList.add("active");
+        }
 
 
-                const marketplaceView =
-                    document.getElementById(
-                        "cards-marketplace-view"
-                    );
+        const marketplaceView =
+            document.getElementById(
+                "cards-marketplace-view"
+            );
 
-                const collectionView =
-                    document.getElementById(
-                        "cards-collection-view"
-                    );
+        const collectionView =
+            document.getElementById(
+                "cards-collection-view"
+            );
 
-                if (marketplaceView) {
-                    marketplaceView.classList.add("active");
-                }
+        if (marketplaceView) {
+            marketplaceView.classList.add("active");
+        }
 
-                if (collectionView) {
-                    collectionView.classList.remove("active");
-                }
+        if (collectionView) {
+            collectionView.classList.remove("active");
+        }
 
-                renderMarketplace(
-                    currentMarketplaceFilter
-                );
-            }
-        };
+        renderMarketplace(
+            currentMarketplaceFilter
+        );
+    }
+};
 /* =========================================================
    MONTHLY REPORT TOGGLE
 ========================================================= */
