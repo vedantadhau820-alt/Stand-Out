@@ -2656,141 +2656,301 @@ function formatDate(isoDate) {
 }
 
 function renderMyCards() {
-    const container = document.getElementById("ownedCards");
+
+    const container =
+        document.getElementById("ownedCards");
+
+    const seasonContainer =
+        document.getElementById("seasonCards");
+
+    const seasonSection =
+        document.getElementById(
+            "seasonCardsSection"
+        );
+
 
     if (!container) return;
 
-    container.innerHTML = "";
 
-    /*
-     * Always read the latest owned cards.
-     */
+    /* =====================================================
+       LOAD OWNED CARDS
+    ===================================================== */
+
     let currentOwnedCards = {};
 
     try {
-        currentOwnedCards = JSON.parse(
-            localStorage.getItem("ownedCards") || "{}"
-        );
+
+        currentOwnedCards =
+            JSON.parse(
+                localStorage.getItem(
+                    "ownedCards"
+                ) || "{}"
+            );
+
     } catch (error) {
-        console.error("Could not load owned cards:", error);
+
+        console.error(
+            "Could not load owned cards:",
+            error
+        );
+
         currentOwnedCards = {};
     }
 
-    /*
-     * Keep the runtime reference synchronized.
-     */
-    if (typeof window.ownedCards !== "undefined") {
-        window.ownedCards = currentOwnedCards;
+
+    if (
+        typeof window.ownedCards !==
+        "undefined"
+    ) {
+
+        window.ownedCards =
+            currentOwnedCards;
+
     }
 
-    /*
-     * Find every card that is actually owned.
-     *
-     * IMPORTANT:
-     * Do NOT filter out seasonReward cards here.
-     */
-    const ownedList = (window.cardCatalog || [])
-        .filter(card => currentOwnedCards[card.id])
-        .sort(
-            (a, b) =>
-                gradeRank(b.grade) -
-                gradeRank(a.grade)
+
+    /* =====================================================
+       FIND OWNED CARDS
+    ===================================================== */
+
+    const ownedList =
+        (window.cardCatalog || [])
+            .filter(
+                card =>
+                    currentOwnedCards[
+                        card.id
+                    ]
+            )
+            .sort(
+                (a, b) =>
+                    gradeRank(b.grade) -
+                    gradeRank(a.grade)
+            );
+
+
+    /* =====================================================
+       SEPARATE SEASON CARDS
+    ===================================================== */
+
+    const normalCards =
+        ownedList.filter(
+            card =>
+                !card.seasonReward
         );
 
-    if (ownedList.length === 0) {
+
+    const seasonCards =
+        ownedList.filter(
+            card =>
+                card.seasonReward
+        );
+
+
+    /* =====================================================
+       NORMAL CARDS
+    ===================================================== */
+
+    container.innerHTML = "";
+
+
+    if (
+        normalCards.length === 0
+    ) {
+
         container.innerHTML = `
             <p style="opacity:.6;">
-                No cards minted yet.
+                No regular cards minted yet.
             </p>
         `;
+
+    } else {
+
+        normalCards.forEach(
+            card => {
+
+                const data =
+                    currentOwnedCards[
+                        card.id
+                    ];
+
+                const mintedAt =
+                    data?.mintedAt
+                        ? formatDate(
+                            data.mintedAt
+                        )
+                        : "Unknown";
+
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    `flex-card owned grade-${card.grade.toLowerCase()}`;
+
+
+                div.innerHTML = `
+
+                    <img
+                        src="${card.image}"
+                        alt="${card.title}"
+                        class="owned-card-image"
+                    >
+
+                    <span class="grade-badge">
+                        ${card.grade}
+                    </span>
+
+                    ${
+                        card.limited
+                            ? `
+                                <span class="limited-badge">
+                                    LIMITED
+                                </span>
+                            `
+                            : ""
+                    }
+
+                    <div class="card-body">
+
+                        <h3>
+                            ${card.title}
+                        </h3>
+
+                        <p class="card-quote">
+                            ${card.quote}
+                        </p>
+
+                        <p class="mint-date">
+                            Minted on ${mintedAt}
+                        </p>
+
+                        <button
+                            class="buy-btn"
+                            disabled
+                        >
+                            OWNED
+                        </button>
+
+                    </div>
+                `;
+
+
+                container.appendChild(
+                    div
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SEASON CARDS
+    ===================================================== */
+
+    if (!seasonContainer) {
         return;
     }
 
-    /*
-     * Render every owned card.
-     */
-    ownedList.forEach(card => {
-        const data = currentOwnedCards[card.id];
 
-        const mintedAt = data?.mintedAt
-            ? formatDate(data.mintedAt)
-            : "Unknown";
+    seasonContainer.innerHTML = "";
 
-        const div = document.createElement("div");
 
-        /*
-         * Season cards get their own class,
-         * but remain normal owned cards.
-         */
-        div.className =
-            `flex-card owned grade-${card.grade.toLowerCase()}` +
-            `${card.seasonReward ? " season-card" : ""}`;
+    if (
+        seasonCards.length === 0
+    ) {
 
-        /*
-         * Badge:
-         * Season card → SEASON XX
-         * Limited card → LIMITED
-         * Normal card → no special badge
-         */
-        let specialBadge = "";
+        if (seasonSection) {
 
-        if (card.seasonReward && card.season) {
-            const seasonNumber = card.season
-                .replace("season-", "")
-                .padStart(2, "0");
+            seasonSection.style.display =
+                "none";
 
-            specialBadge = `
-                <span class="season-badge">
-                    SEASON ${seasonNumber}
-                </span>
-            `;
-        } else if (card.limited) {
-            specialBadge = `
-                <span class="limited-badge">
-                    LIMITED
-                </span>
-            `;
         }
 
-        div.innerHTML = `
-            <img
-                src="${card.image}"
-                alt="${card.title}"
-                class="owned-card-image"
-            >
+        return;
+    }
 
-            <span class="grade-badge">
-                ${card.grade}
-            </span>
 
-            ${specialBadge}
+    if (seasonSection) {
 
-            <div class="card-body">
+        seasonSection.style.display =
+            "block";
 
-                <h3>
-                    ${card.title}
-                </h3>
+    }
 
-                <p class="card-quote">
-                    ${card.quote}
-                </p>
 
-                <p class="mint-date">
-                    Minted on ${mintedAt}
-                </p>
+    seasonCards.forEach(
+        card => {
 
-                <button
-                    class="buy-btn"
-                    disabled
-                >
-                    OWNED
-                </button>
+            const data =
+                currentOwnedCards[
+                    card.id
+                ];
 
+
+            const mintedAt =
+                data?.mintedAt
+                    ? formatDate(
+                        data.mintedAt
+                    )
+                    : "Unknown";
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "season-owned-card";
+
+
+            div.innerHTML = `
+
+    <div class="season-owned-card-art">
+
+        <img
+            src="${card.image}"
+            alt="${card.title}"
+        >
+
+        <span class="season-owned-card-badge">
+            SEASON ${String(SEASON.number).padStart(2, "0")}
+        </span>
+
+        <div class="season-owned-card-body">
+
+            <h3>
+                ${card.title}
+            </h3>
+
+            <p>
+                ${card.quote}
+            </p>
+
+            <div class="season-owned-card-meta">
+                Minted on ${mintedAt}
             </div>
-        `;
 
-        container.appendChild(div);
-    });
+        </div>
+
+    </div>
+
+`;
+
+
+            seasonContainer.appendChild(
+                div
+            );
+
+        }
+    );
+
 }
 
 const GRADE_ORDER = ["E", "D", "C", "B", "A", "S", "w"];
