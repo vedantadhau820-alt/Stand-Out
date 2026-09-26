@@ -1,378 +1,264 @@
-console.log("🔥 DROP INFO JS LOADED");
-
 /* =========================================================
-   STAND OUT — MONTHLY DROP
+   STAND OUT — MONTHLY DROP BANNER
 ========================================================= */
 
-const MONTHLY_DROP_KEY = "standOutMonthlyDropSeen";
+(() => {
 
-const DROP_DATA = {
-    name: "The Ascension",
-    month: "September 2026",
-    description: "A new month. A new challenge.",
-    expiry: "September 30, 2026",
+    "use strict";
 
-    introVideo: "welcome.mp4",
 
-    limitedCards: [
-        {
-            title: "Limited Edition Card I",
-            description:
-                "A new limited edition card for this month's drop.",
-            image: "Images/Endgame_Cap.gif"
-        },
-        {
-            title: "Limited Edition Card II",
-            description:
-                "A second limited edition card for this month's drop.",
-            image: "Images/Endgame_Thor.gif"
-        }
-    ],
+    /* =====================================================
+       CONSTANT
+    ===================================================== */
 
-    season: {
-        name: "The Ascension",
+    const MONTHLY_DROP_KEY =
+        "standOutMonthlyDropSeen";
+
+
+    /* =====================================================
+       DROP DATA
+    ===================================================== */
+
+    const DROP_DATA = {
+
+        name:
+            "THE ASCENSION",
+
         description:
-            "A new season with new rewards and season cards.",
-        expiry: "September 30, 2026"
-    },
+            "A new month. A new challenge."
 
-    badge: {
-        name: "New Monthly Badge",
-        description:
-            "A new badge is waiting for you this month.",
-        image: "badges/sep-2026.png"
-    },
-
-    achievedGoalVideo: "AchievedGoal.mp4",
-
-    tips: [
-        "Explore the new season early.",
-        "Claim your season rewards as you progress.",
-        "Complete this month's goals before the drop expires."
-    ]
-};
+    };
 
 
-/* =========================================================
-   DROP KEY
-========================================================= */
+    /* =====================================================
+       GET CURRENT DROP INFORMATION
+    ===================================================== */
 
-function getCurrentDropKey() {
+    function getCurrentDropInfo() {
 
-    const now = new Date();
+        const now = new Date();
 
-    return `${now.getFullYear()}-${String(
-        now.getMonth() + 1
-    ).padStart(2, "0")}`;
-}
+        const year =
+            now.getFullYear();
 
+        const monthIndex =
+            now.getMonth();
 
-/* =========================================================
-   MARK CURRENT DROP AS SEEN
-========================================================= */
+        const monthName =
+            now.toLocaleString(
+                "en-US",
+                {
+                    month: "long"
+                }
+            );
 
-function markDropSeen() {
-
-    localStorage.setItem(
-        MONTHLY_DROP_KEY,
-        getCurrentDropKey()
-    );
-}
-
-
-/* =========================================================
-   SET TEXT SAFELY
-========================================================= */
-
-function setText(id, value) {
-
-    const element = document.getElementById(id);
-
-    if (element) {
-        element.textContent = value ?? "";
-    }
-}
+        const lastDay =
+            new Date(
+                year,
+                monthIndex + 1,
+                0
+            ).getDate();
 
 
-/* =========================================================
-   VIDEO SETUP
-========================================================= */
+        return {
 
-function setupVideo(
-    videoId,
-    sourceId,
-    fallbackId,
-    src
-) {
+            key:
+                `${year}-${String(
+                    monthIndex + 1
+                ).padStart(2, "0")}`,
 
-    const video =
-        document.getElementById(videoId);
+            month:
+                `${monthName} ${year}`,
 
-    const source =
-        document.getElementById(sourceId);
+            expiry:
+                `${monthName} ${lastDay}, ${year}`
 
-    const fallback =
-        document.getElementById(fallbackId);
+        };
 
-    if (!video || !source || !fallback) {
-        return;
     }
 
-    const wrapper =
-        video.closest(".drop-video-wrap");
 
-    if (!src) {
+    /* =====================================================
+       RENDER DROP BANNER
+    ===================================================== */
 
-        if (wrapper) {
-            wrapper.classList.add("is-empty");
+    function renderDrop() {
+
+        const info =
+            getCurrentDropInfo();
+
+
+        const dropName =
+            document.getElementById(
+                "dropName"
+            );
+
+        const dropMonth =
+            document.getElementById(
+                "dropMonth"
+            );
+
+        const dropDescription =
+            document.getElementById(
+                "dropDescription"
+            );
+
+        const dropExpiry =
+            document.getElementById(
+                "dropExpiry"
+            );
+
+
+        /* -----------------------------------------------
+           DROP NAME
+        ------------------------------------------------ */
+
+        if (dropName) {
+
+            dropName.textContent =
+                DROP_DATA.name;
+
         }
 
-        return;
+
+        /* -----------------------------------------------
+           MONTH
+        ------------------------------------------------ */
+
+        if (dropMonth) {
+
+            dropMonth.textContent =
+                info.month.toUpperCase();
+
+        }
+
+
+        /* -----------------------------------------------
+           DESCRIPTION
+        ------------------------------------------------ */
+
+        if (dropDescription) {
+
+            dropDescription.textContent =
+                DROP_DATA.description;
+
+        }
+
+
+        /* -----------------------------------------------
+           EXPIRY
+        ------------------------------------------------ */
+
+        if (dropExpiry) {
+
+            dropExpiry.textContent =
+                info.expiry.toUpperCase();
+
+        }
+
     }
 
-    source.src = src;
 
-    video.load();
-}
+    /* =====================================================
+       MARK DROP AS SEEN
+    ===================================================== */
 
+    function markDropAsSeen() {
 
-/* =========================================================
-   RENDER LIMITED CARDS
-========================================================= */
-
-function renderLimitedCards(cards) {
-
-    const container =
-        document.getElementById("limitedCards");
-
-    if (!container) {
-        return;
-    }
-
-    container.innerHTML = "";
-
-    cards.forEach(card => {
-
-        const article =
-            document.createElement("article");
-
-        article.className = "drop-card";
-
-        const imageHTML = card.image
-            ? `
-                <img
-                    src="${card.image}"
-                    alt="${card.title}"
-                >
-              `
-            : `
-                <div class="drop-card-placeholder">
-                    <i class="fa-solid fa-layer-group"></i>
-                </div>
-              `;
-
-        article.innerHTML = `
-            <div class="drop-card-image">
-                ${imageHTML}
-            </div>
-
-            <div class="drop-card-info">
-                <h3>${card.title}</h3>
-                <p>${card.description}</p>
-            </div>
-        `;
-
-        container.appendChild(article);
-    });
-}
+        const info =
+            getCurrentDropInfo();
 
 
-/* =========================================================
-   RENDER BADGE
-========================================================= */
-
-function renderBadge(badge) {
-
-    const wrap =
-        document.getElementById(
-            "badgeImageWrap"
+        localStorage.setItem(
+            MONTHLY_DROP_KEY,
+            info.key
         );
 
-    setText(
-        "badgeName",
-        badge.name
-    );
 
-    setText(
-        "badgeDescription",
-        badge.description
-    );
-
-    if (!wrap) {
-        return;
-    }
-
-    if (badge.image) {
-
-        wrap.innerHTML = `
-            <img
-                src="${badge.image}"
-                alt="${badge.name}"
-            >
-        `;
-    }
-}
-
-
-/* =========================================================
-   RENDER DROP
-========================================================= */
-
-function renderDrop() {
-
-    setText(
-        "dropName",
-        DROP_DATA.name
-    );
-
-    setText(
-        "dropMonth",
-        DROP_DATA.month
-    );
-
-    setText(
-        "dropDescription",
-        DROP_DATA.description
-    );
-
-    setText(
-        "dropExpiry",
-        DROP_DATA.expiry
-    );
-
-
-    /* -------------------------
-       SEASON
-    ------------------------- */
-
-    setText(
-        "seasonName",
-        DROP_DATA.season.name
-    );
-
-    setText(
-        "seasonDescription",
-        DROP_DATA.season.description
-    );
-
-    setText(
-        "seasonExpiry",
-        DROP_DATA.season.expiry
-    );
-
-
-    /* -------------------------
-       LIMITED CARDS
-    ------------------------- */
-
-    renderLimitedCards(
-        DROP_DATA.limitedCards
-    );
-
-
-    /* -------------------------
-       BADGE
-    ------------------------- */
-
-    renderBadge(
-        DROP_DATA.badge
-    );
-
-
-    /* -------------------------
-       TIPS
-    ------------------------- */
-
-    const tips =
-        document.getElementById(
-            "dropTips"
+        console.log(
+            "✓ Monthly Drop marked as seen:",
+            info.key
         );
 
-    if (tips) {
-
-        tips.innerHTML = "";
-
-        DROP_DATA.tips.forEach(tip => {
-
-            const li =
-                document.createElement("li");
-
-            li.textContent = tip;
-
-            tips.appendChild(li);
-        });
     }
 
 
-    /* -------------------------
-       INTRO VIDEO
-    ------------------------- */
+    /* =====================================================
+       CONTINUE BUTTON
+    ===================================================== */
 
-    setupVideo(
-        "introVideo",
-        "introVideoSource",
-        "introVideoFallback",
-        DROP_DATA.introVideo
-    );
+    function continueToApp() {
+
+        markDropAsSeen();
 
 
-    /* -------------------------
-       ACHIEVED GOAL VIDEO
-    ------------------------- */
+        /*
+         * Return to the main StandOut application.
+         */
 
-    setupVideo(
-        "achievedGoalVideo",
-        "achievedGoalVideoSource",
-        "achievedGoalVideoFallback",
-        DROP_DATA.achievedGoalVideo
-    );
-}
+        window.location.href =
+            "index.html";
+
+    }
 
 
-/* =========================================================
-   CONTINUE
-========================================================= */
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+    function initializeDrop() {
 
         renderDrop();
+
 
         const continueButton =
             document.getElementById(
                 "dropContinue"
             );
 
+
         if (!continueButton) {
+
+            console.warn(
+                "Monthly Drop: Continue button not found."
+            );
+
             return;
+
         }
+
 
         continueButton.addEventListener(
             "click",
-            () => {
-
-                /*
-                 * Mark this month's Drop as seen.
-                 */
-                markDropSeen();
-
-                /*
-                 * Return to the main application.
-                 */
-                window.location.href =
-                    "index.html";
-            }
+            continueToApp
         );
+
+
+        console.log(
+            "✓ Monthly Drop banner initialized."
+        );
+
     }
-);
+
+
+    /* =====================================================
+       START
+    ===================================================== */
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initializeDrop
+        );
+
+    } else {
+
+        initializeDrop();
+
+    }
+
+})();
