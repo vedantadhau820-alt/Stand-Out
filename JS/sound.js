@@ -1435,3 +1435,10 @@ document.addEventListener(
     "DOMContentLoaded",
     initializeSoundSettings
 );
+
+
+/* =========================================================
+   GLOBAL SOUND API
+========================================================= */
+
+window.playAppTone = playAppTone;
