@@ -167,9 +167,9 @@ header h1 {
 
 .nav-right .nav-img {
 
-    width: 40px;
+    width: 30px;
 
-    height: 40px;
+    height: 30px;
 
     flex: 0 0 40px;
 
@@ -307,6 +307,9 @@ header h1 {
         flex-basis: 38px;
 
     }
+   .nav-right {
+      gap: 0px;
+   }
 
 }
 
