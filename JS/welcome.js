@@ -37,8 +37,8 @@
      * first day of the month.
      */
     function isMonthlyDropDay() {
-        return true
-        // return new Date().getDate() === 1;
+        // return true
+        return new Date().getDate() === 1;
     }
 
 
