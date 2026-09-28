@@ -3739,3 +3739,150 @@ document.addEventListener(
 
     }
 );
+
+/* =========================================================
+   ACHIEVED GOAL — LONG PRESS DELETE
+========================================================= */
+
+let achievedGoalPressTimer = null;
+let achievedGoalPressId = null;
+let achievedGoalPressElement = null;
+
+
+/* ---------------------------------------------------------
+   START LONG PRESS
+--------------------------------------------------------- */
+
+document.addEventListener("pointerdown", function (event) {
+
+    const goalElement =
+        event.target.closest(
+            "#goal-list .goal.goal-achieved"
+        );
+
+    if (!goalElement) return;
+
+    const goalId =
+        goalElement.dataset.goalId;
+
+    if (!goalId) return;
+
+
+    achievedGoalPressId = goalId;
+
+    achievedGoalPressElement =
+        goalElement;
+
+
+    achievedGoalPressTimer =
+        setTimeout(function () {
+
+            achievedGoalPressTimer = null;
+
+            showAchievedGoalDeleteConfirmation(
+                achievedGoalPressId
+            );
+
+        }, 800);
+
+});
+
+
+/* ---------------------------------------------------------
+   CANCEL LONG PRESS
+--------------------------------------------------------- */
+
+function cancelAchievedGoalLongPress() {
+
+    if (achievedGoalPressTimer !== null) {
+
+        clearTimeout(
+            achievedGoalPressTimer
+        );
+
+        achievedGoalPressTimer = null;
+    }
+
+    achievedGoalPressId = null;
+    achievedGoalPressElement = null;
+}
+
+
+document.addEventListener(
+    "pointerup",
+    cancelAchievedGoalLongPress
+);
+
+document.addEventListener(
+    "pointercancel",
+    cancelAchievedGoalLongPress
+);
+
+document.addEventListener(
+    "pointerleave",
+    cancelAchievedGoalLongPress
+);
+
+
+/* ---------------------------------------------------------
+   CONFIRM DELETE
+--------------------------------------------------------- */
+
+function showAchievedGoalDeleteConfirmation(
+    goalId
+) {
+
+    const goal =
+        goalsData.find(
+            g => g.id === goalId
+        );
+
+
+    if (!goal || !goal.achieved) {
+        return;
+    }
+
+
+    customConfirm(
+    `Delete "${goal.title}"?\n\nThis achieved goal will be permanently removed.`,
+    function () {
+        deleteAchievedGoal(goalId);
+    }
+);
+}
+
+
+/* ---------------------------------------------------------
+   DELETE ACHIEVED GOAL
+--------------------------------------------------------- */
+
+function deleteAchievedGoal(
+    goalId
+) {
+
+    const goal =
+        goalsData.find(
+            g => g.id === goalId
+        );
+
+
+    if (!goal) return;
+
+
+    // Safety: only achieved goals
+    if (!goal.achieved) {
+        return;
+    }
+
+
+    goalsData =
+        goalsData.filter(
+            g => g.id !== goalId
+        );
+
+
+    saveGoals();
+
+    renderGoals();
+
+}
