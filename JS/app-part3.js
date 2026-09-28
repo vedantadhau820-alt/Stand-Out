@@ -1466,12 +1466,19 @@ function addCountdown() {
         return; // 🔥 DO NOT CONTINUE
     }
 
-    // ✅ ONLY NOW MUTATE STATE
-    countdowns.push({
-        title,
-        date: new Date(dateTime).toISOString(),
-        startTime: new Date().toISOString()
-    });
+    const [datePart, timePart] =
+    dateTime.split("T");
+
+const targetIST =
+    new Date(
+        `${datePart}T${timePart}:00+05:30`
+    );
+
+countdowns.push({
+    title,
+    date: targetIST.toISOString(),
+    startTime: new Date().toISOString()
+});
 
     saveCountdowns();
     renderCountdowns();
