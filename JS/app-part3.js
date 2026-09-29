@@ -267,20 +267,93 @@ function deleteSkillDirect(btn) {
 
 
 
-// function updateSkillProgress(skillName) {
-//     let newProgress = document.getElementById("editProgressInput").value;
-//     newProgress = Math.min(100, Math.max(0, parseInt(newProgress)));
+function updateSkill() {
 
-//     const skills = document.querySelectorAll("#skill-list .skill");
-//     skills.forEach(skill => {
-//         if (skill.querySelector("strong").textContent === skillName) {
-//             skill.querySelector(".progress-bar").style.width = newProgress + "%";
-//         }
-//     });
+    const skillDiv =
+        window.skillBeingEdited;
 
-//     saveData();
-//     closeModal();
-// }
+    if (!skillDiv) {
+        closeModal();
+        return;
+    }
+
+
+    const input =
+        document.getElementById(
+            "editSkillInput"
+        );
+
+
+    const oldName =
+        skillDiv
+            .querySelector("strong")
+            .textContent
+            .trim();
+
+
+    const newName =
+        input.value.trim();
+
+
+    if (!newName) {
+
+        customAlert(
+            "Please enter a skill name."
+        );
+
+        return;
+    }
+
+
+    if (newName === oldName) {
+
+        closeModal();
+        return;
+
+    }
+
+
+    /* =========================================
+       UPDATE SKILL NAME
+    ========================================= */
+
+    skillDiv.querySelector(
+        "strong"
+    ).textContent =
+        newName;
+
+
+    /* =========================================
+       UPDATE LINKED MISSIONS
+    ========================================= */
+
+    document
+        .querySelectorAll(
+            "#mission-list li"
+        )
+        .forEach(li => {
+
+            if (
+                li.dataset.skill ===
+                oldName
+            ) {
+
+                li.dataset.skill =
+                    newName;
+
+            }
+
+        });
+
+
+    saveData();
+
+    closeModal();
+
+    window.skillBeingEdited =
+        null;
+}
+
 
 function checkSkillLevelUp(skillDiv) {
     let xp = parseInt(skillDiv.dataset.xp);
