@@ -9,3 +9,4 @@
 9. Update Season.js with new season 
 10. Update Drop-Info.js with new Drop
 11. Update service-worker.js Finally.
+12. Test Drop
