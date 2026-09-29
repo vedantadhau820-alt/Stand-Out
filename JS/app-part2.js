@@ -2919,6 +2919,71 @@ function openModal(type, skillDiv = null) {
 
     }
 
+   // ---- Edit Skill ----
+if (type === "edit-skill" && skillDiv) {
+
+    const oldName =
+        skillDiv.querySelector("strong")
+            ?.textContent
+            .trim() || "";
+
+    const currentXP =
+        parseInt(
+            skillDiv.dataset.xp || "0",
+            10
+        );
+
+
+    content.innerHTML = `
+
+        <h3>Edit Skill</h3>
+
+        <input
+            id="editSkillInput"
+            type="text"
+            value="${oldName.replace(/"/g, "&quot;")}"
+            maxlength="50"
+            autocomplete="off"
+        >
+
+        <p style="
+            margin: 10px 0;
+            opacity: 0.7;
+            font-size: 13px;
+        ">
+            XP: ${currentXP}
+        </p>
+
+        <button
+            type="button"
+            onclick="updateSkill()"
+        >
+            Update
+        </button>
+
+        <button
+            type="button"
+            onclick="closeModal()"
+        >
+            Cancel
+        </button>
+
+    `;
+
+
+    window.skillBeingEdited =
+        skillDiv;
+
+
+    setTimeout(() => {
+
+        document
+            .getElementById("editSkillInput")
+            ?.focus();
+
+    }, 50);
+}
+
     // ---- Edit Mission ----
     if (type === "edit-mission" && skillDiv) {
         const oldText = skillDiv.querySelector(".mission-text").textContent.replace("🔥", "").trim();
