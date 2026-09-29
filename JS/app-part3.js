@@ -843,7 +843,8 @@ function renderGoals() {
             formattedDeadline =
                 d.toLocaleDateString([], {
                     day: "numeric",
-                    month: "short"
+                    month: "short",
+                    year: "numeric"
                 })
 
         }
