@@ -14,19 +14,19 @@
 
     const SEASON = {
 
-        id: "season-01",
+        id: "season-02",
 
-        number: 1,
+        number: 2,
 
-        name: "The Ascension",
+        name: "The Cursed Era",
 
         /*
          * TESTING START DATE
          * Change back to September 1 for production.
          */
-        start: "2026-09-01T00:00:00+05:30",
+        start: "2026-10-01T00:00:00+05:30",
 
-        end: "2026-09-30T23:59:59+05:30",
+        end: "2026-10-31T23:59:59+05:30",
 
         maxLevel: 20,
 
@@ -41,26 +41,26 @@
 
             5: {
                 type: "improvement-points",
-                amount: 100,
+                amount: 120,
                 title: "100 Improvement Points"
             },
 
             10: {
                 type: "improvement-points",
-                amount: 200,
+                amount: 220,
                 title: "200 Improvement Points"
             },
 
             15: {
                 type: "card",
-                id: "season_01_card",
-                title: "The Ascension"
+                id: "season_02_card",
+                title: "Domain Expansion"
             },
 
             20: {
                 type: "exclusive-card",
-                id: "season_01_exclusive_card",
-                title: "Beyond Limits"
+                id: "season_02_exclusive_card",
+                title: "The Cursed Awakening"
             }
 
         }
