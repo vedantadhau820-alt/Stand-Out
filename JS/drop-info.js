@@ -22,7 +22,7 @@
     const DROP_DATA = {
 
         name:
-            "THE ASCENSION",
+            "THE CURSED ERA",
 
         description:
             "A new month. A new challenge."
