@@ -157,6 +157,7 @@ function calculateMissionPerformance(year, month) {
    MONTHLY REPORT — MONTH OVERVIEW
 ========================================================= */
 
+
 function renderMonthlyReport(selectedYear, selectedMonth) {
 
     const now = new Date();
@@ -315,6 +316,9 @@ function initializeMonthlyReportSelector() {
     renderMonthlyReport(currentYear, currentMonth);
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    initializeMonthlyReportSelector();
+});
 
 function getMonthlyMomentumHistory(year, month) {
 
