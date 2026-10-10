@@ -669,8 +669,8 @@ function spawnDailyChallengeXP() {
     if (!target) return;
 
     const rect = target.getBoundingClientRect();
-    const targetX = rect.left + rect.width / 2;
-    const targetY = rect.top + rect.height / 2;
+    const targetX = rect.left + rect.width / 2 + 4;
+    const targetY = rect.top + rect.height / 2 + 4;
 
     const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
@@ -762,10 +762,10 @@ function spawnDailyChallengeXP() {
         void target.offsetWidth;
         target.classList.add("daily-xp-reward-pop");
 
-        // Use your existing app sound, if available.
-        if (typeof window.playAppTone === "function") {
-            window.playAppTone("achievement");
-        }
+        // // Use your existing app sound, if available.
+        // if (typeof window.playAppTone === "function") {
+        //     window.playAppTone("achievement");
+        // }
     }, finishDelay);
 }
 
