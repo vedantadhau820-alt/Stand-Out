@@ -147,6 +147,8 @@
 
         video.load();
 
+       video.volume = 0.4; // 30% volume
+
 
         /*
          * Browser already has enough data.
@@ -324,12 +326,6 @@
             finishIntro();
         }
     }
-
-   const introVideo = document.getElementById("intro-video");
-
-if (introVideo) {
-    introVideo.volume = 0.5; // 30% volume
-}
 
 
     /* =====================================================
