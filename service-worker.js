@@ -1,6 +1,4 @@
 const CACHE_NAME = "standout-v2.6";
-//const MEDIA_CACHE = "standout-media";
-// NEVER versioned
 
 const FONT_AWESOME_CACHE =
   "standout-fontawesome-v2";
