@@ -325,6 +325,12 @@
         }
     }
 
+   const introVideo = document.getElementById("intro-video");
+
+if (introVideo) {
+    introVideo.volume = 0.5; // 30% volume
+}
+
 
     /* =====================================================
        FINISH
