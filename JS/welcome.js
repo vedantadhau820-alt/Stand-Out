@@ -147,7 +147,7 @@
 
         video.load();
 
-       video.volume = 0.4; // 30% volume
+       video.volume = 0.2; // 30% volume
 
 
         /*
