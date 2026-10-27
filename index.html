@@ -31,6 +31,79 @@
     <link rel="stylesheet" href="CSS/season.css">
     <link rel="stylesheet" href="CSS/mastery.css">
 
+
+    <style>
+        .improvement-points-line { margin: 2px 0 0; }
+
+        .mission-progress-counters {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            width: 100%;
+            margin: 5px 0 8px;
+        }
+
+        .mission-progress-card {
+            min-width: 0;
+            padding: 5px 7px;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            border-radius: 7px;
+            background: rgba(148, 163, 184, 0.025);
+        }
+
+        .mission-progress-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            margin-bottom: 3px;
+        }
+
+        .mission-progress-label {
+            color: var(--muted-text, #94a3b8);
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+        }
+
+        .mission-progress-count {
+            color: var(--primary, #3B82F6);
+            font-size: 10px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        .mission-progress-track {
+            height: 2px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.15);
+        }
+
+        .mission-progress-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: #3B82F6;
+            transition: width 220ms ease;
+        }
+
+        .mission-progress-detail {
+            margin: 3px 0 0;
+            color: var(--muted-text, #94a3b8);
+            font-size: 8px;
+            line-height: 1.15;
+        }
+
+        @media (max-width: 420px) {
+            .mission-progress-counters { gap: 5px; margin: 4px 0 7px; }
+            .mission-progress-card { padding: 4px 6px; border-radius: 6px; }
+            .mission-progress-label { font-size: 7px; }
+            .mission-progress-count { font-size: 9px; }
+            .mission-progress-detail { font-size: 7px; }
+        }
+    </style>
+
 </head>
 
 <body>
@@ -243,6 +316,30 @@
 
         </div>
 
+        <!-- Compact progress counters below Daily Challenge -->
+        <div id="missionProgressCounters" class="mission-progress-counters" aria-live="polite">
+            <div class="mission-progress-card">
+                <div class="mission-progress-card-top">
+                    <span class="mission-progress-label">DAILY POINT CAP</span>
+                    <span id="dailyCapCount" class="mission-progress-count">0 / 11</span>
+                </div>
+                <div class="mission-progress-track" role="progressbar" aria-label="Daily Improvement Point cap progress" aria-valuemin="0" aria-valuemax="11" aria-valuenow="0">
+                    <div id="dailyCapBar" class="mission-progress-fill"></div>
+                </div>
+                <p id="dailyCapRemaining" class="mission-progress-detail">11 tasks left to earn points</p>
+            </div>
+
+            <div class="mission-progress-card">
+                <div class="mission-progress-card-top">
+                    <span class="mission-progress-label">NEXT ACHIEVEMENT</span>
+                    <span id="nextAchievementRemaining" class="mission-progress-count">—</span>
+                </div>
+                <div class="mission-progress-track" role="progressbar" aria-label="Next mission achievement progress" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">
+                    <div id="nextAchievementBar" class="mission-progress-fill"></div>
+                </div>
+                <p id="nextAchievementDetail" class="mission-progress-detail">Loading achievement progress...</p>
+            </div>
+        </div>
 
         <ul id="mission-list"></ul>
 
