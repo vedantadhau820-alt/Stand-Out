@@ -2759,10 +2759,6 @@ function unlockAchievement(id) {
         pushNotification("🏆 New Achievement", `You unlocked: "${ach.title}"`);
         showAchievementPopup(ach.title, ach.desc);
         renderAchievements();
-
-        if (typeof window.updateMissionProgressCounters === "function") {
-            window.updateMissionProgressCounters();
-        }
     }
 }
 
@@ -4204,10 +4200,6 @@ playAppTone("mission");
 
 
     saveData();
-
-    if (typeof window.updateMissionProgressCounters === "function") {
-        window.updateMissionProgressCounters();
-    }
 }
 
 
@@ -4302,12 +4294,12 @@ function getRepeatKey(date = new Date(), repeat = "daily") {
 
 function refreshRecurringMissions() {
 
-    // Process expired deadlines before resetting recurring missions.
+   // Process expired deadlines before resetting recurring missions.
     if (typeof checkMissedDeadlines === "function") {
         checkMissedDeadlines();
     }
 
-    
+
     const missions =
         document.querySelectorAll(
             "#mission-list li"
