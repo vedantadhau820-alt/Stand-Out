@@ -2975,7 +2975,7 @@ function renderMyCards() {
 
 }
 
-const GRADE_ORDER = ["D", "C", "B", "X", "A", "S", "SS", "w"];
+const GRADE_ORDER = ["E","D", "C", "B", "A", "S", "w"];
 
 function gradeRank(grade) {
     return GRADE_ORDER.indexOf(grade) + 1;
