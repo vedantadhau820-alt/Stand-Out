@@ -113,10 +113,6 @@ function enforceDailyReset() {
 
         console.log("✅ Daily reset enforced:", today);
     }
-
-    if (typeof window.updateMissionProgressCounters === "function") {
-        window.updateMissionProgressCounters();
-    }
 }
 
 window.addEventListener("load", () => {
@@ -2418,7 +2414,7 @@ document.getElementById("importProgressFile").addEventListener("change", functio
 window.saveProgressToFile = saveProgressToFile;
 window.loadProgressFromFile = loadProgressFromFile;
 
-const DAILY_IMPROVEMENT_LIMIT = 10;
+const DAILY_IMPROVEMENT_LIMIT = 11;
 
 let dailyImprovementCount = parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
 let lastImprovementDate = localStorage.getItem("lastImprovementDate") || new Date().toDateString();
@@ -2552,7 +2548,7 @@ function renderMarketplace(filterGrade = "ALL") {
 
         // Hide cards already owned by the user
         if (ownedCards[card.id]) return;
-        
+
         const isOwned = !!ownedCards[card.id];
         const expired = isExpired(card);
 
@@ -2639,14 +2635,41 @@ function buyCard(cardId) {
         `Mint "${card.title}" for ${card.cost} points?\nThis is permanent.`,
         () => {
             completedMissions -= card.cost;
-            document.getElementById("missionCounter").textContent = completedMissions;
+            // Always reload the newest saved card collection first.
+            // This prevents stale in-memory data from deleting Season rewards.
+            let latestOwnedCards = {};
+
+            try {
+                latestOwnedCards = JSON.parse(
+                    localStorage.getItem("ownedCards") || "{}"
+                );
+            } catch (error) {
+                console.error("Failed to reload owned cards:", error);
+                customAlert("Could not load your card collection. Purchase cancelled.");
+                return;
+            }
+
+            ownedCards = latestOwnedCards;
+
+            completedMissions -= card.cost;
+
+            document.getElementById("missionCounter").textContent =
+                completedMissions;
 
             ownedCards[card.id] = {
-                mintedAt: getISTDate().toISOString().slice(0, 10)   // ✅ ISO format
+                ...(ownedCards[card.id] || {}),
+                mintedAt: getISTDate().toISOString().slice(0, 10)
             };
 
-            localStorage.setItem("ownedCards", JSON.stringify(ownedCards));
-            localStorage.setItem("completedMissions", completedMissions);
+            localStorage.setItem(
+                "ownedCards",
+                JSON.stringify(ownedCards)
+            );
+
+            localStorage.setItem(
+                "completedMissions",
+                completedMissions
+            );
 
             renderMarketplace(currentMarketplaceFilter);
             renderMyCards();
@@ -2975,7 +2998,7 @@ function renderMyCards() {
 
 }
 
-const GRADE_ORDER = ["E","D", "C", "B", "A", "S", "w"];
+const GRADE_ORDER = ["D", "C", "B", "X", "A", "S", "SS", "w"];
 
 function gradeRank(grade) {
     return GRADE_ORDER.indexOf(grade) + 1;
