@@ -530,11 +530,6 @@
             );
 
 
-        /*
-         * Daily activity count
-         */
-        dailyImprovementCount++;
-
 
         /*
          * Save IP
@@ -542,15 +537,6 @@
         localStorage.setItem(
             "completedMissions",
             completedMissions
-        );
-
-
-        /*
-         * Save daily activity
-         */
-        localStorage.setItem(
-            "dailyImprovementCount",
-            dailyImprovementCount
         );
 
 
