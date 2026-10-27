@@ -185,6 +185,95 @@ function checkMissionAchievements() {
     });
 }
 
+
+/* =========================================================
+   MISSION PROGRESS COUNTERS — DISPLAY ONLY
+   Reads existing progress and milestone data; does not alter it.
+========================================================= */
+function updateMissionProgressCounters() {
+    const cap = Number(DAILY_IMPROVEMENT_LIMIT) || 11;
+    const dailyCount = Math.min(
+        cap,
+        Math.max(
+            0,
+            Number(localStorage.getItem("dailyImprovementCount")) ||
+            Number(dailyImprovementCount) ||
+            0
+        )
+    );
+    const remaining = Math.max(0, cap - dailyCount);
+
+    const capCount = document.getElementById("dailyCapCount");
+    const capRemaining = document.getElementById("dailyCapRemaining");
+    const capBar = document.getElementById("dailyCapBar");
+    const capTrack = capBar?.parentElement;
+
+    if (capCount) capCount.textContent = `${dailyCount} / ${cap}`;
+    if (capRemaining) {
+        capRemaining.textContent = remaining === 0
+            ? "Daily cap reached — no more points today"
+            : `${remaining} task${remaining === 1 ? "" : "s"} left to earn points`;
+    }
+    if (capBar) capBar.style.width = `${Math.min(100, (dailyCount / cap) * 100)}%`;
+    if (capTrack) {
+        capTrack.setAttribute("aria-valuemax", String(cap));
+        capTrack.setAttribute("aria-valuenow", String(dailyCount));
+    }
+
+    const completed = Math.max(0, Number(completedMissionCount) || 0);
+    const milestones = (Array.isArray(missionMilestones) ? missionMilestones : [])
+        .map(Number)
+        .filter(threshold => Number.isFinite(threshold) && threshold > 0)
+        .sort((a, b) => a - b);
+    const nextThreshold = milestones.find(threshold => threshold > completed);
+
+    const nextCount = document.getElementById("nextAchievementRemaining");
+    const nextDetail = document.getElementById("nextAchievementDetail");
+    const nextBar = document.getElementById("nextAchievementBar");
+    const nextTrack = nextBar?.parentElement;
+
+    if (nextThreshold === undefined) {
+        if (nextCount) nextCount.textContent = "Complete";
+        if (nextDetail) nextDetail.textContent = "All mission milestones have been reached.";
+        if (nextBar) nextBar.style.width = "100%";
+        if (nextTrack) {
+            nextTrack.setAttribute("aria-valuemax", "1");
+            nextTrack.setAttribute("aria-valuenow", "1");
+        }
+        return;
+    }
+
+    const previousThreshold = milestones
+        .filter(threshold => threshold < nextThreshold)
+        .reduce((max, threshold) => Math.max(max, threshold), 0);
+    const needed = nextThreshold - completed;
+    const progress = nextThreshold > previousThreshold
+        ? Math.max(
+            0,
+            Math.min(
+                100,
+                ((completed - previousThreshold) / (nextThreshold - previousThreshold)) * 100
+            )
+        )
+        : 0;
+
+    const matchingAchievement = Array.isArray(achievementsData)
+        ? achievementsData.find(achievement => achievement.id === `mission${nextThreshold}`)
+        : null;
+    const achievementTitle = matchingAchievement?.title || `Mission ${nextThreshold}`;
+
+    if (nextCount) nextCount.textContent = `${needed} task${needed === 1 ? "" : "s"}`;
+    if (nextDetail) nextDetail.textContent = `${achievementTitle} · ${completed} / ${nextThreshold} missions`;
+    if (nextBar) nextBar.style.width = `${progress}%`;
+    if (nextTrack) {
+        nextTrack.setAttribute("aria-valuemax", String(nextThreshold));
+        nextTrack.setAttribute("aria-valuenow", String(completed));
+    }
+}
+
+window.updateMissionProgressCounters = updateMissionProgressCounters;
+window.addEventListener("load", updateMissionProgressCounters);
+
 function showPopup(achievementText) {
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
