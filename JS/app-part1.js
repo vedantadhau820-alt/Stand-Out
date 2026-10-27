@@ -113,6 +113,10 @@ function enforceDailyReset() {
 
         console.log("✅ Daily reset enforced:", today);
     }
+
+    if (typeof window.updateMissionProgressCounters === "function") {
+        window.updateMissionProgressCounters();
+    }
 }
 
 window.addEventListener("load", () => {
