@@ -1,13 +1,13 @@
-const CACHE_NAME = "standout-v2.6.5";
+const CACHE_NAME = "standout-v2.6";
 
 const FONT_AWESOME_CACHE =
   "standout-fontawesome-v2";
 
 const BACKGROUND_CACHE =
-  "standout-background-v2";
+  "standout-background-v3";
 
 const WELCOME_CACHE =
-  "standout-welcome-v5";
+  "standout-welcome-v3";
 
 
 const WELCOME_ASSETS = [
@@ -130,6 +130,8 @@ const BACKGROUND_ASSETS = [
   // Badges
   "/badges/aug-2026.png",
   "/badges/sep-2026.png",
+  "/badges/oct-2026.png",
+  "/badges/nov-2026.png",
 
   // Assets
   "/assets/cards/season-01-ascension",
