@@ -62,7 +62,6 @@ window.cardCatalog = [
    // { id: "chainsaw_man", title: "Chainsaw Man", grade: "w", cost: 11, image: "Images/w2.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
    // { id: "jjk_sukuna", title: "Ryomen Sukuna", grade: "w", cost: 70, image: "Images/jjk.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
 
-
    { id: "Endgame_Cap", title: "Captain America - Endgame", grade: "w", quote: "The Worthy Human.", cost: 200, image: "Images/Endgame_Cap.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
    { id: "Endgame_Thor", title: "Thor - Ragnarock", grade: "w", quote: "God Of Thunder.", cost: 210, image: "Images/Endgame_Thor.gif", limited: true, expiresAt: "2026-09-30T23:29:30Z" },
    { id: "JJK_Sukuna", title: "Ryomen Sukuna", grade: "w", quote: "The King Of Curses.", cost: 200, image: "Images/JJK_Sukuna.gif", limited: true, expiresAt: "2026-10-31T23:29:30Z" },
@@ -75,4 +74,10 @@ window.cardCatalog = [
    { id: "season_01_exclusive_card", title: "Beyond Limits", quote: "The limit was never the wall. It was the belief.", grade: "S", cost: 0, image: "assets/cards/season-01-beyond-limits.png", limited: true, expiresAt: "2026-09-30T23:29:30Z", season: "season-01", seasonReward: true},
    { id: "season_02_card", title: "Domain Expansion", quote: "Power Resides Where We Believe It Resides.", grade: "S", cost: 0, image: "assets/cards/season-02-domain-expansion.png", limited: true, expiresAt: "2026-10-31T23:29:30Z", season: "season-02", seasonReward: true},
    { id: "season_02_exclusive_card", title: "The Cursed Awakening", quote: "A Different World Lies Within.", grade: "S", cost: 0, image: "assets/cards/season-02-the-cursed-awakening.png", limited: true, expiresAt: "2026-10-31T23:29:30Z", season: "season-02", seasonReward: true},
+   { id: "season_03_card", title: "Jatayu", quote: "Always Follow Your Dharma, Even If Death Standing Against You.", grade: "S", cost: 0, image: "assets/cards/season-02-Jatayu.jpeg", limited: true, expiresAt: "2026-11-30T23:29:30Z", season: "season-03", seasonReward: true},
+   { id: "season_03_exclusive_card", title: "Sita Maa", quote: "Never Lose Hope.", grade: "S", cost: 0, image: "assets/cards/season-03-Sitamaa.jpeg", limited: true, expiresAt: "2026-11-30T23:29:30Z", season: "season-03", seasonReward: true},
+   
+
+];
+   
 ];
