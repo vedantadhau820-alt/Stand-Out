@@ -77,7 +77,4 @@ window.cardCatalog = [
    { id: "season_03_card", title: "Jatayu", quote: "Always Follow Your Dharma, Even If Death Standing Against You.", grade: "S", cost: 0, image: "assets/cards/season-02-Jatayu.jpeg", limited: true, expiresAt: "2026-11-30T23:29:30Z", season: "season-03", seasonReward: true},
    { id: "season_03_exclusive_card", title: "Sita Maa", quote: "Never Lose Hope.", grade: "S", cost: 0, image: "assets/cards/season-03-Sitamaa.jpeg", limited: true, expiresAt: "2026-11-30T23:29:30Z", season: "season-03", seasonReward: true},
    
-
-];
-   
 ];
