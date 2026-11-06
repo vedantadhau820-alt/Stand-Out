@@ -295,8 +295,6 @@
 
     function recordMomentumHistory() {
 
-        state.energy = normalizeEnergy(state.energy);
-
         const date =
             today();
 
@@ -315,8 +313,6 @@
     }
 
     function saveState() {
-
-        state.energy = normalizeEnergy(state.energy);
 
         try {
 
@@ -343,149 +339,64 @@
        DATE
     ========================================================= */
 
-    function today() {
+    // Accept ISO (YYYY-MM-DD) and legacy US (MM/DD/YYYY) date keys.
+    // Always return ISO so all new Momentum records use one format.
+    function normalizeDateKey(value) {
 
-        /*
-         * Developer testing date.
-         */
+        if (typeof value !== "string" || !value.trim()) return null;
 
-        if (
-            momentumTestDate
-        ) {
-
-            return momentumTestDate;
-
-        }
-
-
-        /*
-         * Use application's date
-         * function when available.
-         */
-
-        try {
-
-            if (
-                typeof window.getTodayKey ===
-                "function"
-            ) {
-
-                return window.getTodayKey();
-
-            }
-
-        }
-
-        catch (_) { }
-
-
-        /*
-         * Fallback to IST.
-         */
-
-        return new Intl.DateTimeFormat(
-
-            "en-CA",
-
-            {
-
-                timeZone:
-                    "Asia/Kolkata",
-
-                year:
-                    "numeric",
-
-                month:
-                    "2-digit",
-
-                day:
-                    "2-digit"
-
-            }
-
-        ).format(
-            new Date()
-        );
-
-    }
-
-
-    function parseMomentumDate(value) {
-
-        if (typeof value !== "string") {
-            return null;
-        }
-
-        let year;
-        let month;
-        let day;
-
-        // ISO format: YYYY-MM-DD
-        let match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        const input = value.trim();
+        let year, month, day;
+        let match = input.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
 
         if (match) {
-            year = Number(match[1]);
-            month = Number(match[2]);
-            day = Number(match[3]);
+            [, year, month, day] = match;
+        } else {
+            match = input.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (!match) return null;
+            [, month, day, year] = match;
         }
-        else {
-            // Existing StandOut backups also contain MM/DD/YYYY.
-            match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
 
-            if (!match) {
-                return null;
+        const y = Number(year), mo = Number(month), d = Number(day);
+        const date = new Date(Date.UTC(y, mo - 1, d));
+        if (date.getUTCFullYear() !== y || date.getUTCMonth() !== mo - 1 || date.getUTCDate() !== d) return null;
+
+        return `${String(y).padStart(4, "0")}-${String(mo).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    }
+
+
+    function today() {
+
+        if (momentumTestDate) {
+            return normalizeDateKey(momentumTestDate) || momentumTestDate;
+        }
+
+        try {
+            if (typeof window.getTodayKey === "function") {
+                const appDate = normalizeDateKey(window.getTodayKey());
+                if (appDate) return appDate;
             }
+        } catch (_) { }
 
-            month = Number(match[1]);
-            day = Number(match[2]);
-            year = Number(match[3]);
-        }
-
-        const timestamp = Date.UTC(year, month - 1, day);
-        const parsed = new Date(timestamp);
-
-        // Reject impossible dates instead of allowing NaN into Energy math.
-        if (
-            parsed.getUTCFullYear() !== year ||
-            parsed.getUTCMonth() !== month - 1 ||
-            parsed.getUTCDate() !== day
-        ) {
-            return null;
-        }
-
-        return timestamp;
+        return new Intl.DateTimeFormat("en-CA", {
+            timeZone: "Asia/Kolkata",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }).format(new Date());
 
     }
 
 
-    function normalizeEnergy(value) {
+    function daysBetween(first, second) {
 
-        const numeric = Number(value);
+        const firstKey = normalizeDateKey(first);
+        const secondKey = normalizeDateKey(second);
+        if (!firstKey || !secondKey) return 0;
 
-        if (!Number.isFinite(numeric)) {
-            return 0;
-        }
-
-        return Math.min(100, Math.max(0, numeric));
-
-    }
-
-
-    function daysBetween(
-        first,
-        second
-    ) {
-
-        const a = parseMomentumDate(first);
-        const b = parseMomentumDate(second);
-
-        if (a === null || b === null) {
-            return null;
-        }
-
-        return Math.round(
-            (b - a) / 86400000
-        );
+        const a = Date.parse(`${firstKey}T00:00:00.000Z`);
+        const b = Date.parse(`${secondKey}T00:00:00.000Z`);
+        return Math.round((b - a) / 86400000);
 
     }
 
@@ -1475,8 +1386,6 @@
 
     function registerProof() {
 
-        state.energy = normalizeEnergy(state.energy);
-
         const currentDay =
             today();
 
@@ -1596,8 +1505,6 @@
 
     function checkMissedDays() {
 
-        state.energy = normalizeEnergy(state.energy);
-
         const currentDay =
             today();
 
@@ -1638,18 +1545,6 @@
                 state.lastCheckDate,
                 currentDay
             );
-
-        if (!Number.isFinite(difference)) {
-
-            console.error(
-                "Momentum date calculation aborted. Check date format:",
-                state.lastCheckDate,
-                currentDay
-            );
-
-            return;
-
-        }
 
 
         /*
@@ -2373,11 +2268,12 @@
                 state.lastCheckDate
             ) {
 
-                startDate =
-                    new Date(
-                        state.lastCheckDate +
-                        "T12:00:00"
-                    );
+                const normalizedLastCheck =
+                    normalizeDateKey(state.lastCheckDate);
+
+                startDate = normalizedLastCheck
+                    ? new Date(`${normalizedLastCheck}T12:00:00.000Z`)
+                    : new Date();
 
             }
 
@@ -2401,9 +2297,7 @@
 
 
             momentumTestDate =
-                startDate
-                    .toISOString()
-                    .slice(0, 10);
+                `${startDate.getUTCFullYear()}-${String(startDate.getUTCMonth() + 1).padStart(2, "0")}-${String(startDate.getUTCDate()).padStart(2, "0")}`;
 
 
             /*
