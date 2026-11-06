@@ -295,6 +295,8 @@
 
     function recordMomentumHistory() {
 
+        state.energy = normalizeEnergy(state.energy);
+
         const date =
             today();
 
@@ -313,6 +315,8 @@
     }
 
     function saveState() {
+
+        state.energy = normalizeEnergy(state.energy);
 
         try {
 
@@ -406,36 +410,81 @@
     }
 
 
+    function parseMomentumDate(value) {
+
+        if (typeof value !== "string") {
+            return null;
+        }
+
+        let year;
+        let month;
+        let day;
+
+        // ISO format: YYYY-MM-DD
+        let match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+        if (match) {
+            year = Number(match[1]);
+            month = Number(match[2]);
+            day = Number(match[3]);
+        }
+        else {
+            // Existing StandOut backups also contain MM/DD/YYYY.
+            match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+
+            if (!match) {
+                return null;
+            }
+
+            month = Number(match[1]);
+            day = Number(match[2]);
+            year = Number(match[3]);
+        }
+
+        const timestamp = Date.UTC(year, month - 1, day);
+        const parsed = new Date(timestamp);
+
+        // Reject impossible dates instead of allowing NaN into Energy math.
+        if (
+            parsed.getUTCFullYear() !== year ||
+            parsed.getUTCMonth() !== month - 1 ||
+            parsed.getUTCDate() !== day
+        ) {
+            return null;
+        }
+
+        return timestamp;
+
+    }
+
+
+    function normalizeEnergy(value) {
+
+        const numeric = Number(value);
+
+        if (!Number.isFinite(numeric)) {
+            return 0;
+        }
+
+        return Math.min(100, Math.max(0, numeric));
+
+    }
+
+
     function daysBetween(
         first,
         second
     ) {
 
-        if (
-            !first ||
-            !second
-        ) {
+        const a = parseMomentumDate(first);
+        const b = parseMomentumDate(second);
 
-            return 0;
-
+        if (a === null || b === null) {
+            return null;
         }
 
-
-        const a =
-            new Date(
-                `${first}T00:00:00`
-            );
-
-
-        const b =
-            new Date(
-                `${second}T00:00:00`
-            );
-
-
         return Math.round(
-            (b - a) /
-            86400000
+            (b - a) / 86400000
         );
 
     }
@@ -1426,6 +1475,8 @@
 
     function registerProof() {
 
+        state.energy = normalizeEnergy(state.energy);
+
         const currentDay =
             today();
 
@@ -1545,6 +1596,8 @@
 
     function checkMissedDays() {
 
+        state.energy = normalizeEnergy(state.energy);
+
         const currentDay =
             today();
 
@@ -1585,6 +1638,18 @@
                 state.lastCheckDate,
                 currentDay
             );
+
+        if (!Number.isFinite(difference)) {
+
+            console.error(
+                "Momentum date calculation aborted. Check date format:",
+                state.lastCheckDate,
+                currentDay
+            );
+
+            return;
+
+        }
 
 
         /*
